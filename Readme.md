@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
-* Студент: [Даниил Колотыгин](https://up.htmlacademy.ru/ecmascript-individual/2/user/2593079).
-* Наставник: `Неизвестно`.
+- Студент: [Даниил Колотыгин](https://up.htmlacademy.ru/ecmascript-individual/2/user/2593079).
+- Наставник: `Анастасия Гущина`.
 
 ---
 
