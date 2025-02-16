@@ -165,7 +165,7 @@ function createAddEventTemplate() {
             </li>`;
 }
 
-export default class EditEventView {
+export default class AddEventView {
 
   getTemplate() {
     return createAddEventTemplate();
