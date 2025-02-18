@@ -9,18 +9,22 @@ export default class EventsPresenter {
 
   listComponent = new EventsListView();
 
-  constructor({ eventsContainer }) {
+  constructor({ eventsContainer, eventsModel }) {
     this.eventsContainer = eventsContainer;
+    this.eventsModel = eventsModel;
   }
 
   init() {
+    this.events = [...this.eventsModel.getEvents()];
+    this.destinations = [...this.eventsModel.getDestinations()];
+    this.offers = [...this.eventsModel.getOffers()];
     render(new EventsSortView(), this.eventsContainer);
     render(this.listComponent, this.eventsContainer);
     render(new EditEventView(), this.listComponent.getElement());
     render(new AddEventView(), this.listComponent.getElement());
 
-    for (let i = 0; i < 3; i++) {
-      render(new EventView(), this.listComponent.getElement());
+    for (let i = 0; i < this.events.length; i++) {
+      render(new EventView(this.events[i]), this.listComponent.getElement());
     }
   }
 }
