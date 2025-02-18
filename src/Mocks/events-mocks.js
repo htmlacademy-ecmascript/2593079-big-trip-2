@@ -37,6 +37,68 @@ const mockEvents = [
     offers: [],
     type: 'restaurant'
   },
+  {
+    id: '1b79bfa7-b0be-4adf-b182-f6ac42016d22',
+    basePrice: 6018,
+    dateFrom: '2025-03-01T06:23:12.957Z',
+    dateTo: '2025-03-01T17:12:12.957Z',
+    destination: 'a734ae85-9fce-4e1a-af06-ee28e9c10dd2',
+    isFavorite: true,
+    offers: [],
+    type: 'ship'
+  },
+  {
+    id: 'c26e54b8-b86f-4a70-8bc9-44dd1ef51f35',
+    basePrice: 7902,
+    dateFrom: '2025-03-03T05:25:12.957Z',
+    dateTo: '2025-03-03T12:50:12.957Z',
+    destination: '14ca415e-fc87-4c30-aea8-cddf7d32337e',
+    isFavorite: true,
+    offers: [
+      'eb272342-702c-4d96-bc21-2f9ff124dad0',
+      '51cf52ed-e73b-4b2e-99da-ba7a19e4fe97',
+      '8ef71e66-fe4f-41c2-90f0-84e761cacc01'
+    ],
+    type: 'taxi'
+  },
+  {
+    id: 'f3b41fbc-0bcd-40e6-a9b1-5eef9371c15b',
+    basePrice: 1721,
+    dateFrom: '2025-03-05T13:09:12.957Z',
+    dateTo: '2025-03-07T01:28:12.957Z',
+    destination: 'b8f91f69-45f7-4c31-b59a-eda9d22ba341',
+    isFavorite: true,
+    offers: [
+      '1cdbdfcd-ccd0-4e56-8afa-44016bbcaf4c',
+      '659142a4-1ea2-4d02-b31f-082eba1afc8e',
+      'aea4e17c-0069-4884-9ffa-8bc5f7899075'
+    ],
+    type: 'train'
+  },
+  {
+    id: '4a255034-a019-42a0-bce5-1e602a99d1ef',
+    basePrice: 7280,
+    dateFrom: '2025-03-07T14:43:12.957Z',
+    dateTo: '2025-03-08T01:34:12.957Z',
+    destination: '62a21ac4-e085-4f48-8fb5-cbd0905b67c0',
+    isFavorite: true,
+    offers: [
+      'aea4e17c-0069-4884-9ffa-8bc5f7899075'
+    ],
+    type: 'train'
+  },
+  {
+    id: '7f34ab6b-32a8-404d-b697-41a088dd53c3',
+    basePrice: 2707,
+    dateFrom: '2025-03-08T11:55:12.957Z',
+    dateTo: '2025-03-09T00:27:12.957Z',
+    destination: '3202b202-7d98-4b23-9100-bf18c0615947',
+    isavorite: false,
+    offers: [
+      'b2615390-dfab-4c38-bca9-3116f44d25f7'
+    ],
+    type: 'bus'
+  },
 ];
 
 const mockDestinations = [
@@ -197,29 +259,29 @@ const mockOffers = [
     type: 'taxi',
     offers: [
       {
-        id: '4a2abed0-85dd-432c-9fde-177bff1fe565',
+        id: 'e4ac9df6-fe5a-40e4-a7f2-f7389e2c445e',
         title: 'Upgrade to a business class',
-        price: 30
+        price: 123
       },
       {
-        id: '5058ab37-a445-4c6a-871b-88ea10b166ef',
+        id: '60fd0dc8-f396-4a75-92f6-6940a785059d',
         title: 'Choose the radio station',
-        price: 51
+        price: 55
       },
       {
-        id: '5819b80e-c055-402e-a525-9c2b234e1813',
+        id: 'eb272342-702c-4d96-bc21-2f9ff124dad0',
         title: 'Choose temperature',
-        price: 79
+        price: 38
       },
       {
-        id: '604db66b-1f0c-4b0c-808d-30668eb10393',
+        id: '51cf52ed-e73b-4b2e-99da-ba7a19e4fe97',
         title: 'Drive quickly, I\'m in a hurry',
-        price: 30
+        price: 70
       },
       {
-        id: 'bc71dd1e-713b-4b53-aca5-daabf2b64cf4',
+        id: '8ef71e66-fe4f-41c2-90f0-84e761cacc01',
         title: 'Drive slowly',
-        price: 152
+        price: 175
       }
     ]
   },
@@ -227,19 +289,19 @@ const mockOffers = [
     type: 'bus',
     offers: [
       {
-        id: '92f4ce87-34cc-4486-91f6-e96fb681ab4a',
+        id: 'ae99069c-c246-430d-8c90-effad77d4831',
         title: 'Infotainment system',
-        price: 189
+        price: 36
       },
       {
-        id: 'f704ed24-48cf-40f6-8e2e-c587e78265ad',
+        id: 'c28c7abe-fbf2-46ec-aec5-e673654289c7',
         title: 'Order meal',
-        price: 56
+        price: 173
       },
       {
-        id: '8688de29-f44e-492e-9f01-c6604d22d24a',
+        id: 'b2615390-dfab-4c38-bca9-3116f44d25f7',
         title: 'Choose seats',
-        price: 136
+        price: 67
       }
     ]
   },
@@ -247,19 +309,19 @@ const mockOffers = [
     type: 'train',
     offers: [
       {
-        id: 'b3bd4067-5cae-4f4d-b379-6d018014727c',
+        id: '1cdbdfcd-ccd0-4e56-8afa-44016bbcaf4c',
         title: 'Book a taxi at the arrival point',
-        price: 130
+        price: 66
       },
       {
-        id: '8c12bc5f-6dd4-484a-854b-bfc3f563f20c',
+        id: '659142a4-1ea2-4d02-b31f-082eba1afc8e',
         title: 'Order a breakfast',
-        price: 72
+        price: 174
       },
       {
-        id: '30b4d025-33e8-4be2-b7cb-ae4a25f51b4c',
+        id: 'aea4e17c-0069-4884-9ffa-8bc5f7899075',
         title: 'Wake up at a certain time',
-        price: 154
+        price: 60
       }
     ]
   },
@@ -267,34 +329,34 @@ const mockOffers = [
     type: 'flight',
     offers: [
       {
-        id: '991b41c9-d7f4-4cc2-ad62-7f2bb282dc6d',
+        id: '1b22fb31-acef-4d01-9c62-9ac18b176387',
         title: 'Choose meal',
-        price: 138
+        price: 166
       },
       {
-        id: '151861b6-48ae-4a66-8dde-f142799554b8',
+        id: '02db9a9c-6ea4-471f-9904-c4c969a26e63',
         title: 'Choose seats',
-        price: 135
+        price: 173
       },
       {
-        id: '475f400f-7a0c-45c7-9c8d-e98ca1d79e47',
+        id: '530f0e32-9f97-492b-aee5-b10dd2d815a5',
         title: 'Upgrade to comfort class',
-        price: 38
+        price: 108
       },
       {
-        id: 'bbeda7c0-9c74-47a9-b2d5-19de9f18ef20',
+        id: '3344000b-4079-425a-a188-0f8be957d1c5',
         title: 'Upgrade to business class',
-        price: 159
+        price: 100
       },
       {
-        id: 'b7dc1b70-7c81-4133-bccc-db4a9b84944f',
+        id: 'fc5e302b-6231-4c1d-85ba-05ce2dd9e1c6',
         title: 'Add luggage',
-        price: 56
+        price: 124
       },
       {
-        id: '3659f72a-4b30-4304-b5ff-d01a626c7958',
+        id: 'cf67a33c-dbea-4788-833e-e140bfbc03d0',
         title: 'Business lounge',
-        price: 34
+        price: 120
       }
     ]
   },
@@ -302,29 +364,29 @@ const mockOffers = [
     type: 'check-in',
     offers: [
       {
-        id: '75f277b9-20eb-4ad7-af1c-e1292c2e670a',
+        id: 'bf55fdef-d2c3-4a39-8a8f-dd6d40f6b954',
         title: 'Choose the time of check-in',
-        price: 37
+        price: 90
       },
       {
-        id: '5e678ea9-0735-4f8c-9936-b7b0828c027a',
+        id: 'cfd32a95-916e-43bb-ac0b-ac92215e7ea8',
         title: 'Choose the time of check-out',
-        price: 148
+        price: 61
       },
       {
-        id: '2bda23b2-d8d1-4353-a68b-dc81109f1a42',
+        id: 'dc7e4af4-1371-42fe-9f60-e75e82f96dca',
         title: 'Add breakfast',
-        price: 79
+        price: 195
       },
       {
-        id: 'd30f0684-7d97-40f7-8a4c-efd9e6a370a4',
+        id: 'cf351d11-b6cd-4ce6-86b1-09ba32e6a271',
         title: 'Laundry',
-        price: 138
+        price: 139
       },
       {
-        id: '54a0cc6e-3ac0-48a8-851d-529e8dbf8e61',
+        id: 'a749c843-4981-4d38-892b-076437c24597',
         title: 'Order a meal from the restaurant',
-        price: 73
+        price: 197
       }
     ]
   },
@@ -336,34 +398,34 @@ const mockOffers = [
     type: 'ship',
     offers: [
       {
-        id: '43bf6991-2b16-4f9b-81b8-4b25f3efac29',
+        id: 'be02a8b1-e2ba-48f3-82a3-79f690f9638a',
         title: 'Choose meal',
-        price: 42
+        price: 112
       },
       {
-        id: 'fe022e53-68b4-4add-aaf6-0413c15eb56a',
+        id: '6f99087f-2b81-4654-9c2b-efe1d4ef615c',
         title: 'Choose seats',
-        price: 77
+        price: 115
       },
       {
-        id: '5ccb92f8-19a5-491c-a8c4-f31412f2b1f2',
+        id: 'cba06821-0983-48e1-a3e0-af055ab42e69',
         title: 'Upgrade to comfort class',
         price: 79
       },
       {
-        id: 'aa7ff8ed-b3b4-4e56-9bde-02c68d6fe01d',
+        id: '601f1aa7-01b5-4c99-9c64-8270b76ee1ed',
         title: 'Upgrade to business class',
-        price: 104
+        price: 75
       },
       {
-        id: '46fac752-60f1-4709-903f-a20cf1c6a1f7',
+        id: 'a2026208-7504-446b-ae62-f71e89879210',
         title: 'Add luggage',
-        price: 60
+        price: 135
       },
       {
-        id: 'e1cf9783-59d1-411d-8459-c8fe49c4bed8',
+        id: 'f3a8c33b-3019-4bc8-9881-fdcf296b9027',
         title: 'Business lounge',
-        price: 46
+        price: 165
       }
     ]
   },
@@ -371,14 +433,14 @@ const mockOffers = [
     type: 'drive',
     offers: [
       {
-        id: 'cf4e9583-5001-4577-a0d6-3fa851cbcde3',
+        id: 'a37cb8b6-aa11-496e-aac7-e2480b457255',
         title: 'With automatic transmission',
-        price: 175
+        price: 142
       },
       {
-        id: 'caf8ba99-90d2-4fba-91e6-2c969b2dde50',
+        id: 'c2918495-5349-4436-a729-305f578c2684',
         title: 'With air conditioning',
-        price: 178
+        price: 174
       }
     ]
   },
@@ -386,12 +448,12 @@ const mockOffers = [
     type: 'restaurant',
     offers: [
       {
-        id: '9e68af73-d9fe-475a-90d9-c59d991708dc',
+        id: '24281514-431e-4ace-a858-a5895913ef5b',
         title: 'Choose live music',
-        price: 43
+        price: 177
       },
       {
-        id: '3b9f60dc-9972-4d89-a373-c2c590766ebd',
+        id: '5ba171bd-9f4f-44e5-bc09-92ed8b2fb9e8',
         title: 'Choose VIP area',
         price: 198
       }
@@ -402,7 +464,6 @@ const mockOffers = [
 
 const getMockOffers = () => mockOffers;
 const getMockDestinations = () => mockDestinations;
-const getRandomEvent = getRandomArrayElement(mockEvents);
-
+const getRandomEvent = () => getRandomArrayElement(mockEvents);
 
 export { getRandomEvent, getMockOffers, getMockDestinations };

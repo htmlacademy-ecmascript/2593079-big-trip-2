@@ -17,5 +17,16 @@ export default class EventsModel {
   getOffers() {
     return getMockOffers();
   }
+
+  getDestinationById(id) {
+    return this.destinations.find((dest) => dest.id === id);
+  }
+
+  getOffersById(idArray, type) {
+    console.log('getOffersByID', type, idArray)
+
+    const typedOffers = this.offers.find((offer) => offer.type === type).offers;
+    return typedOffers.filter((offer) => idArray.some((id) => offer.id === id));
+  }
 }
 
