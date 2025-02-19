@@ -22,7 +22,7 @@ export default class EventsPresenter {
     render(new EventsSortView(), this.eventsContainer);
     render(this.listComponent, this.eventsContainer);
 
-    render(new EditEventView({ event: this.events[0], destination: this.eventsModel.getDestinationById(this.events[0].destination), offers: this.eventsModel.getOffersById(this.events[0].offers, this.events[0].type) }), this.listComponent.getElement());
+    render(new EditEventView({ event: this.events[0], destination: this.eventsModel.getDestinationById(this.events[0].destination), offers: this.eventsModel.getOffersByType(this.events[0].type) }), this.listComponent.getElement());
 
     render(new AddEventView(), this.listComponent.getElement());
 

@@ -22,9 +22,11 @@ export default class EventsModel {
     return this.destinations.find((dest) => dest.id === id);
   }
 
-  getOffersById(idArray, type) {
-    console.log('getOffersByID', type, idArray)
+  getOffersByType(type) {
+    return this.offers.find((offer) => offer.type === type).offers;
+  }
 
+  getOffersById(idArray, type) {
     const typedOffers = this.offers.find((offer) => offer.type === type).offers;
     return typedOffers.filter((offer) => idArray.some((id) => offer.id === id));
   }

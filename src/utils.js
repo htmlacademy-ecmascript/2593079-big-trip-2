@@ -22,4 +22,4 @@ const getDiffTime = (dateFrom, dateTo) => {
   return `${days ? addLeadingZero(days) : ''}${days ? 'D ' : ''}${hours ? addLeadingZero(hours - days * 24) : ''}${hours ? 'H ' : ''}${mins ? addLeadingZero(mins - hours * 60) : ''}M`;
 };
 
-export { getRandomArrayElement, humanizeEventDate, humanizeEventTime, toUppercaseFirstLetter, getDatetime, getDiffTime };
+export { getRandomArrayElement, humanizeEventDate, humanizeEventTime, toUppercaseFirstLetter, getDatetime, getDiffTime, getTimeFromTemplate };

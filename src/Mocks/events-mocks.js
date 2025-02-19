@@ -2,43 +2,131 @@ import { getRandomArrayElement } from '../utils';
 
 const mockEvents = [
   {
-    id: '2ff78ee5-45cd-4af2-8a2a-673545b0f54d',
-    basePrice: 7741,
-    dateFrom: '2025-02-07T14:40:12.542Z',
-    dateTo: '2025-02-08T02:24:12.542Z',
-    destination: '0e1aadd9-0275-40d7-a9d5-bb7bcd1ba005',
+    id: '5e52eb63-20bf-48e3-824c-d5d4538101c7',
+    basePrice: 2511,
+    dateFrom: '2025-02-10T02:17:12.957Z',
+    dateTo: '2025-02-10T11:33:12.957Z',
+    destination: 'b8f91f69-45f7-4c31-b59a-eda9d22ba341',
     isFavorite: true,
-    offers: [],
-    type: 'drive'
-  },
-  {
-    id: 'a23d37aa-e4db-4aca-ba9c-6a5a41d9c821',
-    basePrice: 2617,
-    dateFrom: '2025-02-08T20:17:12.542Z',
-    dateTo: '2025-02-10T12:01:12.542Z',
-    destination: '0e1aadd9-0275-40d7-a9d5-bb7bcd1ba005',
-    isFavorite: false,
     offers: [
-      'fe022e53-68b4-4add-aaf6-0413c15eb56a',
-      '5ccb92f8-19a5-491c-a8c4-f31412f2b1f2',
-      'aa7ff8ed-b3b4-4e56-9bde-02c68d6fe01d',
-      '46fac752-60f1-4709-903f-a20cf1c6a1f7',
-      'e1cf9783-59d1-411d-8459-c8fe49c4bed8'
+      'cba06821-0983-48e1-a3e0-af055ab42e69',
+      '601f1aa7-01b5-4c99-9c64-8270b76ee1ed',
+      'a2026208-7504-446b-ae62-f71e89879210',
+      'f3a8c33b-3019-4bc8-9881-fdcf296b9027'
     ],
     type: 'ship'
   },
   {
-    id: 'a23d9b45-7d72-4fff-9ac3-a054528b543b',
-    basePrice: 428,
-    dateFrom: '2025-02-11T19:11:12.542Z',
-    dateTo: '2025-02-13T13:36:12.542Z',
-    destination: 'b8f55c42-278f-441c-ae8f-7ea3f9033beb',
+    id: '35a8c6bd-951f-4e5b-b181-7bdae43956f5',
+    basePrice: 8626,
+    dateFrom: '2025-02-11T22:40:12.957Z',
+    dateTo: '2025-02-12T19:35:12.957Z',
+    destination: 'c068f6d3-e08c-4817-98a2-5b8cbd13df72',
+    isFavorite: true,
+    offers: [
+      'cfd32a95-916e-43bb-ac0b-ac92215e7ea8',
+      'dc7e4af4-1371-42fe-9f60-e75e82f96dca',
+      'cf351d11-b6cd-4ce6-86b1-09ba32e6a271',
+      'a749c843-4981-4d38-892b-076437c24597'
+    ],
+    type: 'check-in'
+  },
+  {
+    id: '8e33271f-8de9-4ff4-916b-d0577bca5862',
+    basePrice: 6698,
+    dateFrom: '2025-02-13T05:06:12.957Z',
+    dateTo: '2025-02-14T21:37:12.957Z',
+    destination: '4724a5e7-1dc5-4da2-ac2b-5315f91ff1fa',
     isFavorite: false,
-    offers: [],
+    offers: [
+      '1b22fb31-acef-4d01-9c62-9ac18b176387',
+      '02db9a9c-6ea4-471f-9904-c4c969a26e63',
+      '530f0e32-9f97-492b-aee5-b10dd2d815a5',
+      '3344000b-4079-425a-a188-0f8be957d1c5',
+      'fc5e302b-6231-4c1d-85ba-05ce2dd9e1c6',
+      'cf67a33c-dbea-4788-833e-e140bfbc03d0'
+    ],
+    type: 'flight'
+  },
+  {
+    id: '887055c2-ef2e-4ee2-b9cf-b37994b0203b',
+    basePrice: 9261,
+    dateFrom: '2025-02-15T19:52:12.957Z',
+    dateTo: '2025-02-16T11:48:12.957Z',
+    destination: 'b8f91f69-45f7-4c31-b59a-eda9d22ba341',
+    isFavorite: false,
+    offers: [
+      'c28c7abe-fbf2-46ec-aec5-e673654289c7',
+      'b2615390-dfab-4c38-bca9-3116f44d25f7'
+    ],
+    type: 'bus'
+  },
+  {
+    id: '530ede94-ec70-4a49-818f-07853b5411e1',
+    basePrice: 4557,
+    dateFrom: '2025-02-16T19:36:12.957Z',
+    dateTo: '2025-02-18T08:27:12.957Z',
+    destination: '3113e602-f294-4341-a775-d43045a3add9',
+    isFavorite: false,
+    offers: [
+      '3344000b-4079-425a-a188-0f8be957d1c5',
+      'fc5e302b-6231-4c1d-85ba-05ce2dd9e1c6',
+      'cf67a33c-dbea-4788-833e-e140bfbc03d0'
+    ],
+    type: 'flight'
+  },
+  {
+    id: '9230c1c5-a720-4dea-913f-75143dfbf3e6',
+    basePrice: 1451,
+    dateFrom: '2025-02-19T11:51:12.957Z',
+    dateTo: '2025-02-20T13:04:12.957Z',
+    destination: '14ca415e-fc87-4c30-aea8-cddf7d32337e',
+    isFavorite: true,
+    offers: [
+      '5ba171bd-9f4f-44e5-bc09-92ed8b2fb9e8'
+    ],
     type: 'restaurant'
   },
   {
-    id: '1b79bfa7-b0be-4adf-b182-f6ac42016d22',
+    id: '6697e2dc-75a2-40fb-b5f9-905bb98a6ec6',
+    basePrice: 5312,
+    dateFrom: '2025-02-21T19:52:12.957Z',
+    dateTo: '2025-02-23T20:12:12.957Z',
+    destination: '95a5a841-a2d5-48bd-83e1-ca44ac9869ea',
+    isFavorite: false,
+    offers: [
+      'a749c843-4981-4d38-892b-076437c24597'
+    ],
+    type: 'check-in'
+  },
+  {
+    id: 'eb868096-16d9-4cf6-9794-5fb0cbe9d180',
+    basePrice: 9374,
+    dateFrom: '2025-02-25T15:53:12.957Z',
+    dateTo: '2025-02-26T13:07:12.957Z',
+    destination: 'a734ae85-9fce-4e1a-af06-ee28e9c10dd2',
+    isFavorite: true,
+    offers: [
+      '601f1aa7-01b5-4c99-9c64-8270b76ee1ed',
+      'a2026208-7504-446b-ae62-f71e89879210',
+      'f3a8c33b-3019-4bc8-9881-fdcf296b9027'
+    ],
+    type: 'ship'
+  },
+  {
+    id: '135ae796-b739-4e79-ac23-26af62dd1d40',
+    basePrice: 9467,
+    dateFrom: '2025-02-28T10:42:12.957Z',
+    dateTo: '2025-02-28T18:00:12.957Z',
+    destination: 'b8f91f69-45f7-4c31-b59a-eda9d22ba341',
+    isFavorite: true,
+    offers: [
+      'f3a8c33b-3019-4bc8-9881-fdcf296b9027'
+    ],
+    type: 'ship'
+  },
+  {
+    id: 'afaa2a2e-359f-4c0e-bab9-7dda1aa3c355',
     basePrice: 6018,
     dateFrom: '2025-03-01T06:23:12.957Z',
     dateTo: '2025-03-01T17:12:12.957Z',
@@ -48,7 +136,7 @@ const mockEvents = [
     type: 'ship'
   },
   {
-    id: 'c26e54b8-b86f-4a70-8bc9-44dd1ef51f35',
+    id: '0aa74724-2cfd-40e0-a430-605f89b302ff',
     basePrice: 7902,
     dateFrom: '2025-03-03T05:25:12.957Z',
     dateTo: '2025-03-03T12:50:12.957Z',
@@ -62,7 +150,7 @@ const mockEvents = [
     type: 'taxi'
   },
   {
-    id: 'f3b41fbc-0bcd-40e6-a9b1-5eef9371c15b',
+    id: 'ed96bdbb-7a7d-444c-a060-7c19e8c2a99e',
     basePrice: 1721,
     dateFrom: '2025-03-05T13:09:12.957Z',
     dateTo: '2025-03-07T01:28:12.957Z',
@@ -76,7 +164,7 @@ const mockEvents = [
     type: 'train'
   },
   {
-    id: '4a255034-a019-42a0-bce5-1e602a99d1ef',
+    id: 'f8916817-173c-4cb1-8a2d-e7c291a721eb',
     basePrice: 7280,
     dateFrom: '2025-03-07T14:43:12.957Z',
     dateTo: '2025-03-08T01:34:12.957Z',
@@ -88,167 +176,275 @@ const mockEvents = [
     type: 'train'
   },
   {
-    id: '7f34ab6b-32a8-404d-b697-41a088dd53c3',
+    id: '9a792a95-f12d-4e77-9975-ff7b2cb4bb0c',
     basePrice: 2707,
     dateFrom: '2025-03-08T11:55:12.957Z',
     dateTo: '2025-03-09T00:27:12.957Z',
     destination: '3202b202-7d98-4b23-9100-bf18c0615947',
-    isavorite: false,
+    isFavorite: false,
     offers: [
       'b2615390-dfab-4c38-bca9-3116f44d25f7'
     ],
     type: 'bus'
   },
+  {
+    id: 'f5471658-eacd-4827-a923-86396f11fa48',
+    basePrice: 2198,
+    dateFrom: '2025-03-10T18:59:12.957Z',
+    dateTo: '2025-03-12T13:10:12.957Z',
+    destination: '62a21ac4-e085-4f48-8fb5-cbd0905b67c0',
+    isFavorite: false,
+    offers: [
+      'cfd32a95-916e-43bb-ac0b-ac92215e7ea8',
+      'dc7e4af4-1371-42fe-9f60-e75e82f96dca',
+      'cf351d11-b6cd-4ce6-86b1-09ba32e6a271',
+      'a749c843-4981-4d38-892b-076437c24597'
+    ],
+    type: 'check-in'
+  },
+  {
+    id: '5814c117-808c-47dc-a1b0-6f6c2e1fdde4',
+    basePrice: 6519,
+    dateFrom: '2025-03-13T19:40:12.957Z',
+    dateTo: '2025-03-15T01:29:12.957Z',
+    destination: '62a21ac4-e085-4f48-8fb5-cbd0905b67c0',
+    isFavorite: true,
+    offers: [
+      '5ba171bd-9f4f-44e5-bc09-92ed8b2fb9e8'
+    ],
+    type: 'restaurant'
+  },
+  {
+    id: 'a70d3709-3f26-403a-8b50-dab331adc07f',
+    basePrice: 2520,
+    dateFrom: '2025-03-16T11:39:12.957Z',
+    dateTo: '2025-03-17T08:46:12.957Z',
+    destination: '3202b202-7d98-4b23-9100-bf18c0615947',
+    isFavorite: true,
+    offers: [
+      '8ef71e66-fe4f-41c2-90f0-84e761cacc01'
+    ],
+    type: 'taxi'
+  },
+  {
+    id: '499e04b4-92df-4dda-817d-12e97aa314a8',
+    basePrice: 3545,
+    dateFrom: '2025-03-17T16:28:12.957Z',
+    dateTo: '2025-03-18T00:29:12.957Z',
+    destination: '14ca415e-fc87-4c30-aea8-cddf7d32337e',
+    isFavorite: false,
+    offers: [],
+    type: 'train'
+  },
+  {
+    id: 'a23ca076-992a-4dc7-ac17-ad67c3b24f6b',
+    basePrice: 5092,
+    dateFrom: '2025-03-18T12:26:12.957Z',
+    dateTo: '2025-03-19T13:25:12.957Z',
+    destination: '3113e602-f294-4341-a775-d43045a3add9',
+    isFavorite: true,
+    offers: [],
+    type: 'sightseeing'
+  },
+  {
+    id: 'dbc26672-bc74-4c46-b5f1-673a1f41c3ce',
+    basePrice: 7269,
+    dateFrom: '2025-03-20T17:45:12.957Z',
+    dateTo: '2025-03-21T07:33:12.957Z',
+    destination: '95a5a841-a2d5-48bd-83e1-ca44ac9869ea',
+    isFavorite: true,
+    offers: [
+      'ae99069c-c246-430d-8c90-effad77d4831',
+      'c28c7abe-fbf2-46ec-aec5-e673654289c7',
+      'b2615390-dfab-4c38-bca9-3116f44d25f7'
+    ],
+    type: 'bus'
+  },
+  {
+    id: '3dc8b5b2-f5f5-4c5f-af84-22f65d94ce68',
+    basePrice: 1839,
+    dateFrom: '2025-03-23T01:52:12.957Z',
+    dateTo: '2025-03-24T04:30:12.957Z',
+    destination: '62a21ac4-e085-4f48-8fb5-cbd0905b67c0',
+    isFavorite: false,
+    offers: [
+      '1cdbdfcd-ccd0-4e56-8afa-44016bbcaf4c',
+      '659142a4-1ea2-4d02-b31f-082eba1afc8e',
+      'aea4e17c-0069-4884-9ffa-8bc5f7899075'
+    ],
+    type: 'train'
+  },
+  {
+    id: '94f40d8d-8922-4d0a-818a-de955c80db83',
+    basePrice: 6244,
+    dateFrom: '2025-03-26T01:07:12.957Z',
+    dateTo: '2025-03-27T08:06:12.957Z',
+    destination: '4724a5e7-1dc5-4da2-ac2b-5315f91ff1fa',
+    isFavorite: false,
+    offers: [
+      '1cdbdfcd-ccd0-4e56-8afa-44016bbcaf4c',
+      '659142a4-1ea2-4d02-b31f-082eba1afc8e',
+      'aea4e17c-0069-4884-9ffa-8bc5f7899075'
+    ],
+    type: 'train'
+  },
 ];
 
 const mockDestinations = [
+
   {
-    id: 'b8f55c42-278f-441c-ae8f-7ea3f9033beb',
-    description: 'Saint Petersburg - is a beautiful city',
-    name: 'Saint Petersburg',
-    pictures: [
-      {
-        src: 'https://22.objects.htmlacademy.pro/static/destinations/10.jpg',
-        description: 'Saint Petersburg famous for its crowded street markets with the best street food in Asia'
-      },
-      {
-        src: 'https://22.objects.htmlacademy.pro/static/destinations/17.jpg',
-        description: 'Saint Petersburg full of of cozy canteens where you can try the best coffee in the Middle East'
-      },
-      {
-        src: 'https://22.objects.htmlacademy.pro/static/destinations/5.jpg',
-        description: 'Saint Petersburg with a beautiful old town'
-      }
-    ]
-  },
-  {
-    id: 'cb8f3a2d-c7c1-4c9e-9b6e-f614e3bdf09b',
-    description: '',
-    name: 'Rome',
-    pictures: []
-  },
-  {
-    id: '04c00bdd-f003-493f-8abf-abc082ab638d',
-    description: 'Naples - with an embankment of a mighty river as a centre of attraction',
-    name: 'Naples',
-    pictures: [
-      {
-        src: 'https://22.objects.htmlacademy.pro/static/destinations/20.jpg',
-        description: 'Naples is a beautiful city'
-      },
-      {
-        src: 'https://22.objects.htmlacademy.pro/static/destinations/4.jpg',
-        description: 'Naples famous for its crowded street markets with the best street food in Asia'
-      },
-      {
-        src: 'https://22.objects.htmlacademy.pro/static/destinations/20.jpg',
-        description: 'Naples a true asian pearl'
-      },
-      {
-        src: 'https://22.objects.htmlacademy.pro/static/destinations/14.jpg',
-        description: 'Naples middle-eastern paradise'
-      },
-      {
-        src: 'https://22.objects.htmlacademy.pro/static/destinations/20.jpg',
-        description: 'Naples a true asian pearl'
-      }
-    ]
-  },
-  {
-    id: '841f7cc0-0c1f-4d32-858e-d6fae78024d7',
-    description: 'Oslo - for those who value comfort and coziness',
-    name: 'Oslo',
-    pictures: [
-      {
-        src: 'https://22.objects.htmlacademy.pro/static/destinations/11.jpg',
-        description: 'Oslo for those who value comfort and coziness'
-      },
-      {
-        src: 'https://22.objects.htmlacademy.pro/static/destinations/7.jpg',
-        description: 'Oslo for those who value comfort and coziness'
-      },
-      {
-        src: 'https://22.objects.htmlacademy.pro/static/destinations/5.jpg',
-        description: 'Oslo in a middle of Europe'
-      }
-    ]
-  },
-  {
-    id: '3d1cf9e7-a378-44bd-af66-a6628a88f67a',
-    description: '',
-    name: 'Milan',
-    pictures: []
-  },
-  {
-    id: '2f76e9f0-ac64-4864-b3c6-ff2df6dc118f',
-    description: 'Monaco - famous for its crowded street markets with the best street food in Asia',
-    name: 'Monaco',
-    pictures: [
-      {
-        src: 'https://22.objects.htmlacademy.pro/static/destinations/20.jpg',
-        description: 'Monaco in a middle of Europe'
-      },
-      {
-        src: 'https://22.objects.htmlacademy.pro/static/destinations/5.jpg',
-        description: 'Monaco middle-eastern paradise'
-      },
-      {
-        src: 'https://22.objects.htmlacademy.pro/static/destinations/9.jpg',
-        description: 'Monaco a true asian pearl'
-      },
-      {
-        src: 'https://22.objects.htmlacademy.pro/static/destinations/4.jpg',
-        description: 'Monaco with crowded streets'
-      }
-    ]
-  },
-  {
-    id: '23f410e5-c757-437d-acf3-a6b2d80779d9',
-    description: '',
-    name: 'Venice',
-    pictures: []
-  },
-  {
-    id: '854a39b5-0de2-43aa-998b-ce55a4e9ec59',
-    description: '',
+    id: 'a734ae85-9fce-4e1a-af06-ee28e9c10dd2',
+    description: 'Den Haag - for those who value comfort and coziness',
     name: 'Den Haag',
     pictures: []
   },
   {
-    id: '275c6b39-16b6-4e50-8784-1299293132e8',
-    description: 'Paris - famous for its crowded street markets with the best street food in Asia',
-    name: 'Paris',
+    id: '4724a5e7-1dc5-4da2-ac2b-5315f91ff1fa',
+    description: 'Rome - a perfect place to stay with a family',
+    name: 'Rome',
     pictures: [
       {
-        src: 'https://22.objects.htmlacademy.pro/static/destinations/7.jpg',
-        description: 'Paris full of of cozy canteens where you can try the best coffee in the Middle East'
-      },
-      {
-        src: 'https://22.objects.htmlacademy.pro/static/destinations/19.jpg',
-        description: 'Paris in a middle of Europe'
-      },
-      {
-        src: 'https://22.objects.htmlacademy.pro/static/destinations/12.jpg',
-        description: 'Paris middle-eastern paradise'
-      },
-      {
-        src: 'https://22.objects.htmlacademy.pro/static/destinations/5.jpg',
-        description: 'Paris with an embankment of a mighty river as a centre of attraction'
-      },
-      {
-        src: 'https://22.objects.htmlacademy.pro/static/destinations/14.jpg',
-        description: 'Paris a perfect place to stay with a family'
+        src: 'https://22.objects.htmlacademy.pro/static/destinations/11.jpg',
+        description: 'Rome a perfect place to stay with a family'
       }
     ]
   },
   {
-    id: '0e1aadd9-0275-40d7-a9d5-bb7bcd1ba005',
-    description: 'Helsinki - with a beautiful old town',
-    name: 'Helsinki',
+    id: 'c068f6d3-e08c-4817-98a2-5b8cbd13df72',
+    description: 'Milan - with crowded streets',
+    name: 'Milan',
+    pictures: [
+      {
+        src: 'https://22.objects.htmlacademy.pro/static/destinations/8.jpg',
+        description: 'Milan for those who value comfort and coziness'
+      },
+      {
+        src: 'https://22.objects.htmlacademy.pro/static/destinations/20.jpg',
+        description: 'Milan is a beautiful city'
+      }
+    ]
+  },
+  {
+    id: '95a5a841-a2d5-48bd-83e1-ca44ac9869ea',
+    description: 'Tokio - a perfect place to stay with a family',
+    name: 'Tokio',
+    pictures: [
+      {
+        src: 'https://22.objects.htmlacademy.pro/static/destinations/8.jpg',
+        description: 'Tokio a perfect place to stay with a family'
+      },
+      {
+        src: 'https://22.objects.htmlacademy.pro/static/destinations/16.jpg',
+        description: 'Tokio middle-eastern paradise'
+      }
+    ]
+  },
+  {
+    id: 'b8f91f69-45f7-4c31-b59a-eda9d22ba341',
+    description: 'Munich - full of of cozy canteens where you can try the best coffee in the Middle East',
+    name: 'Munich',
+    pictures: [
+      {
+        src: 'https://22.objects.htmlacademy.pro/static/destinations/15.jpg',
+        description: 'Munich with crowded streets'
+      },
+      {
+        src: 'https://22.objects.htmlacademy.pro/static/destinations/10.jpg',
+        description: 'Munich famous for its crowded street markets with the best street food in Asia'
+      },
+      {
+        src: 'https://22.objects.htmlacademy.pro/static/destinations/3.jpg',
+        description: 'Munich middle-eastern paradise'
+      }
+    ]
+  },
+  {
+    id: '62a21ac4-e085-4f48-8fb5-cbd0905b67c0',
+    description: 'Valencia - for those who value comfort and coziness',
+    name: 'Valencia',
+    pictures: [
+      {
+        src: 'https://22.objects.htmlacademy.pro/static/destinations/2.jpg',
+        description: 'Valencia a true asian pearl'
+      },
+      {
+        src: 'https://22.objects.htmlacademy.pro/static/destinations/10.jpg',
+        description: 'Valencia with an embankment of a mighty river as a centre of attraction'
+      },
+      {
+        src: 'https://22.objects.htmlacademy.pro/static/destinations/3.jpg',
+        description: 'Valencia for those who value comfort and coziness'
+      },
+      {
+        src: 'https://22.objects.htmlacademy.pro/static/destinations/10.jpg',
+        description: 'Valencia a true asian pearl'
+      }
+    ]
+  },
+  {
+    id: 'f67d6e7e-ca5f-4e35-a680-4ace452e934b',
+    description: 'Kopenhagen - with a beautiful old town',
+    name: 'Kopenhagen',
+    pictures: [
+      {
+        src: 'https://22.objects.htmlacademy.pro/static/destinations/17.jpg',
+        description: 'Kopenhagen famous for its crowded street markets with the best street food in Asia'
+      }
+    ]
+  },
+  {
+    id: '3202b202-7d98-4b23-9100-bf18c0615947',
+    description: '',
+    name: 'Amsterdam',
+    pictures: []
+  },
+  {
+    id: '14ca415e-fc87-4c30-aea8-cddf7d32337e',
+    description: 'Chamonix - with a beautiful old town',
+    name: 'Chamonix',
     pictures: [
       {
         src: 'https://22.objects.htmlacademy.pro/static/destinations/16.jpg',
-        description: 'Helsinki full of of cozy canteens where you can try the best coffee in the Middle East'
+        description: 'Chamonix in a middle of Europe'
+      },
+      {
+        src: 'https://22.objects.htmlacademy.pro/static/destinations/8.jpg',
+        description: 'Chamonix a perfect place to stay with a family'
+      },
+      {
+        src: 'https://22.objects.htmlacademy.pro/static/destinations/10.jpg',
+        description: 'Chamonix in a middle of Europe'
+      },
+      {
+        src: 'https://22.objects.htmlacademy.pro/static/destinations/1.jpg',
+        description: 'Chamonix in a middle of Europe'
+      }
+    ]
+  },
+  {
+    id: '3113e602-f294-4341-a775-d43045a3add9',
+    description: 'Barcelona - for those who value comfort and coziness',
+    name: 'Barcelona',
+    pictures: [
+      {
+        src: 'https://22.objects.htmlacademy.pro/static/destinations/19.jpg',
+        description: 'Barcelona with crowded streets'
+      },
+      {
+        src: 'https://22.objects.htmlacademy.pro/static/destinations/6.jpg',
+        description: 'Barcelona a perfect place to stay with a family'
+      },
+      {
+        src: 'https://22.objects.htmlacademy.pro/static/destinations/7.jpg',
+        description: 'Barcelona a true asian pearl'
+      },
+      {
+        src: 'https://22.objects.htmlacademy.pro/static/destinations/8.jpg',
+        description: 'Barcelona full of of cozy canteens where you can try the best coffee in the Middle East'
+      },
+      {
+        src: 'https://22.objects.htmlacademy.pro/static/destinations/20.jpg',
+        description: 'Barcelona famous for its crowded street markets with the best street food in Asia'
       }
     ]
   }

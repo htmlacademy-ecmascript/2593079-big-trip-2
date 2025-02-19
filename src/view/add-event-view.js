@@ -167,6 +167,10 @@ function createAddEventTemplate() {
 
 export default class AddEventView {
 
+  constructor({ event, destination, offers }) {
+    this.event = event;
+  }
+
   getTemplate() {
     return createAddEventTemplate();
   }
