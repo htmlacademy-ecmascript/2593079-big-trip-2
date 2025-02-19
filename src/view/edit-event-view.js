@@ -2,6 +2,76 @@ import { createElement } from '../render.js';
 import { getTimeFromTemplate, toUppercaseFirstLetter } from '../utils.js';
 
 const EVENTS_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
+const DEFAULT_EVENT = {
+  isNew: true,
+  event: {
+
+    id: '5e52eb63-20bf-48e3-824c-d5d4538101c7',
+    basePrice: 2511,
+    dateFrom: '2025-02-10T00:00:00.957Z',
+    dateTo: '2025-02-10T12:00:00.957Z',
+    destination: 'b8f91f69-45f7-4c31-b59a-eda9d22ba341',
+    isFavorite: true,
+    offers: [
+      'cba06821-0983-48e1-a3e0-af055ab42e69',
+      '601f1aa7-01b5-4c99-9c64-8270b76ee1ed',
+      'a2026208-7504-446b-ae62-f71e89879210',
+      'f3a8c33b-3019-4bc8-9881-fdcf296b9027'
+    ],
+    type: 'ship'
+
+  },
+  destination: {
+    id: 'b8f91f69-45f7-4c31-b59a-eda9d22ba341',
+    description: 'Munich - full of of cozy canteens where you can try the best coffee in the Middle East',
+    name: 'Munich',
+    pictures: [
+      {
+        src: 'https://22.objects.htmlacademy.pro/static/destinations/15.jpg',
+        description: 'Munich with crowded streets'
+      },
+      {
+        src: 'https://22.objects.htmlacademy.pro/static/destinations/10.jpg',
+        description: 'Munich famous for its crowded street markets with the best street food in Asia'
+      },
+      {
+        src: 'https://22.objects.htmlacademy.pro/static/destinations/3.jpg',
+        description: 'Munich middle-eastern paradise'
+      }]
+  },
+  offers: [
+    {
+      id: 'be02a8b1-e2ba-48f3-82a3-79f690f9638a',
+      title: 'Choose meal',
+      price: 112
+    },
+    {
+      id: '6f99087f-2b81-4654-9c2b-efe1d4ef615c',
+      title: 'Choose seats',
+      price: 115
+    },
+    {
+      id: 'cba06821-0983-48e1-a3e0-af055ab42e69',
+      title: 'Upgrade to comfort class',
+      price: 79
+    },
+    {
+      id: '601f1aa7-01b5-4c99-9c64-8270b76ee1ed',
+      title: 'Upgrade to business class',
+      price: 75
+    },
+    {
+      id: 'a2026208-7504-446b-ae62-f71e89879210',
+      title: 'Add luggage',
+      price: 135
+    },
+    {
+      id: 'f3a8c33b-3019-4bc8-9881-fdcf296b9027',
+      title: 'Business lounge',
+      price: 165
+    }
+  ],
+};
 
 function createDestinationPicturesTemplate(destination) {
 
@@ -69,7 +139,14 @@ function createEditEventTypeListTemplate() {
 
 }
 
-function createEditEventTemplate({ event, destination, offers }) {
+function createEditEventRollupBtnTemplate() {
+  return `<button class="event__rollup-btn" type="button">
+           <span class="visually-hidden">Open event</span>
+          </button>`;
+
+}
+
+function createEditEventTemplate({ event, destination, offers, isNew }) {
 
   const { type, dateTo, dateFrom, basePrice } = event;
 
@@ -116,7 +193,7 @@ function createEditEventTemplate({ event, destination, offers }) {
 
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
                   <button class="event__reset-btn" type="reset">Delete</button>
-                  <button class="event__rollup-btn" type="button">
+                  ${!isNew ? createEditEventRollupBtnTemplate() : ''}
                     <span class="visually-hidden">Open event</span>
                   </button>
                 </header>
@@ -130,16 +207,17 @@ function createEditEventTemplate({ event, destination, offers }) {
 
 export default class EditEventView {
 
-  constructor({ event, destination, offers }) {
+  constructor({ event, destination, offers, isNew } = DEFAULT_EVENT) {
 
     this.event = event;
     this.destination = destination;
     this.offers = offers;
+    this.isNew = isNew;
 
   }
 
   getTemplate() {
-    return createEditEventTemplate({ event: this.event, destination: this.destination, offers: this.offers });
+    return createEditEventTemplate({ event: this.event, destination: this.destination, offers: this.offers, isNew: this.isNew });
   }
 
   getElement() {

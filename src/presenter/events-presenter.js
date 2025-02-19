@@ -1,5 +1,4 @@
 import { render } from '../render.js';
-import AddEventView from '../view/add-event-view.js';
 import EditEventView from '../view/edit-event-view.js';
 import EventView from '../view/event-view.js';
 import EventsListView from '../view/events-list-view.js';
@@ -24,7 +23,7 @@ export default class EventsPresenter {
 
     render(new EditEventView({ event: this.events[0], destination: this.eventsModel.getDestinationById(this.events[0].destination), offers: this.eventsModel.getOffersByType(this.events[0].type) }), this.listComponent.getElement());
 
-    render(new AddEventView(), this.listComponent.getElement());
+    render(new EditEventView(), this.listComponent.getElement());
 
     for (let i = 1; i < this.events.length; i++) {
       const event = this.events[i];
