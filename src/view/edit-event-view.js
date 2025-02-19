@@ -1,5 +1,5 @@
 import { createElement } from '../render.js';
-import { getTimeFromTemplate, toUppercaseFirstLetter } from '../utils.js';
+import { getTimeFromTemplate, toUppercaseFirstLetter, toKebabCase, counterWrapper } from '../utils.js';
 
 const EVENTS_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 const DEFAULT_EVENT = {
@@ -73,6 +73,8 @@ const DEFAULT_EVENT = {
   ],
 };
 
+let checkboxNameCount = 0;
+
 function createDestinationPicturesTemplate(destination) {
 
   return `
@@ -98,6 +100,7 @@ function createEditEventDestinationTemplate(destination) {
 }
 
 function createEditEventOffersTemplate({ event, offers }) {
+  checkboxNameCount++;
   return `
   <section class="event__section  event__section--offers">
     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
@@ -107,8 +110,8 @@ function createEditEventOffersTemplate({ event, offers }) {
     const isCheckedAttribute = event.offers.some((activeOffer) => activeOffer === offer.id) ? 'checked' : '';
     return `
       <div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" ${isCheckedAttribute}>
-      <label class="event__offer-label" for="event-offer-luggage-1">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${toKebabCase(offer.title)}-${checkboxNameCount}" type="checkbox" name="event-offer-${toKebabCase(offer.title)}" ${isCheckedAttribute}>
+      <label class="event__offer-label" for="event-offer-${toKebabCase(offer.title)}-${checkboxNameCount}">
         <span class="event__offer-title">${offer.title}</span>
         +€&nbsp;
         <span class="event__offer-price">${offer.price}</span>
