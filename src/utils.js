@@ -17,13 +17,7 @@ const humanizeEventTime = (date) => getTimeFromTemplate(TIME_FORMAT, date);
 const getDatetime = (date) => getTimeFromTemplate(DATETIME_FORMAT, date);
 
 const toKebabCase = (word) => word.toLowerCase().split(' ').join('-');
-const counterWrapper = () => {
-  let count = 0;
 
-  return function () {
-    return count++;
-  }
-};
 
 const getDiffTime = (dateFrom, dateTo) => {
   dateFrom = dayjs(dateFrom);
@@ -34,4 +28,4 @@ const getDiffTime = (dateFrom, dateTo) => {
   return `${days ? addLeadingZero(days) : ''}${days ? 'D ' : ''}${hours ? addLeadingZero(hours - days * 24) : ''}${hours ? 'H ' : ''}${mins ? addLeadingZero(mins - hours * 60) : ''}M`;
 };
 
-export { getRandomArrayElement, humanizeEventDate, humanizeEventTime, toUppercaseFirstLetter, getDatetime, getDiffTime, getTimeFromTemplate, toKebabCase, counterWrapper };
+export { getRandomArrayElement, humanizeEventDate, humanizeEventTime, toUppercaseFirstLetter, getDatetime, getDiffTime, getTimeFromTemplate, toKebabCase };

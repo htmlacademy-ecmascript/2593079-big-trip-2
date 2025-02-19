@@ -1,5 +1,5 @@
 import { createElement } from '../render.js';
-import { getTimeFromTemplate, toUppercaseFirstLetter, toKebabCase, counterWrapper } from '../utils.js';
+import { getTimeFromTemplate, toUppercaseFirstLetter, toKebabCase } from '../utils.js';
 
 const EVENTS_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 const DEFAULT_EVENT = {
