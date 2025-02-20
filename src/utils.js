@@ -1,31 +1,34 @@
 import dayjs from 'dayjs';
+import duration from 'dayjs/plugin/duration';
 
-const DATE_FORMAT = 'MMM D';
-const TIME_FORMAT = 'HH:mm';
-const DATETIME_FORMAT = 'YYYY-MM-DDTHH:MM';
+
+const dateTemplates = {
+  DATE_FORMAT: 'MMM D',
+  TIME_FORMAT: 'HH:mm',
+  DATETIME_FORMAT: 'YYYY-MM-DDTHH:MM',
+  DATETIME_INPUT_FORMAT: 'YY/MM/DD HH:mm',
+};
+
+dayjs.extend(duration);
 
 const getRandomArrayElement = (elements) => elements[Math.floor(Math.random() * elements.length)];
 
 const toUppercaseFirstLetter = (word) => `${word[0].toUpperCase()}${word.slice(1)}`;
 
-const addLeadingZero = (number) => number < 10 ? `0${number}` : number.toString();
-
 const getTimeFromTemplate = (template, date) => date ? dayjs(date).format(template) : '';
 
-const humanizeEventDate = (date) => getTimeFromTemplate(DATE_FORMAT, date);
-const humanizeEventTime = (date) => getTimeFromTemplate(TIME_FORMAT, date);
-const getDatetime = (date) => getTimeFromTemplate(DATETIME_FORMAT, date);
+const humanizeEventDate = (date) => getTimeFromTemplate(dateTemplates.DATE_FORMAT, date);
+const humanizeEventTime = (date) => getTimeFromTemplate(dateTemplates.TIME_FORMAT, date);
+const getDatetime = (date) => getTimeFromTemplate(dateTemplates.DATETIME_FORMAT, date);
 
 const toKebabCase = (word) => word.toLowerCase().split(' ').join('-');
 
-
 const getDiffTime = (dateFrom, dateTo) => {
-  dateFrom = dayjs(dateFrom);
   dateTo = dayjs(dateTo);
-  const days = dateTo.diff(dateFrom, 'day');
-  const hours = dateTo.diff(dateFrom, 'hour');
-  const mins = dateTo.diff(dateFrom, 'minute');
-  return `${days ? addLeadingZero(days) : ''}${days ? 'D ' : ''}${hours ? addLeadingZero(hours - days * 24) : ''}${hours ? 'H ' : ''}${mins ? addLeadingZero(mins - hours * 60) : ''}M`;
+
+  const diffDuration = dayjs.duration(dateTo.diff(dateFrom));
+  const template = `${diffDuration.days() ? 'DD[D] ' : ''}${diffDuration.hours() ? 'HH[H]' : ''} mm[M]`;
+  return diffDuration.format(template);
 };
 
-export { getRandomArrayElement, humanizeEventDate, humanizeEventTime, toUppercaseFirstLetter, getDatetime, getDiffTime, getTimeFromTemplate, toKebabCase };
+export { getRandomArrayElement, humanizeEventDate, humanizeEventTime, toUppercaseFirstLetter, getDatetime, getDiffTime, getTimeFromTemplate, toKebabCase, dateTemplates };
