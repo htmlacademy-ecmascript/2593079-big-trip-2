@@ -30,5 +30,13 @@ export default class EventsModel {
     const typedOffers = this.offers.find((offer) => offer.type === type).offers;
     return typedOffers.filter((offer) => idArray.some((id) => offer.id === id));
   }
+
+  getAllDestinationsNames() {
+
+    return this.destinations.reduce((destinations, destElement) => {
+      destinations.push(destElement.name);
+      return destinations;
+    }, []);
+  }
 }
 

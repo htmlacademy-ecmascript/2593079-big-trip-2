@@ -3,7 +3,6 @@ import { getDatetime, getDiffTime, humanizeEventDate, humanizeEventTime, toUpper
 
 function createOffersEventTemplate(offers) {
 
-
   return ` <ul class="event__selected-offers">
                   ${offers.map((offer) => `
                     <li class="event__offer">
