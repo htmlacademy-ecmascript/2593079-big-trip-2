@@ -1,0 +1,3 @@
+const MOCK_EVENTS_COUNT = 5;
+
+export { MOCK_EVENTS_COUNT };

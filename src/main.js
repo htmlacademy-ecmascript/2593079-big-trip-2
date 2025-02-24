@@ -1,10 +1,12 @@
+import EventsModel from './model/events-model.js';
 import EventsPresenter from './presenter/events-presenter.js';
 import { render } from './render.js';
 import FiltersView from './view/filters-view.js';
 
 const filtersContainer = document.querySelector('.trip-controls__filters');
 const eventsListContainer = document.querySelector('.trip-events');
-const eventsPresenter = new EventsPresenter({ eventsContainer: eventsListContainer });
+const eventsModel = new EventsModel();
+const eventsPresenter = new EventsPresenter({ eventsContainer: eventsListContainer, eventsModel });
 
 render(new FiltersView(), filtersContainer);
 
