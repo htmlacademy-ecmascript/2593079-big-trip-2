@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 
 
-const dateTemplates = {
+const DateTemplates = {
   DATE_FORMAT: 'MMM D',
   TIME_FORMAT: 'HH:mm',
   DATETIME_FORMAT: 'YYYY-MM-DDTHH:MM',
@@ -17,9 +17,9 @@ const toUppercaseFirstLetter = (word) => `${word[0].toUpperCase()}${word.slice(1
 
 const getTimeFromTemplate = (template, date) => date ? dayjs(date).format(template) : '';
 
-const humanizeEventDate = (date) => getTimeFromTemplate(dateTemplates.DATE_FORMAT, date);
-const humanizeEventTime = (date) => getTimeFromTemplate(dateTemplates.TIME_FORMAT, date);
-const getDatetime = (date) => getTimeFromTemplate(dateTemplates.DATETIME_FORMAT, date);
+const humanizeEventDate = (date) => getTimeFromTemplate(DateTemplates.DATE_FORMAT, date);
+const humanizeEventTime = (date) => getTimeFromTemplate(DateTemplates.TIME_FORMAT, date);
+const getDatetime = (date) => getTimeFromTemplate(DateTemplates.DATETIME_FORMAT, date);
 
 const toKebabCase = (word) => word.toLowerCase().split(' ').join('-');
 
@@ -31,4 +31,4 @@ const getDiffTime = (dateFrom, dateTo) => {
   return diffDuration.format(template);
 };
 
-export { getRandomArrayElement, humanizeEventDate, humanizeEventTime, toUppercaseFirstLetter, getDatetime, getDiffTime, getTimeFromTemplate, toKebabCase, dateTemplates };
+export { getRandomArrayElement, humanizeEventDate, humanizeEventTime, toUppercaseFirstLetter, getDatetime, getDiffTime, getTimeFromTemplate, toKebabCase, DateTemplates };
