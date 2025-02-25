@@ -68,7 +68,7 @@ export default class EventView extends AbstractView {
   }
 
   get template() {
-    return createTripEventTemplate(this.event, this.destination, this.offers);
+    return createTripEventTemplate(this.#event, this.#destination, this.#offers);
   }
 
 }

@@ -146,6 +146,16 @@ function createEditEventTemplate({ event, destination, offers, allDestinations }
               </form>
             </li>`;
 }
+/**
+ *
+ * @param {Object} eventData
+ * @param {Object} [eventData.event] Объект события
+ * @param {Object} [eventData.destination] Объект пункта назначения
+ * @param {Array} [eventData.offers] Массив предложений
+ * @param {Array} eventData.allDestinations Массив всех доступных пунктов назначения
+ * @returns {Object<EditEventView>} Возвращает экземпляр EditEventView
+ */
+
 
 export default class EditEventView extends AbstractView {
   #event;
@@ -164,7 +174,7 @@ export default class EditEventView extends AbstractView {
   }
 
   get template() {
-    return createEditEventTemplate({ event: this.event, destination: this.destination, offers: this.offers, isNew: this.isNew, allDestinations: this.allDestinations });
+    return createEditEventTemplate({ event: this.#event, destination: this.#destination, offers: this.#offers, allDestinations: this.#allDestinations });
   }
 
 }
