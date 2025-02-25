@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { getTimeFromTemplate, toUppercaseFirstLetter, toKebabCase, DateTemplates } from '../utils.js';
 
 const EVENTS_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
@@ -147,30 +147,24 @@ function createEditEventTemplate({ event, destination, offers, allDestinations }
             </li>`;
 }
 
-export default class EditEventView {
+export default class EditEventView extends AbstractView {
+  #event;
+  #destination;
+  #offers;
+  #allDestinations;
+
 
   constructor({ event, destination, offers, allDestinations } = DEFAULT_EVENT) {
-
-    this.event = event || DEFAULT_EVENT;
-    this.destination = destination;
-    this.offers = offers;
-    this.allDestinations = allDestinations;
+    super();
+    this.#event = event || DEFAULT_EVENT;
+    this.#destination = destination;
+    this.#offers = offers;
+    this.#allDestinations = allDestinations;
 
   }
 
-  getTemplate() {
+  get template() {
     return createEditEventTemplate({ event: this.event, destination: this.destination, offers: this.offers, isNew: this.isNew, allDestinations: this.allDestinations });
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
-  }
 }
