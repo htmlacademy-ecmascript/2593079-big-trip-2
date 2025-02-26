@@ -1,4 +1,4 @@
-import { render } from '../framework/render.js';
+import { render, replace } from '../framework/render.js';
 import EditEventView from '../view/edit-event-view.js';
 import EventView from '../view/event-view.js';
 import EventsListView from '../view/events-list-view.js';
@@ -13,7 +13,6 @@ export default class EventsPresenter {
     this.eventsModel = eventsModel;
   }
 
-
   init() {
     this.events = [...this.eventsModel.getEvents()];
     this.destinations = [...this.eventsModel.getDestinations()];
@@ -27,7 +26,37 @@ export default class EventsPresenter {
       const destination = this.eventsModel.getDestinationById(event.destination);
       const offers = this.eventsModel.getOffersById(event.offers, type);
 
-      render(new EventView({ event, destination, offers, }), this.listComponent.element);
+      const eventComponent = new EventView({
+        event, destination, offers, onClick: () => {
+          replaceEventToEditForm();
+          document.addEventListener('keydown', onEscKeyDown);
+        }
+      });
+      const editEventFormComponent = new EditEventView({
+        event, destination, offers,
+        allDestinations: this.eventsModel.getAllDestinationsNames(),
+        onSubmit: () => {
+          replaceEditFormToEvent();
+          document.removeEventListener('keydown', onEscKeyDown);
+        },
+        onClick: () => replaceEditFormToEvent()
+      });
+
+      // Ругается на Function Declaration, хотя без поднятия здесь никак(есть ли какой-нибудь совет?)
+
+      function onEscKeyDown(event) {
+        event.preventDefault();
+        replaceEditFormToEvent();
+        document.removeEventListener('keydown', onEscKeyDown);
+      }
+      function replaceEventToEditForm() {
+        replace(editEventFormComponent, eventComponent);
+      };
+      function replaceEditFormToEvent() {
+        replace(eventComponent, editEventFormComponent);
+      };
+      render(eventComponent, this.listComponent.element);
+
     }
   }
 }

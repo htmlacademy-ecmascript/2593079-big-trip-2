@@ -147,7 +147,6 @@ function createEditEventTemplate({ event, destination, offers, allDestinations }
             </li>`;
 }
 /**
- *
  * @param {Object} eventData
  * @param {Object} [eventData.event] Объект события
  * @param {Object} [eventData.destination] Объект пункта назначения
@@ -162,19 +161,37 @@ export default class EditEventView extends AbstractView {
   #destination;
   #offers;
   #allDestinations;
+  #onSubmit;
+  #onCLick;
 
 
-  constructor({ event, destination, offers, allDestinations } = DEFAULT_EVENT) {
+  constructor({ event, destination, offers, allDestinations, onSubmit, onClick } = DEFAULT_EVENT) {
     super();
     this.#event = event || DEFAULT_EVENT;
     this.#destination = destination;
     this.#offers = offers;
     this.#allDestinations = allDestinations;
+    this.#onSubmit = onSubmit;
+    this.#onCLick = onClick;
+
+    this.element.querySelector('form.event').addEventListener('submit', this.#submitHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
+
 
   }
 
   get template() {
     return createEditEventTemplate({ event: this.#event, destination: this.#destination, offers: this.#offers, allDestinations: this.#allDestinations });
   }
+
+  #submitHandler = (event) => {
+    event.preventDefault();
+    this.#onSubmit();
+  };
+
+  #clickHandler = (event) => {
+    event.preventDefault();
+    this.#onCLick();
+  };
 
 }
