@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { getTimeFromTemplate, toUppercaseFirstLetter, toKebabCase, DateTemplates } from '../utils.js';
 
 const EVENTS_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
@@ -146,31 +146,52 @@ function createEditEventTemplate({ event, destination, offers, allDestinations }
               </form>
             </li>`;
 }
+/**
+ * @param {Object} eventData
+ * @param {Object} [eventData.event] Объект события
+ * @param {Object} [eventData.destination] Объект пункта назначения
+ * @param {Array} [eventData.offers] Массив предложений
+ * @param {Array} eventData.allDestinations Массив всех доступных пунктов назначения
+ * @returns {Object<EditEventView>} Возвращает экземпляр EditEventView
+ */
 
-export default class EditEventView {
 
-  constructor({ event, destination, offers, allDestinations } = DEFAULT_EVENT) {
+export default class EditEventView extends AbstractView {
+  #event;
+  #destination;
+  #offers;
+  #allDestinations;
+  #onSubmit;
+  #onCLick;
 
-    this.event = event || DEFAULT_EVENT;
-    this.destination = destination;
-    this.offers = offers;
-    this.allDestinations = allDestinations;
+
+  constructor({ event, destination, offers, allDestinations, onSubmit, onClick } = DEFAULT_EVENT) {
+    super();
+    this.#event = event || DEFAULT_EVENT;
+    this.#destination = destination;
+    this.#offers = offers;
+    this.#allDestinations = allDestinations;
+    this.#onSubmit = onSubmit;
+    this.#onCLick = onClick;
+
+    this.element.querySelector('form.event').addEventListener('submit', this.#submitHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
+
 
   }
 
-  getTemplate() {
-    return createEditEventTemplate({ event: this.event, destination: this.destination, offers: this.offers, isNew: this.isNew, allDestinations: this.allDestinations });
+  get template() {
+    return createEditEventTemplate({ event: this.#event, destination: this.#destination, offers: this.#offers, allDestinations: this.#allDestinations });
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
+  #submitHandler = (event) => {
+    event.preventDefault();
+    this.#onSubmit();
+  };
 
-    return this.element;
-  }
+  #clickHandler = (event) => {
+    event.preventDefault();
+    this.#onCLick();
+  };
 
-  removeElement() {
-    this.element = null;
-  }
 }
