@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { getDatetime, getDiffTime, humanizeEventDate, humanizeEventTime, toUppercaseFirstLetter } from '../utils.js';
+import { getDatetime, getDiffTime, getOnlyDate, humanizeEventDate, humanizeEventTime, toUppercaseFirstLetter } from '../utils.js';
 
 function createOffersEventTemplate(offers) {
 
@@ -24,11 +24,11 @@ function createTripEventTemplate(event, destination, offers) {
 
   return `<li class="trip-events__item">
               <div class="event">
-                <time class="event__date" datetime="2019-03-18">${humanizeEventDate(dateFrom)}</time>
+                <time class="event__date" datetime="${getOnlyDate(dateFrom)}">${humanizeEventDate(dateFrom)}</time>
                 <div class="event__type">
                   <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
                 </div>
-                <h3 class="event__title">${toUppercaseFirstLetter(type)} Amsterdam</h3>
+                <h3 class="event__title">${toUppercaseFirstLetter(type)} ${destination.name}</h3>
                 <div class="event__schedule">
                   <p class="event__time">
                     <time class="event__start-time" datetime="${getDatetime(dateFrom)}">${humanizeEventTime(dateFrom)}</time>

@@ -50,8 +50,6 @@ export default class EventsPresenter {
       }
     });
 
-    // Ругается на Function Declaration, хотя без поднятия здесь никак(есть ли какой-нибудь совет?)
-
     function onEscKeyDown(evt) {
       evt.preventDefault();
       replaceEditFormToEvent();

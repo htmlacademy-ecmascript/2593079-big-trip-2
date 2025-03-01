@@ -7,6 +7,7 @@ const DateTemplates = {
   TIME_FORMAT: 'HH:mm',
   DATETIME_FORMAT: 'YYYY-MM-DDTHH:MM',
   DATETIME_INPUT_FORMAT: 'YY/MM/DD HH:mm',
+  ONLY_DATE_FORMAT: 'YYYY-MM-DD'
 };
 
 dayjs.extend(duration);
@@ -20,6 +21,7 @@ const getTimeFromTemplate = (template, date) => date ? dayjs(date).format(templa
 const humanizeEventDate = (date) => getTimeFromTemplate(DateTemplates.DATE_FORMAT, date);
 const humanizeEventTime = (date) => getTimeFromTemplate(DateTemplates.TIME_FORMAT, date);
 const getDatetime = (date) => getTimeFromTemplate(DateTemplates.DATETIME_FORMAT, date);
+const getOnlyDate = (date) => getTimeFromTemplate(DateTemplates.ONLY_DATE_FORMAT, date);
 
 const toKebabCase = (word) => word.toLowerCase().split(' ').join('-');
 
@@ -31,4 +33,4 @@ const getDiffTime = (dateFrom, dateTo) => {
   return diffDuration.format(template);
 };
 
-export { getRandomArrayElement, humanizeEventDate, humanizeEventTime, toUppercaseFirstLetter, getDatetime, getDiffTime, getTimeFromTemplate, toKebabCase, DateTemplates };
+export { getRandomArrayElement, humanizeEventDate, humanizeEventTime, toUppercaseFirstLetter, getDatetime, getDiffTime, getTimeFromTemplate, toKebabCase, DateTemplates, getOnlyDate };
