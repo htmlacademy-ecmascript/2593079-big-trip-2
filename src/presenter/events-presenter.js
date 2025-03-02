@@ -1,5 +1,5 @@
 import { render, replace } from '../framework/render.js';
-import { FilterFunctions, removeChildren } from '../utils.js';
+import { FilterFunctions, removeChildren, SortFunctions, sortNameAdapter } from '../utils.js';
 import EditEventView from '../view/edit-event-view.js';
 import EventView from '../view/event-view.js';
 import EventsListView from '../view/events-list-view.js';
@@ -17,6 +17,7 @@ export default class EventsPresenter {
   #noEventsView;
   #filtersContainer;
   #listComponent;
+  #currentEvents;
 
   constructor({ eventsContainer, eventsModel }) {
     this.#eventsContainer = eventsContainer;
@@ -25,7 +26,7 @@ export default class EventsPresenter {
   }
 
   init() {
-    this.#events = [...this.#eventsModel.getEvents()];
+    this.#events = SortFunctions.SORT_DAY([...this.#eventsModel.getEvents()]);
     this.#destinations = [...this.#eventsModel.getDestinations()];
     this.#offers = [...this.#eventsModel.getOffers()];
 
@@ -36,22 +37,37 @@ export default class EventsPresenter {
   }
 
   #renderEvents(events = this.#events) {
-    this.#clearEvents();
+    this.#currentEvents = events;
 
     if (events.length === 0) {
+
+      this.#clearEvents();
       render(this.#noEventsView, this.#eventsContainer);
+
     } else {
-      render(new EventsSortView(), this.#eventsContainer);
+
+      render(new EventsSortView({ onClick: this.#onSortClick }), this.#eventsContainer);
+      this.#clearEventsList();
       this.#listComponent = new EventsListView();
       render(this.#listComponent, this.#eventsContainer);
+
       for (let i = 1; i < events.length; i++) {
         this.#createEvent(events[i]);
       }
     }
   }
 
+  #onSortClick = (type) => {
+    const sortedEvents = SortFunctions[sortNameAdapter(type)](this.#currentEvents);
+    this.#renderEvents(sortedEvents);
+  };
+
   #clearEvents = () => {
     removeChildren(this.#eventsContainer, 1);
+  };
+
+  #clearEventsList = () => {
+    removeChildren(this.#eventsContainer, 2);
   };
 
   #createEvent(event) {

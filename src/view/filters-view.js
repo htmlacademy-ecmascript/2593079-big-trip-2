@@ -2,8 +2,6 @@ import { FilterTypes } from '../consts.js';
 import { toUppercaseFirstLetter } from '../utils.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
-
-
 function createFiltersTemplate() {
   return `<form class="trip-filters" action="#" method="get">
                 ${Object.values(FilterTypes).map((filterName) => {
@@ -31,9 +29,8 @@ export default class FiltersView extends AbstractView {
 
   #clickHandler = (event) => {
     const currentTarget = event.target.closest('.trip-filters__filter-input');
-    console.log(event)
     if (currentTarget) {
       this.#onClick(currentTarget.value);
     }
-  }
+  };
 }
