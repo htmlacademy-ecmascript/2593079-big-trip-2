@@ -1,5 +1,10 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
+// import isSameOrAfter from 'dayjs/plugin/isSameOrAfter' // ES 2015
+
+import { FilterTypes } from './consts';
 
 
 const DateTemplates = {
@@ -10,11 +15,21 @@ const DateTemplates = {
   ONLY_DATE_FORMAT: 'YYYY-MM-DD'
 };
 
+const FilterFunctions = {
+  [FilterTypes.EVERYTHING]: (events) => events,
+  [FilterTypes.PAST]: (events) => events.filter((event) => dayjs().isAfter(dayjs(event.dateTo))),
+  [FilterTypes.PRESENT]: (events) => events.filter((event) => dayjs().isSameOrAfter(dayjs(event.dateFrom)) && dayjs().isSameOrBefore(event.dateTo)),
+  [FilterTypes.FUTURE]: (events) => events.filter((event) => dayjs().isBefore(dayjs(event.dateFrom)))
+};
+
 dayjs.extend(duration);
+dayjs.extend(isSameOrAfter);
+dayjs.extend(isSameOrBefore);
+
 
 const getRandomArrayElement = (elements) => elements[Math.floor(Math.random() * elements.length)];
 
-const toUppercaseFirstLetter = (word) => `${word[0].toUpperCase()}${word.slice(1)}`;
+const toUppercaseFirstLetter = (word) => `${word[0].toUpperCase()}${word.slice(1).toLowerCase()}`;
 
 const getTimeFromTemplate = (template, date) => date ? dayjs(date).format(template) : '';
 
@@ -33,4 +48,11 @@ const getDiffTime = (dateFrom, dateTo) => {
   return diffDuration.format(template);
 };
 
-export { getRandomArrayElement, humanizeEventDate, humanizeEventTime, toUppercaseFirstLetter, getDatetime, getDiffTime, getTimeFromTemplate, toKebabCase, DateTemplates, getOnlyDate };
+const removeChildren = (element, from = 0) => {
+  const children = Array.from(element.children).slice(from);
+  children.forEach((child) => {
+    child.remove();
+  });
+};
+
+export { getRandomArrayElement, humanizeEventDate, humanizeEventTime, toUppercaseFirstLetter, getDatetime, getDiffTime, getTimeFromTemplate, toKebabCase, DateTemplates, getOnlyDate, FilterFunctions, removeChildren };
