@@ -43,9 +43,12 @@ export default class EventsPresenter {
 
       this.#clearEvents();
       render(this.#noEventsView, this.#eventsContainer);
+      this.#listComponent = null;
 
     } else {
-
+      if (!this.#listComponent) {
+        this.#clearEvents();
+      }
       render(new EventsSortView({ onClick: this.#onSortClick }), this.#eventsContainer);
       this.#clearEventsList();
       this.#listComponent = new EventsListView();
