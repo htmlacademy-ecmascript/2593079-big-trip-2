@@ -1,13 +1,13 @@
-import { FilterTypes } from '../consts.js';
 import { toUppercaseFirstLetter } from '../utils.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
-function createFiltersTemplate() {
+function createFiltersTemplate(filters) {
+
   return `<form class="trip-filters" action="#" method="get">
-                ${Object.values(FilterTypes).map((filterName) => {
+                ${Object.entries(filters).map(([filterName, count]) => {
     const filterNameInLowerCase = filterName.toLocaleLowerCase();
     return `<div class="trip-filters__filter">
-              <input id="filter-${filterNameInLowerCase}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${filterNameInLowerCase}" ${filterNameInLowerCase === 'everything' ? 'checked' : ''}>
+              <input id="filter-${filterNameInLowerCase}" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${filterNameInLowerCase}" ${filterNameInLowerCase === 'everything' ? 'checked' : ''} ${count === 0 ? 'disabled' : ''}>
               <label class="trip-filters__filter-label" for="filter-${filterNameInLowerCase}">${toUppercaseFirstLetter(filterName)}</label>
             </div>`;
   }).join('')}
@@ -17,14 +17,17 @@ function createFiltersTemplate() {
 
 export default class FiltersView extends AbstractView {
   #onClick;
-  constructor({ onClick }) {
+  #filters;
+  constructor({ onClick, filters }) {
     super();
     this.#onClick = onClick;
+    this.#filters = filters;
+
     this.element.addEventListener('click', this.#clickHandler);
   }
 
   get template() {
-    return createFiltersTemplate();
+    return createFiltersTemplate(this.#filters);
   }
 
   #clickHandler = (event) => {

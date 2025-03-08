@@ -1,5 +1,5 @@
 import { render, replace } from '../framework/render.js';
-import { FilterFunctions, removeChildren, SortFunctions, sortNameAdapter } from '../utils.js';
+import { FilterFunctions, getFilters, removeChildren, SortFunctions, sortNameAdapter } from '../utils.js';
 import EditEventView from '../view/edit-event-view.js';
 import EventView from '../view/event-view.js';
 import EventsListView from '../view/events-list-view.js';
@@ -30,7 +30,9 @@ export default class EventsPresenter {
     this.#destinations = [...this.#eventsModel.getDestinations()];
     this.#offers = [...this.#eventsModel.getOffers()];
 
-    render(new FiltersView({ onClick: this.#onFilterClick }), this.#filtersContainer);
+    const filters = getFilters(this.#events);
+
+    render(new FiltersView({ filters, onClick: this.#onFilterClick }), this.#filtersContainer);
 
     this.#renderEvents();
 
@@ -39,6 +41,7 @@ export default class EventsPresenter {
   #renderEvents(events = this.#events) {
     this.#currentEvents = events;
 
+
     if (events.length === 0) {
 
       this.#clearEvents();
@@ -46,6 +49,7 @@ export default class EventsPresenter {
       this.#listComponent = null;
 
     } else {
+
       if (!this.#listComponent) {
         this.#clearEvents();
       }
@@ -54,7 +58,8 @@ export default class EventsPresenter {
       this.#listComponent = new EventsListView();
       render(this.#listComponent, this.#eventsContainer);
 
-      for (let i = 1; i < events.length; i++) {
+      for (let i = 0; i < events.length; i++) {
+
         this.#createEvent(events[i]);
       }
     }

@@ -13,11 +13,15 @@ const DateTemplates = {
   ONLY_DATE_FORMAT: 'YYYY-MM-DD'
 };
 
+dayjs.extend(duration);
+dayjs.extend(isSameOrAfter);
+dayjs.extend(isSameOrBefore);
+
 const FilterFunctions = {
   [FilterTypes.EVERYTHING]: (events) => events,
-  [FilterTypes.PAST]: (events) => events.filter((event) => dayjs().isAfter(dayjs(event.dateTo))),
-  [FilterTypes.PRESENT]: (events) => events.filter((event) => dayjs().isSameOrAfter(dayjs(event.dateFrom)) && dayjs().isSameOrBefore(event.dateTo)),
-  [FilterTypes.FUTURE]: (events) => events.filter((event) => dayjs().isBefore(dayjs(event.dateFrom)))
+  [FilterTypes.PAST]: (events) => events.filter((event) => dayjs().isAfter(dayjs(event.dateTo), 'd')),
+  [FilterTypes.PRESENT]: (events) => events.filter((event) => dayjs().isSameOrAfter(dayjs(event.dateFrom)) && dayjs().isSameOrBefore(event.dateTo), 'd'),
+  [FilterTypes.FUTURE]: (events) => events.filter((event) => dayjs().isBefore(dayjs(event.dateFrom), 'd'))
 };
 
 const SortFunctions = {
@@ -25,10 +29,6 @@ const SortFunctions = {
   SORT_PRICE: (events) => events.sort((eventA, eventB) => eventB.basePrice - eventA.basePrice),
   SORT_TIME: (events) => events.sort((eventA, eventB) => dayjs(eventB.dateTo).diff(dayjs(eventB.dateFrom)) - dayjs(eventA.dateTo).diff(dayjs(eventA.dateFrom))),
 };
-
-dayjs.extend(duration);
-dayjs.extend(isSameOrAfter);
-dayjs.extend(isSameOrBefore);
 
 const getRandomArrayElement = (elements) => elements[Math.floor(Math.random() * elements.length)];
 
@@ -60,5 +60,11 @@ const removeChildren = (element, from = 0) => {
   });
 };
 
+const getFilters = (events) => ({
+  [FilterTypes.EVERYTHING]: FilterFunctions[FilterTypes.EVERYTHING](events).length,
+  [FilterTypes.PAST]: FilterFunctions[FilterTypes.PAST](events).length,
+  [FilterTypes.PRESENT]: FilterFunctions[FilterTypes.PRESENT](events).length,
+  [FilterTypes.FUTURE]: FilterFunctions[FilterTypes.FUTURE](events).length
+});
 
-export { getRandomArrayElement, humanizeEventDate, humanizeEventTime, toUppercaseFirstLetter, getDatetime, getDiffTime, getTimeFromTemplate, toKebabCase, DateTemplates, getOnlyDate, FilterFunctions, removeChildren, SortFunctions, sortNameAdapter };
+export { getRandomArrayElement, humanizeEventDate, humanizeEventTime, toUppercaseFirstLetter, getDatetime, getDiffTime, getTimeFromTemplate, toKebabCase, DateTemplates, getOnlyDate, FilterFunctions, removeChildren, SortFunctions, sortNameAdapter, getFilters };
