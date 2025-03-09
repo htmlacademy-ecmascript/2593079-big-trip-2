@@ -1,11 +1,9 @@
-import { render, replace } from '../framework/render.js';
-import { FilterFunctions, getFilters, removeChildren, SortFunctions, sortNameAdapter } from '../utils.js';
-import EditEventView from '../view/edit-event-view.js';
-import EventView from '../view/event-view.js';
+import { render } from '../framework/render.js';
+import { getFilters, SortFunctions, updateItem } from '../utils.js';
 import EventsListView from '../view/events-list-view.js';
+import EventPresenter from './event-presenter.js';
 import EventsSortView from '../view/events-sort-view.js';
 import FiltersView from '../view/filters-view.js';
-import NoEventsView from '../view/no-events-view.js';
 
 
 export default class EventsPresenter {
@@ -14,119 +12,73 @@ export default class EventsPresenter {
   #offers;
   #eventsContainer;
   #eventsModel;
-  #noEventsView;
+  #sourcedEvents;
   #filtersContainer;
   #listComponent;
   #currentEvents;
+  #eventPresenters = new Map();
 
   constructor({ eventsContainer, eventsModel }) {
     this.#eventsContainer = eventsContainer;
+    this.#listComponent = new EventsListView();
     this.#eventsModel = eventsModel;
     this.#filtersContainer = document.querySelector('.trip-controls__filters');
   }
 
   init() {
     this.#events = SortFunctions.SORT_DAY([...this.#eventsModel.getEvents()]);
+    this.#sourcedEvents = this.#events;
     this.#destinations = [...this.#eventsModel.getDestinations()];
     this.#offers = [...this.#eventsModel.getOffers()];
-
-    const filters = getFilters(this.#events);
-
-    render(new FiltersView({ filters, onClick: this.#onFilterClick }), this.#filtersContainer);
-
+    this.#currentEvents = [...this.#eventsModel.getOffers()];
+    this.#renderFilters();
+    render(new EventsSortView(), this.#eventsContainer);
+    render(this.#listComponent, this.#eventsContainer);
     this.#renderEvents();
-
   }
 
-  #renderEvents(events = this.#events) {
-    this.#currentEvents = events;
+  #renderFilters() {
+    const filters = getFilters(this.#events);
+    render(new FiltersView({ filters }), this.#filtersContainer);
+  }
 
-
-    if (events.length === 0) {
-
-      this.#clearEvents();
-      render(this.#noEventsView, this.#eventsContainer);
-      this.#listComponent = null;
-
-    } else {
-
-      if (!this.#listComponent) {
-        this.#clearEvents();
-      }
-      render(new EventsSortView({ onClick: this.#onSortClick }), this.#eventsContainer);
-      this.#clearEventsList();
-      this.#listComponent = new EventsListView();
-      render(this.#listComponent, this.#eventsContainer);
-
-      for (let i = 0; i < events.length; i++) {
-
-        this.#createEvent(events[i]);
-      }
+  #renderEvents = (events = this.#events) => {
+    for (let i = 0; i < events.length; i++) {
+      this.#createEvent(events[i]);
     }
+  };
+
+  #resetEvents = () => {
+    this.#eventPresenters.forEach((presenter) => presenter.resetView());
+
+  };
+
+  #handleEventChange = (newEventData) => {
+
+    this.#events = updateItem(this.#events, newEventData);
+    this.#eventPresenters.get(newEventData.id).init(newEventData);
+  };
+
+  #clearEventsList() {
+    this.#eventPresenters.forEach((presenter) => presenter.destroy());
+    this.#eventPresenters.clear();
+
   }
-
-  #onSortClick = (type) => {
-    const sortedEvents = SortFunctions[sortNameAdapter(type)](this.#currentEvents);
-    this.#renderEvents(sortedEvents);
-  };
-
-  #clearEvents = () => {
-    removeChildren(this.#eventsContainer, 1);
-  };
-
-  #clearEventsList = () => {
-    removeChildren(this.#eventsContainer, 2);
-  };
 
   #createEvent(event) {
-    const type = event.type;
-    const destination = this.#eventsModel.getDestinationById(event.destination);
-    const offers = this.#eventsModel.getOffersById(event.offers, type);
 
-    const eventComponent = new EventView({
-      event, destination, offers, onClick: () => {
-        replaceEventToEditForm();
-        document.addEventListener('keydown', onEscKeyDown);
-      }
-    });
-    const editEventFormComponent = new EditEventView({
-      event, destination, offers,
+    const eventPresenter = new EventPresenter({
+      listComponent: this.#listComponent,
       allDestinations: this.#eventsModel.getAllDestinationsNames(),
-      onSubmit: () => {
-        replaceEditFormToEvent();
-        document.removeEventListener('keydown', onEscKeyDown);
-      },
-      onClick: () => {
-        replaceEditFormToEvent();
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
+      eventsModel: this.#eventsModel,
+      onDataChange: this.#handleEventChange,
+      onModeChange: this.#resetEvents
     });
+    this.#eventPresenters.set(event.id, eventPresenter);
+    eventPresenter.init(event);
 
-    function onEscKeyDown(evt) {
-      evt.preventDefault();
-      replaceEditFormToEvent();
-      document.removeEventListener('keydown', onEscKeyDown);
-    }
-
-    function replaceEventToEditForm() {
-      replace(editEventFormComponent, eventComponent);
-    }
-
-    function replaceEditFormToEvent() {
-      replace(eventComponent, editEventFormComponent);
-    }
-
-    render(eventComponent, this.#listComponent.element);
   }
 
-  #onFilterClick = (type) => {
-    const filteredEvents = FilterFunctions[type.toUpperCase()](this.#events);
 
-    if (filteredEvents.length === 0) {
-      this.#noEventsView = new NoEventsView(type);
-    }
-
-    this.#renderEvents(filteredEvents);
-
-  };
 }
+

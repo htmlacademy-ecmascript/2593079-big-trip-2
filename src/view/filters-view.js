@@ -16,24 +16,16 @@ function createFiltersTemplate(filters) {
 }
 
 export default class FiltersView extends AbstractView {
-  #onClick;
   #filters;
-  constructor({ onClick, filters }) {
+  constructor({ filters }) {
     super();
-    this.#onClick = onClick;
     this.#filters = filters;
 
-    this.element.addEventListener('click', this.#clickHandler);
   }
 
   get template() {
     return createFiltersTemplate(this.#filters);
   }
 
-  #clickHandler = (event) => {
-    const currentTarget = event.target.closest('.trip-filters__filter-input');
-    if (currentTarget) {
-      this.#onClick(currentTarget.value);
-    }
-  };
+
 }

@@ -30,22 +30,10 @@ function createSortTemplate() {
 }
 
 export default class EventsSortView extends AbstractView {
-  #onClick;
-  constructor({ onClick }) {
-    super();
-    this.#onClick = onClick;
-    this.element.addEventListener('click', this.#clickHandler);
-  }
+
 
   get template() {
     return createSortTemplate();
   }
 
-  #clickHandler = (event) => {
-    const currentTarget = event.target.closest('.trip-sort__input');
-
-    if (currentTarget) {
-      this.#onClick(currentTarget.value);
-    }
-  };
 }

@@ -1,4 +1,4 @@
-const MOCK_EVENTS_COUNT = 15;
+const MOCK_EVENTS_COUNT = 8;
 const FilterTypes = {
   EVERYTHING: 'EVERYTHING',
   FUTURE: 'FUTURE',
