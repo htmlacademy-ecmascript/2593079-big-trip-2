@@ -56,6 +56,7 @@ export default class EventPresenter {
       allDestinations: this.#allDestinations,
       onSubmit: this.#onFormSubmit,
       onClick: () => {
+        this.#replaceEditFormToEvent();
         document.removeEventListener('keydown', this.#onEscKeyDown);
       }
     });
@@ -66,11 +67,11 @@ export default class EventPresenter {
     }
 
 
-    if (this.#listComponent.element.contains(prevEventComponent.element)) {
+    if (this.#mode === Mode.DEFAULT) {
       replace(this.#eventComponent, prevEventComponent);
     }
 
-    if (this.#listComponent.element.contains(prevEditEventFormComponent.element)) {
+    if (this.#mode === Mode.EDITING) {
       replace(this.#editEventFormComponent, prevEditEventFormComponent);
     }
 
