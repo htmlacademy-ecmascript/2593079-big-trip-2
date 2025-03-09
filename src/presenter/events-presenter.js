@@ -42,11 +42,16 @@ export default class EventsPresenter {
     render(new FiltersView({ filters }), this.#filtersContainer);
   }
 
-  #renderEvents(events = this.#events) {
+  #renderEvents = (events = this.#events) => {
     for (let i = 0; i < events.length; i++) {
       this.#createEvent(events[i]);
     }
-  }
+  };
+
+  #resetEvents = () => {
+    this.#eventPresenters.forEach((presenter) => presenter.resetView());
+
+  };
 
   #handleEventChange = (newEventData) => {
 
@@ -60,17 +65,14 @@ export default class EventsPresenter {
 
   }
 
-  #resetView() {
-    this.#eventPresenters.map((presenter) => presenter.resetView());
-  }
-
   #createEvent(event) {
 
     const eventPresenter = new EventPresenter({
       listComponent: this.#listComponent,
       allDestinations: this.#eventsModel.getAllDestinationsNames(),
       eventsModel: this.#eventsModel,
-      onDataChange: this.#handleEventChange
+      onDataChange: this.#handleEventChange,
+      onModeChange: this.#resetEvents
     });
     this.#eventPresenters.set(event.id, eventPresenter);
     eventPresenter.init(event);

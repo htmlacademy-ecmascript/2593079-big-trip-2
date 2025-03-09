@@ -2,6 +2,11 @@ import { remove, render, replace } from '../framework/render';
 import EditEventView from '../view/edit-event-view';
 import EventView from '../view/event-view';
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING'
+}
+
 export default class EventPresenter {
   #event = null;
   #allDestinations = null;
@@ -10,12 +15,15 @@ export default class EventPresenter {
   #eventComponent = null;
   #editEventFormComponent = null;
   #onDataChange = null;
+  #handleModeChange;
+  #mode = Mode.DEFAULT;
 
-  constructor({ allDestinations, listComponent, eventsModel, onDataChange }) {
+  constructor({ allDestinations, listComponent, eventsModel, onDataChange, onModeChange }) {
     this.#allDestinations = allDestinations;
     this.#listComponent = listComponent;
     this.#eventsModel = eventsModel;
     this.#onDataChange = onDataChange;
+    this.#handleModeChange = onModeChange;
   }
 
   init = (event) => {
@@ -71,19 +79,30 @@ export default class EventPresenter {
 
   };
 
+  resetView() {
+    if (this.#mode === Mode.EDITING) {
+      this.#replaceEditFormToEvent();
+    }
+  }
+
   destroy() {
     remove(this.#eventComponent);
     remove(this.#editEventFormComponent);
   }
 
-  #replaceEventToEditForm() {
-    replace(this.#editEventFormComponent, this.#eventComponent);
+  #replaceEventToEditForm = () => {
+    console.log('repclace to form')
 
-  }
+    replace(this.#editEventFormComponent, this.#eventComponent);
+    this.#handleModeChange();
+    this.#mode = Mode.EDITING;
+  };
 
   #replaceEditFormToEvent() {
-    replace(this.#eventComponent, this.#editEventFormComponent);
+    console.log('replace to event')
 
+    replace(this.#eventComponent, this.#editEventFormComponent);
+    this.#mode = Mode.DEFAULT;
   }
 
   #handleFavoriteClick = () => {
