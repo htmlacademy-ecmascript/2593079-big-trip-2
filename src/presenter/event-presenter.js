@@ -5,7 +5,7 @@ import EventView from '../view/event-view';
 const Mode = {
   DEFAULT: 'DEFAULT',
   EDITING: 'EDITING'
-}
+};
 
 export default class EventPresenter {
   #event = null;
@@ -91,16 +91,12 @@ export default class EventPresenter {
   }
 
   #replaceEventToEditForm = () => {
-    console.log('repclace to form')
-
     replace(this.#editEventFormComponent, this.#eventComponent);
     this.#handleModeChange();
     this.#mode = Mode.EDITING;
   };
 
   #replaceEditFormToEvent() {
-    console.log('replace to event')
-
     replace(this.#eventComponent, this.#editEventFormComponent);
     this.#mode = Mode.DEFAULT;
   }
