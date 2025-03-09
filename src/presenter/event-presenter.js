@@ -66,7 +66,9 @@ export default class EventPresenter {
       replace(this.#editEventFormComponent, prevEditEventFormComponent);
     }
 
-    render(this.#eventComponent, this.#listComponent.element);
+    remove(prevEditEventFormComponent);
+    remove(prevEventComponent);
+
   };
 
   destroy() {
