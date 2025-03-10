@@ -41,7 +41,7 @@ export default class EventPresenter {
       event,
       destination,
       offers,
-      onClick: () => {
+      onCloseClick: () => {
         this.#replaceEventToEditForm();
         document.addEventListener('keydown', this.#onEscKeyDown);
       },
