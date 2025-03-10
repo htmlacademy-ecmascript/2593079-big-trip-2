@@ -56,28 +56,36 @@ function createTripEventTemplate(event, destination, offers) {
 }
 
 export default class EventView extends AbstractView {
-  #event;
-  #destination;
-  #offers;
-  #onClick;
+  #event = null;
+  #destination = null;
+  #offers = null;
+  #handleCloseClick = null;
+  #handleFavoriteClick = null;
 
-  constructor({ event, destination, offers, onClick }) {
+  constructor({ event, destination, offers, onCloseClick, onFavoriteClick }) {
     super();
     this.#event = event;
     this.#destination = destination;
     this.#offers = offers;
-    this.#onClick = onClick;
+    this.#handleCloseClick = onCloseClick;
+    this.#handleFavoriteClick = onFavoriteClick;
 
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeClickHandler);
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClickHandler);
   }
 
   get template() {
     return createTripEventTemplate(this.#event, this.#destination, this.#offers);
   }
 
-  #clickHandler = (event) => {
+  #favoriteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFavoriteClick();
+  };
+
+  #closeClickHandler = (event) => {
     event.preventDefault();
-    this.#onClick();
+    this.#handleCloseClick();
   };
 
 }
