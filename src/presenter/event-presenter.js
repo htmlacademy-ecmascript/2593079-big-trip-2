@@ -33,7 +33,6 @@ export default class EventPresenter {
     const destination = this.#eventsModel.getDestinationById(event.destination);
     const offers = this.#eventsModel.getOffersById(event.offers, type);
     const allOffers = this.#eventsModel.getOffersByType(type);
-    console.log(offers, allOffers)
 
 
     const prevEventComponent = this.#eventComponent;

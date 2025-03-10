@@ -17,17 +17,17 @@ dayjs.extend(duration);
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
 
-const FilterFunctions = {
-  [FilterTypes.EVERYTHING]: (events) => events,
-  [FilterTypes.PAST]: (events) => events.filter((event) => dayjs().isAfter(dayjs(event.dateTo), 'd')),
-  [FilterTypes.PRESENT]: (events) => events.filter((event) => dayjs().isSameOrAfter(dayjs(event.dateFrom)) && dayjs().isSameOrBefore(event.dateTo), 'd'),
-  [FilterTypes.FUTURE]: (events) => events.filter((event) => dayjs().isBefore(dayjs(event.dateFrom), 'd'))
-};
-
 const SortFunctions = {
   SORT_DAY: (events) => events.sort((eventA, eventB) => dayjs(eventA.dateFrom) - dayjs(eventB.dateFrom)),
   SORT_PRICE: (events) => events.sort((eventA, eventB) => eventB.basePrice - eventA.basePrice),
   SORT_TIME: (events) => events.sort((eventA, eventB) => dayjs(eventB.dateTo).diff(dayjs(eventB.dateFrom)) - dayjs(eventA.dateTo).diff(dayjs(eventA.dateFrom))),
+};
+
+const FilterFunctions = {
+  [FilterTypes.EVERYTHING]: (events) => SortFunctions.SORT_DAY(events),
+  [FilterTypes.PAST]: (events) => SortFunctions.SORT_DAY(events.filter((event) => dayjs().isAfter(dayjs(event.dateTo), 'd'))),
+  [FilterTypes.PRESENT]: (events) => SortFunctions.SORT_DAY(events.filter((event) => dayjs().isSameOrAfter(dayjs(event.dateFrom)) && dayjs().isSameOrBefore(event.dateTo), 'd')),
+  [FilterTypes.FUTURE]: (events) => SortFunctions.SORT_DAY(events.filter((event) => dayjs().isBefore(dayjs(event.dateFrom), 'd')))
 };
 
 const getRandomArrayElement = (elements) => elements[Math.floor(Math.random() * elements.length)];

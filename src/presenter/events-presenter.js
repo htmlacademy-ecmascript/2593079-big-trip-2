@@ -1,5 +1,5 @@
 import { render } from '../framework/render.js';
-import { getFilters, SortFunctions, updateItem } from '../utils.js';
+import { getFilters, SortFunctions, updateItem, FilterFunctions, sortNameAdapter } from '../utils.js';
 import EventsListView from '../view/events-list-view.js';
 import EventPresenter from './event-presenter.js';
 import EventsSortView from '../view/events-sort-view.js';
@@ -16,6 +16,7 @@ export default class EventsPresenter {
   #filtersContainer;
   #listComponent;
   #currentEvents;
+  #sortComponent = null;
   #eventPresenters = new Map();
 
   constructor({ eventsContainer, eventsModel }) {
@@ -27,25 +28,46 @@ export default class EventsPresenter {
 
   init() {
     this.#events = SortFunctions.SORT_DAY([...this.#eventsModel.getEvents()]);
-    this.#sourcedEvents = this.#events;
+    this.#sourcedEvents = this.#events.slice();
     this.#destinations = [...this.#eventsModel.getDestinations()];
     this.#offers = [...this.#eventsModel.getOffers()];
     this.#currentEvents = [...this.#eventsModel.getOffers()];
+    this.#sortComponent = new EventsSortView({ onSortTypeChange: this.#handleSortChange });
     this.#renderFilters();
-    render(new EventsSortView(), this.#eventsContainer);
+    render(this.#sortComponent, this.#eventsContainer);
     render(this.#listComponent, this.#eventsContainer);
     this.#renderEvents();
   }
 
   #renderFilters() {
     const filters = getFilters(this.#events);
-    render(new FiltersView({ filters }), this.#filtersContainer);
+    render(new FiltersView({ filters, onFilterChange: this.#handleFilterChange }), this.#filtersContainer);
   }
 
-  #renderEvents = (events = this.#events) => {
-    for (let i = 0; i < events.length; i++) {
-      this.#createEvent(events[i]);
+  #renderEvents = () => {
+    for (let i = 0; i < this.#events.length; i++) {
+      this.#createEvent(this.#events[i]);
     }
+  };
+
+  #handleFilterChange = (type) => {
+    this.#events = this.#sourcedEvents.slice();
+    this.#events = FilterFunctions[type.toUpperCase()](this.#events);
+    this.#clearEventsList();
+    this.#resetSort();
+    this.#renderEvents();
+  };
+
+  #handleSortChange = (sortType) => {
+    this.#events = SortFunctions[sortNameAdapter(sortType)](this.#events);
+    this.#clearEventsList();
+    this.#renderEvents();
+
+  };
+
+  #resetSort = () => {
+    this.#sortComponent.element.querySelector('.trip-sort__input:checked').checked = false;
+    this.#sortComponent.element.querySelector('#sort-day').checked = true;
   };
 
   #resetEvents = () => {
