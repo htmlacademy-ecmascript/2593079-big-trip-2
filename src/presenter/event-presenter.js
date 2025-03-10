@@ -32,6 +32,9 @@ export default class EventPresenter {
     const type = event.type;
     const destination = this.#eventsModel.getDestinationById(event.destination);
     const offers = this.#eventsModel.getOffersById(event.offers, type);
+    const allOffers = this.#eventsModel.getOffersByType(type);
+    console.log(offers, allOffers)
+
 
     const prevEventComponent = this.#eventComponent;
     const prevEditEventFormComponent = this.#editEventFormComponent;
@@ -52,7 +55,7 @@ export default class EventPresenter {
     this.#editEventFormComponent = new EditEventView({
       event,
       destination,
-      offers,
+      allOffers,
       allDestinations: this.#allDestinations,
       onSubmit: this.#onFormSubmit,
       onClick: () => {
