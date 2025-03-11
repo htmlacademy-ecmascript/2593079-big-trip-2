@@ -30,7 +30,29 @@ const FilterFunctions = {
   [FilterTypes.FUTURE]: (events) => SortFunctions.SORT_DAY(events.filter((event) => dayjs().isBefore(dayjs(event.dateFrom), 'd')))
 };
 
-const getRandomArrayElement = (elements) => elements[Math.floor(Math.random() * elements.length)];
+const getUniqueIdCounter = (from, to) => {
+  const nums = [];
+  return function () {
+    let num;
+    do {
+      num = Math.floor(Math.random() * (to - from + 1)) + from;
+
+    } while (nums.indexOf(num) !== -1);
+    nums.push(num);
+    return num;
+  };
+};
+
+
+const getRandomArrayElements = (elements, count) => {
+  const counter = getUniqueIdCounter(0, elements.length - 1);
+  const selectedItems = [];
+  for (let i = 0; i <= count; i++) {
+    selectedItems.push(elements[counter()]);
+  }
+  return selectedItems;
+
+};
 
 const toUppercaseFirstLetter = (word) => `${word[0].toUpperCase()}${word.slice(1).toLowerCase()}`;
 const sortNameAdapter = (sortName) => sortName.toUpperCase().replace('-', '_');
@@ -69,4 +91,4 @@ const getFilters = (events) => ({
 
 const updateItem = (items, newItem) => items.map((currentItem) => currentItem.id === newItem.id ? newItem : currentItem);
 
-export { getRandomArrayElement, humanizeEventDate, humanizeEventTime, toUppercaseFirstLetter, getDatetime, getDiffTime, getTimeFromTemplate, toKebabCase, DateTemplates, getOnlyDate, FilterFunctions, removeChildren, SortFunctions, sortNameAdapter, getFilters, updateItem };
+export { humanizeEventDate, humanizeEventTime, toUppercaseFirstLetter, getDatetime, getDiffTime, getTimeFromTemplate, toKebabCase, DateTemplates, getOnlyDate, FilterFunctions, removeChildren, SortFunctions, sortNameAdapter, getFilters, updateItem, getRandomArrayElements };

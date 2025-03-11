@@ -51,11 +51,13 @@ export default class EventsPresenter {
   };
 
   #handleFilterChange = (type) => {
-    this.#events = this.#sourcedEvents.slice();
-    this.#events = FilterFunctions[type.toUpperCase()](this.#events);
+
     this.#clearEventsList();
+    this.#events = FilterFunctions[type.toUpperCase()](this.#sourcedEvents.slice());
     this.#resetSort();
     this.#renderEvents();
+
+
   };
 
   #handleSortChange = (sortType) => {
@@ -84,7 +86,6 @@ export default class EventsPresenter {
   #clearEventsList() {
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPresenters.clear();
-
   }
 
   #createEvent(event) {

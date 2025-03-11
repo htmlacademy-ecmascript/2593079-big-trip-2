@@ -1,4 +1,4 @@
-import { getRandomArrayElement } from '../utils';
+import { getRandomArrayElements } from '../utils';
 
 const mockEvents = [
   {
@@ -660,6 +660,6 @@ const mockOffers = [
 
 const getMockOffers = () => mockOffers;
 const getMockDestinations = () => mockDestinations;
-const getRandomEvent = () => getRandomArrayElement(mockEvents);
+const getRandomEvents = (count) => getRandomArrayElements(mockEvents, count);
 
-export { getRandomEvent, getMockOffers, getMockDestinations };
+export { getRandomEvents, getMockOffers, getMockDestinations };
