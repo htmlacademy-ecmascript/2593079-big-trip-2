@@ -32,6 +32,8 @@ export default class EventPresenter {
     const type = event.type;
     const destination = this.#eventsModel.getDestinationById(event.destination);
     const offers = this.#eventsModel.getOffersById(event.offers, type);
+    const allOffers = this.#eventsModel.getOffersByType(type);
+
 
     const prevEventComponent = this.#eventComponent;
     const prevEditEventFormComponent = this.#editEventFormComponent;
@@ -52,7 +54,7 @@ export default class EventPresenter {
     this.#editEventFormComponent = new EditEventView({
       event,
       destination,
-      offers,
+      allOffers,
       allDestinations: this.#allDestinations,
       onSubmit: this.#onFormSubmit,
       onClick: () => {
@@ -106,11 +108,11 @@ export default class EventPresenter {
     this.#onDataChange({ ...this.#event, isFavorite: !this.#event.isFavorite });
   };
 
-  #onEscKeyDown(evt) {
+  #onEscKeyDown = (evt) => {
     evt.preventDefault();
     this.#replaceEditFormToEvent();
     document.removeEventListener('keydown', this.#onEscKeyDown);
-  }
+  };
 
   #onFormSubmit = (task) => {
     this.#onDataChange(task);

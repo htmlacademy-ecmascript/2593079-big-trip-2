@@ -1,8 +1,8 @@
 import { MOCK_EVENTS_COUNT } from '../consts';
-import { getMockDestinations, getMockOffers, getRandomEvent } from '../Mocks/events-mocks';
+import { getMockDestinations, getMockOffers, getRandomEvents } from '../Mocks/events-mocks';
 
 export default class EventsModel {
-  events = Array.from({ length: MOCK_EVENTS_COUNT }, getRandomEvent);
+  events = getRandomEvents(MOCK_EVENTS_COUNT);
   destinations = getMockDestinations();
   offers = getMockOffers();
 

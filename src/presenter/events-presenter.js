@@ -1,5 +1,5 @@
 import { render } from '../framework/render.js';
-import { getFilters, SortFunctions, updateItem } from '../utils.js';
+import { getFilters, SortFunctions, updateItem, FilterFunctions, sortNameAdapter, defaultSort } from '../utils.js';
 import EventsListView from '../view/events-list-view.js';
 import EventPresenter from './event-presenter.js';
 import EventsSortView from '../view/events-sort-view.js';
@@ -16,6 +16,7 @@ export default class EventsPresenter {
   #filtersContainer;
   #listComponent;
   #currentEvents;
+  #sortComponent = null;
   #eventPresenters = new Map();
 
   constructor({ eventsContainer, eventsModel }) {
@@ -26,26 +27,41 @@ export default class EventsPresenter {
   }
 
   init() {
-    this.#events = SortFunctions.SORT_DAY([...this.#eventsModel.getEvents()]);
-    this.#sourcedEvents = this.#events;
+    this.#events = defaultSort([...this.#eventsModel.getEvents()]);
+    this.#sourcedEvents = this.#events.slice();
     this.#destinations = [...this.#eventsModel.getDestinations()];
     this.#offers = [...this.#eventsModel.getOffers()];
     this.#currentEvents = [...this.#eventsModel.getOffers()];
+    this.#sortComponent = new EventsSortView({ onSortTypeChange: this.#handleSortChange });
     this.#renderFilters();
-    render(new EventsSortView(), this.#eventsContainer);
+    render(this.#sortComponent, this.#eventsContainer);
     render(this.#listComponent, this.#eventsContainer);
     this.#renderEvents();
   }
 
   #renderFilters() {
     const filters = getFilters(this.#events);
-    render(new FiltersView({ filters }), this.#filtersContainer);
+    render(new FiltersView({ filters, onFilterChange: this.#handleFilterChange }), this.#filtersContainer);
   }
 
-  #renderEvents = (events = this.#events) => {
-    for (let i = 0; i < events.length; i++) {
-      this.#createEvent(events[i]);
+  #renderEvents() {
+    for (let i = 0; i < this.#events.length; i++) {
+      this.#createEvent(this.#events[i]);
     }
+  }
+
+  #handleFilterChange = (type) => {
+    this.#clearEventsList();
+    this.#events = defaultSort(FilterFunctions[type.toUpperCase()](this.#sourcedEvents.slice()));
+    this.#sortComponent.resetSort();
+    this.#renderEvents();
+  };
+
+  #handleSortChange = (sortType) => {
+    this.#events = SortFunctions[sortNameAdapter(sortType)](this.#events);
+    this.#clearEventsList();
+    this.#renderEvents();
+
   };
 
   #resetEvents = () => {
@@ -54,7 +70,6 @@ export default class EventsPresenter {
   };
 
   #handleEventChange = (newEventData) => {
-
     this.#events = updateItem(this.#events, newEventData);
     this.#eventPresenters.get(newEventData.id).init(newEventData);
   };
@@ -62,7 +77,6 @@ export default class EventsPresenter {
   #clearEventsList() {
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPresenters.clear();
-
   }
 
   #createEvent(event) {
@@ -74,6 +88,7 @@ export default class EventsPresenter {
       onDataChange: this.#handleEventChange,
       onModeChange: this.#resetEvents
     });
+
     this.#eventPresenters.set(event.id, eventPresenter);
     eventPresenter.init(event);
 

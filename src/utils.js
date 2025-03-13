@@ -4,6 +4,9 @@ import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import { FilterTypes } from './consts';
 
+dayjs.extend(duration);
+dayjs.extend(isSameOrAfter);
+dayjs.extend(isSameOrBefore);
 
 const DateTemplates = {
   DATE_FORMAT: 'MMM D',
@@ -13,24 +16,46 @@ const DateTemplates = {
   ONLY_DATE_FORMAT: 'YYYY-MM-DD'
 };
 
-dayjs.extend(duration);
-dayjs.extend(isSameOrAfter);
-dayjs.extend(isSameOrBefore);
-
-const FilterFunctions = {
-  [FilterTypes.EVERYTHING]: (events) => events,
-  [FilterTypes.PAST]: (events) => events.filter((event) => dayjs().isAfter(dayjs(event.dateTo), 'd')),
-  [FilterTypes.PRESENT]: (events) => events.filter((event) => dayjs().isSameOrAfter(dayjs(event.dateFrom)) && dayjs().isSameOrBefore(event.dateTo), 'd'),
-  [FilterTypes.FUTURE]: (events) => events.filter((event) => dayjs().isBefore(dayjs(event.dateFrom), 'd'))
-};
-
 const SortFunctions = {
   SORT_DAY: (events) => events.sort((eventA, eventB) => dayjs(eventA.dateFrom) - dayjs(eventB.dateFrom)),
   SORT_PRICE: (events) => events.sort((eventA, eventB) => eventB.basePrice - eventA.basePrice),
   SORT_TIME: (events) => events.sort((eventA, eventB) => dayjs(eventB.dateTo).diff(dayjs(eventB.dateFrom)) - dayjs(eventA.dateTo).diff(dayjs(eventA.dateFrom))),
 };
 
-const getRandomArrayElement = (elements) => elements[Math.floor(Math.random() * elements.length)];
+const FilterFunctions = {
+  [FilterTypes.EVERYTHING]: (events) => (events),
+  [FilterTypes.PAST]: (events) => events.filter((event) => dayjs().isAfter(dayjs(event.dateTo), 'd')),
+  [FilterTypes.PRESENT]: (events) => events.filter((event) => dayjs().isSameOrAfter(dayjs(event.dateFrom)) && dayjs().isSameOrBefore(event.dateTo), 'd'),
+  [FilterTypes.FUTURE]: (events) => events.filter((event) => dayjs().isBefore(dayjs(event.dateFrom), 'd'))
+};
+
+const getUniqueIdCounter = (from, to) => {
+  const nums = [];
+  return function () {
+    let num;
+    do {
+      num = Math.floor(Math.random() * (to - from + 1)) + from;
+
+    } while (nums.indexOf(num) !== -1);
+    nums.push(num);
+    return num;
+  };
+};
+
+function defaultSort(elements) {
+  return SortFunctions.SORT_DAY(elements);
+}
+
+
+const getRandomArrayElements = (elements, count) => {
+  const counter = getUniqueIdCounter(0, elements.length - 1);
+  const selectedItems = [];
+  for (let i = 0; i <= count; i++) {
+    selectedItems.push(elements[counter()]);
+  }
+  return selectedItems;
+
+};
 
 const toUppercaseFirstLetter = (word) => `${word[0].toUpperCase()}${word.slice(1).toLowerCase()}`;
 const sortNameAdapter = (sortName) => sortName.toUpperCase().replace('-', '_');
@@ -69,4 +94,4 @@ const getFilters = (events) => ({
 
 const updateItem = (items, newItem) => items.map((currentItem) => currentItem.id === newItem.id ? newItem : currentItem);
 
-export { getRandomArrayElement, humanizeEventDate, humanizeEventTime, toUppercaseFirstLetter, getDatetime, getDiffTime, getTimeFromTemplate, toKebabCase, DateTemplates, getOnlyDate, FilterFunctions, removeChildren, SortFunctions, sortNameAdapter, getFilters, updateItem };
+export { humanizeEventDate, humanizeEventTime, toUppercaseFirstLetter, getDatetime, getDiffTime, getTimeFromTemplate, toKebabCase, DateTemplates, getOnlyDate, FilterFunctions, removeChildren, SortFunctions, sortNameAdapter, getFilters, updateItem, getRandomArrayElements, defaultSort };

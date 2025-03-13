@@ -33,14 +33,14 @@ function createEditEventDestinationTemplate(destination) {
   `;
 }
 
-function createEditEventOffersTemplate({ event, offers }) {
+function createEditEventOffersTemplate({ event, allOffers }) {
   checkboxNameCount++;
   return `
   <section class="event__section  event__section--offers">
     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
     <div class="event__available-offers">
-    ${offers.map((offer) => {
+    ${allOffers.map((offer) => {
     const isCheckedAttribute = event.offers.some((activeOffer) => activeOffer === offer.id) ? 'checked' : '';
     return `
       <div class="event__offer-selector">
@@ -91,7 +91,7 @@ function createEditEventDestinationsListTemplate(allDestinations) {
   </datalist>`;
 }
 
-function createEditEventTemplate({ event, destination, offers, allDestinations }) {
+function createEditEventTemplate({ event, destination, allOffers, allDestinations }) {
 
   const { type, dateTo, dateFrom, basePrice } = event;
   const isNew = event === DEFAULT_EVENT;
@@ -139,7 +139,7 @@ function createEditEventTemplate({ event, destination, offers, allDestinations }
                   </button>
                 </header>
                 <section class="event__details">
-                  ${!isNew && offers.length ? createEditEventOffersTemplate({ event, offers }) : ''}
+                  ${!isNew && allOffers.length ? createEditEventOffersTemplate({ event, allOffers }) : ''}
 
                   ${!isNew && destination.description ? createEditEventDestinationTemplate(destination) : ''}
                 </section>
@@ -157,19 +157,19 @@ function createEditEventTemplate({ event, destination, offers, allDestinations }
 
 
 export default class EditEventView extends AbstractView {
-  #event;
-  #destination;
-  #offers;
-  #allDestinations;
-  #onSubmit;
-  #onCLick;
+  #event = null;
+  #destination = null;
+  #allOffers = null;
+  #allDestinations = null;
+  #onSubmit = null;
+  #onCLick = null;
 
 
-  constructor({ event, destination, offers, allDestinations, onSubmit, onClick } = DEFAULT_EVENT) {
+  constructor({ event, destination, allOffers, allDestinations, onSubmit, onClick } = DEFAULT_EVENT) {
     super();
     this.#event = event || DEFAULT_EVENT;
     this.#destination = destination;
-    this.#offers = offers;
+    this.#allOffers = allOffers;
     this.#allDestinations = allDestinations;
     this.#onSubmit = onSubmit;
     this.#onCLick = onClick;
@@ -181,7 +181,7 @@ export default class EditEventView extends AbstractView {
   }
 
   get template() {
-    return createEditEventTemplate({ event: this.#event, destination: this.#destination, offers: this.#offers, allDestinations: this.#allDestinations });
+    return createEditEventTemplate({ event: this.#event, destination: this.#destination, allOffers: this.#allOffers, allDestinations: this.#allDestinations });
   }
 
   #submitHandler = (event) => {
