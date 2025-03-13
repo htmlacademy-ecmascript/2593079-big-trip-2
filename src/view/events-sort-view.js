@@ -47,4 +47,9 @@ export default class EventsSortView extends AbstractView {
     this.#handleSortTypeChange(evt.target.value);
   };
 
+  resetSort() {
+    this.element.querySelector('.trip-sort__input:checked').checked = false;
+    this.element.querySelector('#sort-day').checked = true;
+  }
+
 }

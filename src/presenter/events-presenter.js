@@ -1,5 +1,5 @@
 import { render } from '../framework/render.js';
-import { getFilters, SortFunctions, updateItem, FilterFunctions, sortNameAdapter } from '../utils.js';
+import { getFilters, SortFunctions, updateItem, FilterFunctions, sortNameAdapter, defaultSort } from '../utils.js';
 import EventsListView from '../view/events-list-view.js';
 import EventPresenter from './event-presenter.js';
 import EventsSortView from '../view/events-sort-view.js';
@@ -27,7 +27,7 @@ export default class EventsPresenter {
   }
 
   init() {
-    this.#events = SortFunctions.SORT_DAY([...this.#eventsModel.getEvents()]);
+    this.#events = defaultSort([...this.#eventsModel.getEvents()]);
     this.#sourcedEvents = this.#events.slice();
     this.#destinations = [...this.#eventsModel.getDestinations()];
     this.#offers = [...this.#eventsModel.getOffers()];
@@ -44,20 +44,17 @@ export default class EventsPresenter {
     render(new FiltersView({ filters, onFilterChange: this.#handleFilterChange }), this.#filtersContainer);
   }
 
-  #renderEvents = () => {
+  #renderEvents() {
     for (let i = 0; i < this.#events.length; i++) {
       this.#createEvent(this.#events[i]);
     }
-  };
+  }
 
   #handleFilterChange = (type) => {
-
     this.#clearEventsList();
-    this.#events = FilterFunctions[type.toUpperCase()](this.#sourcedEvents.slice());
-    this.#resetSort();
+    this.#events = defaultSort(FilterFunctions[type.toUpperCase()](this.#sourcedEvents.slice()));
+    this.#sortComponent.resetSort();
     this.#renderEvents();
-
-
   };
 
   #handleSortChange = (sortType) => {
@@ -67,18 +64,12 @@ export default class EventsPresenter {
 
   };
 
-  #resetSort = () => {
-    this.#sortComponent.element.querySelector('.trip-sort__input:checked').checked = false;
-    this.#sortComponent.element.querySelector('#sort-day').checked = true;
-  };
-
   #resetEvents = () => {
     this.#eventPresenters.forEach((presenter) => presenter.resetView());
 
   };
 
   #handleEventChange = (newEventData) => {
-
     this.#events = updateItem(this.#events, newEventData);
     this.#eventPresenters.get(newEventData.id).init(newEventData);
   };
@@ -97,6 +88,7 @@ export default class EventsPresenter {
       onDataChange: this.#handleEventChange,
       onModeChange: this.#resetEvents
     });
+
     this.#eventPresenters.set(event.id, eventPresenter);
     eventPresenter.init(event);
 

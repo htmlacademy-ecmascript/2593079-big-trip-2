@@ -108,11 +108,11 @@ export default class EventPresenter {
     this.#onDataChange({ ...this.#event, isFavorite: !this.#event.isFavorite });
   };
 
-  #onEscKeyDown(evt) {
+  #onEscKeyDown = (evt) => {
     evt.preventDefault();
     this.#replaceEditFormToEvent();
     document.removeEventListener('keydown', this.#onEscKeyDown);
-  }
+  };
 
   #onFormSubmit = (task) => {
     this.#onDataChange(task);

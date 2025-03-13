@@ -4,6 +4,9 @@ import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import { FilterTypes } from './consts';
 
+dayjs.extend(duration);
+dayjs.extend(isSameOrAfter);
+dayjs.extend(isSameOrBefore);
 
 const DateTemplates = {
   DATE_FORMAT: 'MMM D',
@@ -13,10 +16,6 @@ const DateTemplates = {
   ONLY_DATE_FORMAT: 'YYYY-MM-DD'
 };
 
-dayjs.extend(duration);
-dayjs.extend(isSameOrAfter);
-dayjs.extend(isSameOrBefore);
-
 const SortFunctions = {
   SORT_DAY: (events) => events.sort((eventA, eventB) => dayjs(eventA.dateFrom) - dayjs(eventB.dateFrom)),
   SORT_PRICE: (events) => events.sort((eventA, eventB) => eventB.basePrice - eventA.basePrice),
@@ -24,10 +23,10 @@ const SortFunctions = {
 };
 
 const FilterFunctions = {
-  [FilterTypes.EVERYTHING]: (events) => SortFunctions.SORT_DAY(events),
-  [FilterTypes.PAST]: (events) => SortFunctions.SORT_DAY(events.filter((event) => dayjs().isAfter(dayjs(event.dateTo), 'd'))),
-  [FilterTypes.PRESENT]: (events) => SortFunctions.SORT_DAY(events.filter((event) => dayjs().isSameOrAfter(dayjs(event.dateFrom)) && dayjs().isSameOrBefore(event.dateTo), 'd')),
-  [FilterTypes.FUTURE]: (events) => SortFunctions.SORT_DAY(events.filter((event) => dayjs().isBefore(dayjs(event.dateFrom), 'd')))
+  [FilterTypes.EVERYTHING]: (events) => (events),
+  [FilterTypes.PAST]: (events) => events.filter((event) => dayjs().isAfter(dayjs(event.dateTo), 'd')),
+  [FilterTypes.PRESENT]: (events) => events.filter((event) => dayjs().isSameOrAfter(dayjs(event.dateFrom)) && dayjs().isSameOrBefore(event.dateTo), 'd'),
+  [FilterTypes.FUTURE]: (events) => events.filter((event) => dayjs().isBefore(dayjs(event.dateFrom), 'd'))
 };
 
 const getUniqueIdCounter = (from, to) => {
@@ -42,6 +41,10 @@ const getUniqueIdCounter = (from, to) => {
     return num;
   };
 };
+
+function defaultSort(elements) {
+  return SortFunctions.SORT_DAY(elements);
+}
 
 
 const getRandomArrayElements = (elements, count) => {
@@ -91,4 +94,4 @@ const getFilters = (events) => ({
 
 const updateItem = (items, newItem) => items.map((currentItem) => currentItem.id === newItem.id ? newItem : currentItem);
 
-export { humanizeEventDate, humanizeEventTime, toUppercaseFirstLetter, getDatetime, getDiffTime, getTimeFromTemplate, toKebabCase, DateTemplates, getOnlyDate, FilterFunctions, removeChildren, SortFunctions, sortNameAdapter, getFilters, updateItem, getRandomArrayElements };
+export { humanizeEventDate, humanizeEventTime, toUppercaseFirstLetter, getDatetime, getDiffTime, getTimeFromTemplate, toKebabCase, DateTemplates, getOnlyDate, FilterFunctions, removeChildren, SortFunctions, sortNameAdapter, getFilters, updateItem, getRandomArrayElements, defaultSort };
