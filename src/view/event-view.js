@@ -15,7 +15,7 @@ function createOffersEventTemplate(offers) {
           `;
 }
 
-function createTripEventTemplate(event, destination, offers) {
+function createTripEventTemplate(event, fullDestination, offers) {
 
   const { type, isFavorite, dateTo, dateFrom, basePrice } = event;
 
@@ -28,7 +28,7 @@ function createTripEventTemplate(event, destination, offers) {
                 <div class="event__type">
                   <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
                 </div>
-                <h3 class="event__title">${toUppercaseFirstLetter(type)} ${destination.name}</h3>
+                <h3 class="event__title">${toUppercaseFirstLetter(type)} ${fullDestination.name}</h3>
                 <div class="event__schedule">
                   <p class="event__time">
                     <time class="event__start-time" datetime="${getDatetime(dateFrom)}">${humanizeEventTime(dateFrom)}</time>
@@ -57,25 +57,25 @@ function createTripEventTemplate(event, destination, offers) {
 
 export default class EventView extends AbstractView {
   #event = null;
-  #destination = null;
-  #offers = null;
-  #handleCloseClick = null;
+  #fullDestination = null;
+  #fullOffers = null;
+  #handleOpenClick = null;
   #handleFavoriteClick = null;
 
-  constructor({ event, destination, offers, onCloseClick, onFavoriteClick }) {
+  constructor({ event, fullDestination, fullOffers, onOpenClick, onFavoriteClick }) {
     super();
     this.#event = event;
-    this.#destination = destination;
-    this.#offers = offers;
-    this.#handleCloseClick = onCloseClick;
+    this.#fullDestination = fullDestination;
+    this.#fullOffers = fullOffers;
+    this.#handleOpenClick = onOpenClick;
     this.#handleFavoriteClick = onFavoriteClick;
 
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeClickHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#openClickHandler);
     this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClickHandler);
   }
 
   get template() {
-    return createTripEventTemplate(this.#event, this.#destination, this.#offers);
+    return createTripEventTemplate(this.#event, this.#fullDestination, this.#fullOffers);
   }
 
   #favoriteClickHandler = (evt) => {
@@ -83,9 +83,9 @@ export default class EventView extends AbstractView {
     this.#handleFavoriteClick();
   };
 
-  #closeClickHandler = (event) => {
+  #openClickHandler = (event) => {
     event.preventDefault();
-    this.#handleCloseClick();
+    this.#handleOpenClick();
   };
 
 }

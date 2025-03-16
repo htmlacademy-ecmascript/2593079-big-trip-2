@@ -1,4 +1,4 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { getTimeFromTemplate, toUppercaseFirstLetter, toKebabCase, DateTemplates } from '../utils.js';
 
 const EVENTS_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
@@ -6,8 +6,6 @@ const DEFAULT_EVENT = {
   basePrice: 0,
   type: 'flight'
 };
-
-let checkboxNameCount = 0;
 
 function createDestinationPicturesTemplate(destination) {
 
@@ -21,9 +19,7 @@ function createDestinationPicturesTemplate(destination) {
 }
 
 function createEditEventDestinationTemplate(destination) {
-
   return `
-
   <section class="event__section  event__section--destination">
     <h3 class="event__section-title  event__section-title--destination">Destination</h3>
     <p class="event__destination-description">${destination.description}</p>
@@ -33,19 +29,18 @@ function createEditEventDestinationTemplate(destination) {
   `;
 }
 
-function createEditEventOffersTemplate({ event, allOffers }) {
-  checkboxNameCount++;
+function createEditEventOffersTemplate({ offers, allOffers }) {
   return `
   <section class="event__section  event__section--offers">
     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
     <div class="event__available-offers">
     ${allOffers.map((offer) => {
-    const isCheckedAttribute = event.offers.some((activeOffer) => activeOffer === offer.id) ? 'checked' : '';
+    const isCheckedAttribute = offers.some((activeOffer) => activeOffer === offer.id) ? 'checked' : '';
     return `
       <div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${toKebabCase(offer.title)}-${checkboxNameCount}" type="checkbox" name="event-offer-${toKebabCase(offer.title)}" ${isCheckedAttribute}>
-      <label class="event__offer-label" for="event-offer-${toKebabCase(offer.title)}-${checkboxNameCount}">
+      <input class="event__offer-checkbox  visually-hidden" id="${offer.id}" type="checkbox" name="event-offer-${toKebabCase(offer.title)}" ${isCheckedAttribute}>
+      <label class="event__offer-label" for="${offer.id}">
         <span class="event__offer-title">${offer.title}</span>
         +€&nbsp;
         <span class="event__offer-price">${offer.price}</span>
@@ -91,10 +86,7 @@ function createEditEventDestinationsListTemplate(allDestinations) {
   </datalist>`;
 }
 
-function createEditEventTemplate({ event, destination, allOffers, allDestinations }) {
-
-  const { type, dateTo, dateFrom, basePrice } = event;
-  const isNew = event === DEFAULT_EVENT;
+function createEditEventTemplate({ basePrice, type, dateTo, dateFrom, allOffers, allDestinations, isNew, offers, fullDestination }) {
 
   return `<li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
@@ -112,7 +104,7 @@ function createEditEventTemplate({ event, destination, allOffers, allDestination
                     <label class="event__label  event__type-output" for="event-destination-1">
                       ${type}
                     </label>
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${isNew ? '' : destination.name}" list="destination-list-1">
+                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${isNew ? '' : fullDestination.name}" list="destination-list-1">
                     ${createEditEventDestinationsListTemplate(allDestinations)}
                   </div>
 
@@ -139,9 +131,9 @@ function createEditEventTemplate({ event, destination, allOffers, allDestination
                   </button>
                 </header>
                 <section class="event__details">
-                  ${!isNew && allOffers.length ? createEditEventOffersTemplate({ event, allOffers }) : ''}
+                  ${!isNew && allOffers.length ? createEditEventOffersTemplate({ offers, allOffers }) : ''}
 
-                  ${!isNew && destination.description ? createEditEventDestinationTemplate(destination) : ''}
+                  ${!isNew && fullDestination.description ? createEditEventDestinationTemplate(fullDestination) : ''}
                 </section>
               </form>
             </li>`;
@@ -156,42 +148,81 @@ function createEditEventTemplate({ event, destination, allOffers, allDestination
  */
 
 
-export default class EditEventView extends AbstractView {
+export default class EditEventView extends AbstractStatefulView {
   #event = null;
-  #destination = null;
-  #allOffers = null;
-  #allDestinations = null;
-  #onSubmit = null;
-  #onCLick = null;
+  #handleSubmit = null;
+  #handleCloseClick = null;
+  #getAllOffers = null;
+  #getDestination = null;
 
 
-  constructor({ event, destination, allOffers, allDestinations, onSubmit, onClick } = DEFAULT_EVENT) {
+  constructor({ event, fullDestination, allOffers, allDestinations, onSubmit, onCloseClick, getAllOffers, getDestination } = DEFAULT_EVENT) {
     super();
     this.#event = event || DEFAULT_EVENT;
-    this.#destination = destination;
-    this.#allOffers = allOffers;
-    this.#allDestinations = allDestinations;
-    this.#onSubmit = onSubmit;
-    this.#onCLick = onClick;
-
-    this.element.querySelector('form.event').addEventListener('submit', this.#submitHandler);
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickHandler);
-
+    this._setState({ ...event, fullDestination, allOffers, allDestinations });
+    console.log(this.#event, this._state)
+    this.#handleSubmit = onSubmit;
+    this.#handleCloseClick = onCloseClick;
+    this.#getDestination = getDestination;
+    this.#getAllOffers = getAllOffers;
+    this._restoreHandlers();
 
   }
 
   get template() {
-    return createEditEventTemplate({ event: this.#event, destination: this.#destination, allOffers: this.#allOffers, allDestinations: this.#allDestinations });
+    return createEditEventTemplate({ ...this._state, isNew: this.#event === DEFAULT_EVENT });
   }
 
   #submitHandler = (event) => {
     event.preventDefault();
-    this.#onSubmit(this.#event);
+    this.#handleSubmit(this.#event);
   };
 
-  #clickHandler = (event) => {
+  #clickCloseHandler = (event) => {
     event.preventDefault();
-    this.#onCLick();
+    this.#handleCloseClick();
+  };
+
+  static parseStateToEvent(state) {
+    const newEvent = structuredClone(state);
+    delete newEvent.allDestinations;
+    delete newEvent.allOffers;
+    delete newEvent.fullDestination;
+
+    return newEvent;
+  }
+
+  _restoreHandlers() {
+    this.element.querySelector('form.event').addEventListener('submit', this.#submitHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickCloseHandler);
+    this.element.querySelector('.event__type-list').addEventListener('change', this.#changeTypeHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
+    this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#changeOfferHandler);
+  }
+
+  #changeTypeHandler = (evt) => {
+    this.updateElement({ allOffers: this.#getAllOffers(evt.target.value), type: evt.target.value, offers: [] });
+
+  };
+
+  #changeOfferHandler = (evt) => {
+    const isChecked = evt.target.checked;
+
+    if (isChecked) {
+
+      const updatedOffers = [...this._state.offers, evt.target.id];
+      this._setState({ offers: updatedOffers });
+
+    } else {
+
+      const updatedOffers = this._state.offers.filter((id) => id !== evt.target.id);
+      this._setState({ offers: updatedOffers });
+    }
+  };
+
+  #changeDestinationHandler = (evt) => {
+    const newDestination = this.#getDestination(evt.target.value) ?? this._state.fullDestination;
+    this.updateElement({ fullDestination: newDestination, });
   };
 
 }

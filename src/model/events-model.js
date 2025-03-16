@@ -38,5 +38,9 @@ export default class EventsModel {
       return destinations;
     }, []);
   }
+
+  getDestinationByName(name) {
+    return this.destinations.find((dest) => dest.name === name);
+  }
 }
 

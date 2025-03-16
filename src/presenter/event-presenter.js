@@ -30,10 +30,9 @@ export default class EventPresenter {
     this.#event = event;
 
     const type = event.type;
-    const destination = this.#eventsModel.getDestinationById(event.destination);
-    const offers = this.#eventsModel.getOffersById(event.offers, type);
-    const allOffers = this.#eventsModel.getOffersByType(type);
-
+    const fullDestination = this.#eventsModel.getDestinationById(event.destination);
+    const fullOffers = this.#eventsModel.getOffersById(event.offers, type);
+    const allOffers = this.#getAllOffers(type);
 
     const prevEventComponent = this.#eventComponent;
     const prevEditEventFormComponent = this.#editEventFormComponent;
@@ -41,9 +40,9 @@ export default class EventPresenter {
 
     this.#eventComponent = new EventView({
       event,
-      destination,
-      offers,
-      onCloseClick: () => {
+      fullDestination,
+      fullOffers,
+      onOpenClick: () => {
         this.#replaceEventToEditForm();
         document.addEventListener('keydown', this.#onEscKeyDown);
       },
@@ -53,11 +52,13 @@ export default class EventPresenter {
 
     this.#editEventFormComponent = new EditEventView({
       event,
-      destination,
+      fullDestination,
       allOffers,
       allDestinations: this.#allDestinations,
       onSubmit: this.#onFormSubmit,
-      onClick: () => {
+      getAllOffers: this.#getAllOffers,
+      getDestination: this.#getDestinationByName,
+      onCloseClick: () => {
         this.#replaceEditFormToEvent();
         document.removeEventListener('keydown', this.#onEscKeyDown);
       }
@@ -93,6 +94,9 @@ export default class EventPresenter {
     remove(this.#editEventFormComponent);
   }
 
+  #getAllOffers = (type) => this.#eventsModel.getOffersByType(type);
+
+
   #replaceEventToEditForm = () => {
     replace(this.#editEventFormComponent, this.#eventComponent);
     this.#handleModeChange();
@@ -100,6 +104,7 @@ export default class EventPresenter {
   };
 
   #replaceEditFormToEvent() {
+
     replace(this.#eventComponent, this.#editEventFormComponent);
     this.#mode = Mode.DEFAULT;
   }
@@ -109,9 +114,11 @@ export default class EventPresenter {
   };
 
   #onEscKeyDown = (evt) => {
-    evt.preventDefault();
-    this.#replaceEditFormToEvent();
-    document.removeEventListener('keydown', this.#onEscKeyDown);
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      this.#replaceEditFormToEvent();
+      document.removeEventListener('keydown', this.#onEscKeyDown);
+    }
   };
 
   #onFormSubmit = (task) => {
@@ -119,5 +126,7 @@ export default class EventPresenter {
     this.#replaceEditFormToEvent();
     document.removeEventListener('keydown', this.#onEscKeyDown);
   };
+
+  #getDestinationByName = (name) => this.#eventsModel.getDestinationByName(name);
 
 }
