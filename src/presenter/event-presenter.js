@@ -17,23 +17,24 @@ export default class EventPresenter {
   #onDataChange = null;
   #handleModeChange;
   #mode = Mode.DEFAULT;
+  #allDestinationsNames = null;
 
-  constructor({ allDestinations, listComponent, eventsModel, onDataChange, onModeChange }) {
-    this.#allDestinations = allDestinations;
+  constructor({ listComponent, eventsModel, onDataChange, onModeChange, }) {
     this.#listComponent = listComponent;
     this.#eventsModel = eventsModel;
     this.#onDataChange = onDataChange;
     this.#handleModeChange = onModeChange;
+    this.#allDestinationsNames = this.#eventsModel.getAllDestinationsNames();
   }
 
   init = (event) => {
     this.#event = event;
 
     const type = event.type;
-    const destination = this.#eventsModel.getDestinationById(event.destination);
-    const offers = this.#eventsModel.getOffersById(event.offers, type);
-    const allOffers = this.#eventsModel.getOffersByType(type);
-
+    const fullDestination = this.#eventsModel.getDestinationById(event.destination);
+    const fullOffers = this.#eventsModel.getOffersById(event.offers, type);
+    const allOffers = this.#eventsModel.getOffers();
+    const allDestinations = this.#eventsModel.getDestinations();
 
     const prevEventComponent = this.#eventComponent;
     const prevEditEventFormComponent = this.#editEventFormComponent;
@@ -41,9 +42,9 @@ export default class EventPresenter {
 
     this.#eventComponent = new EventView({
       event,
-      destination,
-      offers,
-      onCloseClick: () => {
+      fullDestination,
+      fullOffers,
+      onOpenClick: () => {
         this.#replaceEventToEditForm();
         document.addEventListener('keydown', this.#onEscKeyDown);
       },
@@ -53,11 +54,13 @@ export default class EventPresenter {
 
     this.#editEventFormComponent = new EditEventView({
       event,
-      destination,
+      fullDestination,
       allOffers,
-      allDestinations: this.#allDestinations,
+      allDestinations,
+      allDestinationsNames: this.#allDestinationsNames,
       onSubmit: this.#onFormSubmit,
-      onClick: () => {
+      onCloseClick: () => {
+        this.#editEventFormComponent.reset();
         this.#replaceEditFormToEvent();
         document.removeEventListener('keydown', this.#onEscKeyDown);
       }
@@ -84,6 +87,7 @@ export default class EventPresenter {
 
   resetView() {
     if (this.#mode === Mode.EDITING) {
+      this.#editEventFormComponent.reset();
       this.#replaceEditFormToEvent();
     }
   }
@@ -100,6 +104,7 @@ export default class EventPresenter {
   };
 
   #replaceEditFormToEvent() {
+
     replace(this.#eventComponent, this.#editEventFormComponent);
     this.#mode = Mode.DEFAULT;
   }
@@ -109,15 +114,20 @@ export default class EventPresenter {
   };
 
   #onEscKeyDown = (evt) => {
-    evt.preventDefault();
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      this.#editEventFormComponent.reset();
+      this.#replaceEditFormToEvent();
+      document.removeEventListener('keydown', this.#onEscKeyDown);
+    }
+  };
+
+  #onFormSubmit = (event) => {
+    this.#onDataChange(event);
     this.#replaceEditFormToEvent();
     document.removeEventListener('keydown', this.#onEscKeyDown);
   };
 
-  #onFormSubmit = (task) => {
-    this.#onDataChange(task);
-    this.#replaceEditFormToEvent();
-    document.removeEventListener('keydown', this.#onEscKeyDown);
-  };
+  #getDestinationByName = (name) => this.#eventsModel.getDestinationByName(name);
 
 }

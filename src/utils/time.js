@@ -2,7 +2,8 @@ import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
-import { FilterTypes } from './consts';
+import { FilterTypes } from '../consts';
+
 
 dayjs.extend(duration);
 dayjs.extend(isSameOrAfter);
@@ -15,6 +16,7 @@ const DateTemplates = {
   DATETIME_INPUT_FORMAT: 'YY/MM/DD HH:mm',
   ONLY_DATE_FORMAT: 'YYYY-MM-DD'
 };
+
 
 const SortFunctions = {
   SORT_DAY: (events) => events.sort((eventA, eventB) => dayjs(eventA.dateFrom) - dayjs(eventB.dateFrom)),
@@ -29,37 +31,12 @@ const FilterFunctions = {
   [FilterTypes.FUTURE]: (events) => events.filter((event) => dayjs().isBefore(dayjs(event.dateFrom), 'd'))
 };
 
-const getUniqueIdCounter = (from, to) => {
-  const nums = [];
-  return function () {
-    let num;
-    do {
-      num = Math.floor(Math.random() * (to - from + 1)) + from;
-
-    } while (nums.indexOf(num) !== -1);
-    nums.push(num);
-    return num;
-  };
-};
-
-function defaultSort(elements) {
-  return SortFunctions.SORT_DAY(elements);
-}
-
-
-const getRandomArrayElements = (elements, count) => {
-  const counter = getUniqueIdCounter(0, elements.length - 1);
-  const selectedItems = [];
-  for (let i = 0; i <= count; i++) {
-    selectedItems.push(elements[counter()]);
-  }
-  return selectedItems;
-
-};
-
-const toUppercaseFirstLetter = (word) => `${word[0].toUpperCase()}${word.slice(1).toLowerCase()}`;
-const sortNameAdapter = (sortName) => sortName.toUpperCase().replace('-', '_');
-
+const getFilters = (events) => ({
+  [FilterTypes.EVERYTHING]: FilterFunctions[FilterTypes.EVERYTHING](events).length,
+  [FilterTypes.PAST]: FilterFunctions[FilterTypes.PAST](events).length,
+  [FilterTypes.PRESENT]: FilterFunctions[FilterTypes.PRESENT](events).length,
+  [FilterTypes.FUTURE]: FilterFunctions[FilterTypes.FUTURE](events).length
+});
 
 const getTimeFromTemplate = (template, date) => date ? dayjs(date).format(template) : '';
 
@@ -67,8 +44,6 @@ const humanizeEventDate = (date) => getTimeFromTemplate(DateTemplates.DATE_FORMA
 const humanizeEventTime = (date) => getTimeFromTemplate(DateTemplates.TIME_FORMAT, date);
 const getDatetime = (date) => getTimeFromTemplate(DateTemplates.DATETIME_FORMAT, date);
 const getOnlyDate = (date) => getTimeFromTemplate(DateTemplates.ONLY_DATE_FORMAT, date);
-
-const toKebabCase = (word) => word.toLowerCase().split(' ').join('-');
 
 const getDiffTime = (dateFrom, dateTo) => {
   dateTo = dayjs(dateTo);
@@ -78,20 +53,8 @@ const getDiffTime = (dateFrom, dateTo) => {
   return diffDuration.format(template);
 };
 
-const removeChildren = (element, from = 0) => {
-  const children = Array.from(element.children).slice(from);
-  children.forEach((child) => {
-    child.remove();
-  });
-};
+function defaultSort(elements) {
+  return SortFunctions.SORT_DAY(elements);
+}
 
-const getFilters = (events) => ({
-  [FilterTypes.EVERYTHING]: FilterFunctions[FilterTypes.EVERYTHING](events).length,
-  [FilterTypes.PAST]: FilterFunctions[FilterTypes.PAST](events).length,
-  [FilterTypes.PRESENT]: FilterFunctions[FilterTypes.PRESENT](events).length,
-  [FilterTypes.FUTURE]: FilterFunctions[FilterTypes.FUTURE](events).length
-});
-
-const updateItem = (items, newItem) => items.map((currentItem) => currentItem.id === newItem.id ? newItem : currentItem);
-
-export { humanizeEventDate, humanizeEventTime, toUppercaseFirstLetter, getDatetime, getDiffTime, getTimeFromTemplate, toKebabCase, DateTemplates, getOnlyDate, FilterFunctions, removeChildren, SortFunctions, sortNameAdapter, getFilters, updateItem, getRandomArrayElements, defaultSort };
+export { humanizeEventDate, humanizeEventTime, getDatetime, getOnlyDate, getDiffTime, DateTemplates, SortFunctions, FilterFunctions, getFilters, defaultSort, getTimeFromTemplate };

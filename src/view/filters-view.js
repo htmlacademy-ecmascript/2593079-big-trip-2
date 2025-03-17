@@ -1,4 +1,4 @@
-import { toUppercaseFirstLetter } from '../utils.js';
+import { toUppercaseFirstLetter } from '../utils/utils.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
 function createFiltersTemplate(filters) {
