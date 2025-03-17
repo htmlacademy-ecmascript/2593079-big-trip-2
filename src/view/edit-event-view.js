@@ -176,10 +176,7 @@ export default class EditEventView extends AbstractStatefulView {
 
   #submitHandler = (event) => {
     event.preventDefault();
-
     this.#event = EditEventView.parseStateToEvent(this._state);
-    console.log(this._state, this.#event)
-
     this.#handleSubmit(this.#event);
   };
 
@@ -207,6 +204,7 @@ export default class EditEventView extends AbstractStatefulView {
     this.element.querySelector('.event__type-list').addEventListener('change', this.#changeTypeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
     this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#changeOfferHandler);
+    this.element.querySelector('.event__input--price').addEventListener('input', this.#changePriceHandler);
   }
 
   #changeTypeHandler = (evt) => {
@@ -232,6 +230,10 @@ export default class EditEventView extends AbstractStatefulView {
   #changeDestinationHandler = (evt) => {
     const newDestination = this.#getDestination(evt.target.value) ?? this._state.fullDestination;
     this.updateElement({ fullDestination: newDestination, destination: newDestination.id });
+  };
+
+  #changePriceHandler = (evt) => {
+    this._setState({ basePrice: evt.target.value });
   };
 
 }
