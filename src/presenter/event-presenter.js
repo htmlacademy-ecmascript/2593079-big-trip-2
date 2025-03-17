@@ -59,6 +59,7 @@ export default class EventPresenter {
       getAllOffers: this.#getAllOffers,
       getDestination: this.#getDestinationByName,
       onCloseClick: () => {
+        this.#editEventFormComponent.reset();
         this.#replaceEditFormToEvent();
         document.removeEventListener('keydown', this.#onEscKeyDown);
       }
@@ -85,6 +86,7 @@ export default class EventPresenter {
 
   resetView() {
     if (this.#mode === Mode.EDITING) {
+      this.#editEventFormComponent.reset();
       this.#replaceEditFormToEvent();
     }
   }
@@ -116,13 +118,14 @@ export default class EventPresenter {
   #onEscKeyDown = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
+      this.#editEventFormComponent.reset();
       this.#replaceEditFormToEvent();
       document.removeEventListener('keydown', this.#onEscKeyDown);
     }
   };
 
-  #onFormSubmit = (task) => {
-    this.#onDataChange(task);
+  #onFormSubmit = (event) => {
+    this.#onDataChange(event);
     this.#replaceEditFormToEvent();
     document.removeEventListener('keydown', this.#onEscKeyDown);
   };

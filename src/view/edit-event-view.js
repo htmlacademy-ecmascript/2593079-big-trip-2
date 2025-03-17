@@ -154,13 +154,14 @@ export default class EditEventView extends AbstractStatefulView {
   #handleCloseClick = null;
   #getAllOffers = null;
   #getDestination = null;
+  #sourcedState = null;
 
 
   constructor({ event, fullDestination, allOffers, allDestinations, onSubmit, onCloseClick, getAllOffers, getDestination } = DEFAULT_EVENT) {
     super();
     this.#event = event || DEFAULT_EVENT;
     this._setState({ ...event, fullDestination, allOffers, allDestinations });
-    console.log(this.#event, this._state)
+    this.#sourcedState = { ...event, fullDestination, allOffers, allDestinations };
     this.#handleSubmit = onSubmit;
     this.#handleCloseClick = onCloseClick;
     this.#getDestination = getDestination;
@@ -175,6 +176,10 @@ export default class EditEventView extends AbstractStatefulView {
 
   #submitHandler = (event) => {
     event.preventDefault();
+
+    this.#event = EditEventView.parseStateToEvent(this._state);
+    console.log(this._state, this.#event)
+
     this.#handleSubmit(this.#event);
   };
 
@@ -191,6 +196,10 @@ export default class EditEventView extends AbstractStatefulView {
 
     return newEvent;
   }
+
+  reset = () => {
+    this.updateElement(this.#sourcedState);
+  };
 
   _restoreHandlers() {
     this.element.querySelector('form.event').addEventListener('submit', this.#submitHandler);
@@ -222,7 +231,7 @@ export default class EditEventView extends AbstractStatefulView {
 
   #changeDestinationHandler = (evt) => {
     const newDestination = this.#getDestination(evt.target.value) ?? this._state.fullDestination;
-    this.updateElement({ fullDestination: newDestination, });
+    this.updateElement({ fullDestination: newDestination, destination: newDestination.id });
   };
 
 }
