@@ -139,15 +139,6 @@ function createEditEventTemplate({ basePrice, type, dateTo, dateFrom, allDestina
               </form>
             </li>`;
 }
-/**
- * @param {Object} eventData
- * @param {Object} [eventData.event] Объект события
- * @param {Object} [eventData.destination] Объект пункта назначения
- * @param {Array} [eventData.offers] Массив предложений
- * @param {Array} eventData.allDestinations Массив всех доступных пунктов назначения
- * @returns {Object<EditEventView>} Возвращает экземпляр EditEventView
- */
-
 
 export default class EditEventView extends AbstractStatefulView {
   #event = null;
@@ -156,13 +147,11 @@ export default class EditEventView extends AbstractStatefulView {
   #allDestinations = null;
   #allOffers = null;
   #sourcedState = null;
-  #allDestinationsNames = null;
 
 
   constructor({ event, fullDestination, allDestinationsNames, onSubmit, onCloseClick, allDestinations, allOffers }) {
     super();
     this.#event = event || DEFAULT_EVENT;
-    this.#allDestinationsNames = allDestinationsNames;
     this._setState({ ...event, fullDestination, allDestinationsNames });
     this.#sourcedState = { ...event, fullDestination, allDestinationsNames };
     this.#handleSubmit = onSubmit;
