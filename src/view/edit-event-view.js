@@ -1,5 +1,7 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { getTimeFromTemplate, toUppercaseFirstLetter, toKebabCase, DateTemplates } from '../utils.js';
+import { DateTemplates, getTimeFromTemplate } from '../utils/time.js';
+import { getDestinationByName, getOffersByType, toUppercaseFirstLetter, toKebabCase } from '../utils/utils.js';
+
 
 const EVENTS_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 const DEFAULT_EVENT = {
@@ -29,13 +31,13 @@ function createEditEventDestinationTemplate(destination) {
   `;
 }
 
-function createEditEventOffersTemplate({ offers, allOffers }) {
+function createEditEventOffersTemplate({ offers, typedOffers }) {
   return `
   <section class="event__section  event__section--offers">
     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
     <div class="event__available-offers">
-    ${allOffers.map((offer) => {
+    ${typedOffers.map((offer) => {
     const isCheckedAttribute = offers.some((activeOffer) => activeOffer === offer.id) ? 'checked' : '';
     return `
       <div class="event__offer-selector">
@@ -86,8 +88,7 @@ function createEditEventDestinationsListTemplate(allDestinations) {
   </datalist>`;
 }
 
-function createEditEventTemplate({ basePrice, type, dateTo, dateFrom, allOffers, allDestinations, isNew, offers, fullDestination }) {
-
+function createEditEventTemplate({ basePrice, type, dateTo, dateFrom, allDestinationsNames, isNew, offers, fullDestination, typedOffers }) {
   return `<li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
                 <header class="event__header">
@@ -105,7 +106,7 @@ function createEditEventTemplate({ basePrice, type, dateTo, dateFrom, allOffers,
                       ${type}
                     </label>
                     <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${isNew ? '' : fullDestination.name}" list="destination-list-1">
-                    ${createEditEventDestinationsListTemplate(allDestinations)}
+                    ${createEditEventDestinationsListTemplate(allDestinationsNames)}
                   </div>
 
                   <div class="event__field-group  event__field-group--time">
@@ -131,7 +132,7 @@ function createEditEventTemplate({ basePrice, type, dateTo, dateFrom, allOffers,
                   </button>
                 </header>
                 <section class="event__details">
-                  ${!isNew && allOffers.length ? createEditEventOffersTemplate({ offers, allOffers }) : ''}
+                  ${!isNew && typedOffers.length ? createEditEventOffersTemplate({ offers, typedOffers }) : ''}
 
                   ${!isNew && fullDestination.description ? createEditEventDestinationTemplate(fullDestination) : ''}
                 </section>
@@ -152,26 +153,29 @@ export default class EditEventView extends AbstractStatefulView {
   #event = null;
   #handleSubmit = null;
   #handleCloseClick = null;
-  #getAllOffers = null;
-  #getDestination = null;
+  #allDestinations = null;
+  #allOffers = null;
   #sourcedState = null;
+  #allDestinationsNames = null;
 
 
-  constructor({ event, fullDestination, allOffers, allDestinations, onSubmit, onCloseClick, getAllOffers, getDestination } = DEFAULT_EVENT) {
+  constructor({ event, fullDestination, allDestinationsNames, onSubmit, onCloseClick, allDestinations, allOffers }) {
     super();
     this.#event = event || DEFAULT_EVENT;
-    this._setState({ ...event, fullDestination, allOffers, allDestinations });
-    this.#sourcedState = { ...event, fullDestination, allOffers, allDestinations };
+    this.#allDestinationsNames = allDestinationsNames;
+    this._setState({ ...event, fullDestination, allDestinationsNames });
+    this.#sourcedState = { ...event, fullDestination, allDestinationsNames };
     this.#handleSubmit = onSubmit;
+    this.#allOffers = allOffers;
+    this.#allDestinations = allDestinations;
+
     this.#handleCloseClick = onCloseClick;
-    this.#getDestination = getDestination;
-    this.#getAllOffers = getAllOffers;
     this._restoreHandlers();
 
   }
 
   get template() {
-    return createEditEventTemplate({ ...this._state, isNew: this.#event === DEFAULT_EVENT });
+    return createEditEventTemplate({ ...this._state, isNew: this.#event === DEFAULT_EVENT, typedOffers: getOffersByType(this.#allOffers, this._state.type) });
   }
 
   #submitHandler = (event) => {
@@ -188,7 +192,7 @@ export default class EditEventView extends AbstractStatefulView {
   static parseStateToEvent(state) {
     const newEvent = structuredClone(state);
     delete newEvent.allDestinations;
-    delete newEvent.allOffers;
+    delete newEvent.typedOffers;
     delete newEvent.fullDestination;
 
     return newEvent;
@@ -208,7 +212,7 @@ export default class EditEventView extends AbstractStatefulView {
   }
 
   #changeTypeHandler = (evt) => {
-    this.updateElement({ allOffers: this.#getAllOffers(evt.target.value), type: evt.target.value, offers: [] });
+    this.updateElement({ allOffers: getOffersByType(this.#allOffers, evt.target.value), type: evt.target.value, offers: [] });
 
   };
 
@@ -228,7 +232,7 @@ export default class EditEventView extends AbstractStatefulView {
   };
 
   #changeDestinationHandler = (evt) => {
-    const newDestination = this.#getDestination(evt.target.value) ?? this._state.fullDestination;
+    const newDestination = getDestinationByName(this.#allDestinations, evt.target.value) ?? this._state.fullDestination;
     this.updateElement({ fullDestination: newDestination, destination: newDestination.id });
   };
 

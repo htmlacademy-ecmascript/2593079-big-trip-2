@@ -17,13 +17,14 @@ export default class EventPresenter {
   #onDataChange = null;
   #handleModeChange;
   #mode = Mode.DEFAULT;
+  #allDestinationsNames = null;
 
-  constructor({ allDestinations, listComponent, eventsModel, onDataChange, onModeChange }) {
-    this.#allDestinations = allDestinations;
+  constructor({ listComponent, eventsModel, onDataChange, onModeChange, }) {
     this.#listComponent = listComponent;
     this.#eventsModel = eventsModel;
     this.#onDataChange = onDataChange;
     this.#handleModeChange = onModeChange;
+    this.#allDestinationsNames = this.#eventsModel.getAllDestinationsNames();
   }
 
   init = (event) => {
@@ -32,7 +33,8 @@ export default class EventPresenter {
     const type = event.type;
     const fullDestination = this.#eventsModel.getDestinationById(event.destination);
     const fullOffers = this.#eventsModel.getOffersById(event.offers, type);
-    const allOffers = this.#getAllOffers(type);
+    const allOffers = this.#eventsModel.getOffers();
+    const allDestinations = this.#eventsModel.getDestinations();
 
     const prevEventComponent = this.#eventComponent;
     const prevEditEventFormComponent = this.#editEventFormComponent;
@@ -54,10 +56,9 @@ export default class EventPresenter {
       event,
       fullDestination,
       allOffers,
-      allDestinations: this.#allDestinations,
+      allDestinations,
+      allDestinationsNames: this.#allDestinationsNames,
       onSubmit: this.#onFormSubmit,
-      getAllOffers: this.#getAllOffers,
-      getDestination: this.#getDestinationByName,
       onCloseClick: () => {
         this.#editEventFormComponent.reset();
         this.#replaceEditFormToEvent();
@@ -95,9 +96,6 @@ export default class EventPresenter {
     remove(this.#eventComponent);
     remove(this.#editEventFormComponent);
   }
-
-  #getAllOffers = (type) => this.#eventsModel.getOffersByType(type);
-
 
   #replaceEventToEditForm = () => {
     replace(this.#editEventFormComponent, this.#eventComponent);

@@ -22,10 +22,6 @@ export default class EventsModel {
     return this.destinations.find((dest) => dest.id === id);
   }
 
-  getOffersByType(type) {
-    return this.offers.find((offer) => offer.type === type).offers;
-  }
-
   getOffersById(idArray, type) {
     const typedOffers = this.offers.find((offer) => offer.type === type).offers;
     return typedOffers.filter((offer) => idArray.some((id) => offer.id === id));
@@ -39,8 +35,5 @@ export default class EventsModel {
     }, []);
   }
 
-  getDestinationByName(name) {
-    return this.destinations.find((dest) => dest.name === name);
-  }
 }
 

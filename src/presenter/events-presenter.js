@@ -1,9 +1,10 @@
 import { render } from '../framework/render.js';
-import { getFilters, SortFunctions, updateItem, FilterFunctions, sortNameAdapter, defaultSort } from '../utils.js';
 import EventsListView from '../view/events-list-view.js';
 import EventPresenter from './event-presenter.js';
 import EventsSortView from '../view/events-sort-view.js';
 import FiltersView from '../view/filters-view.js';
+import { defaultSort, FilterFunctions, getFilters, SortFunctions } from '../utils/time.js';
+import { sortNameAdapter, updateItem } from '../utils/utils.js';
 
 
 export default class EventsPresenter {
@@ -15,7 +16,6 @@ export default class EventsPresenter {
   #sourcedEvents;
   #filtersContainer;
   #listComponent;
-  #currentEvents;
   #sortComponent = null;
   #eventPresenters = new Map();
 
@@ -31,7 +31,6 @@ export default class EventsPresenter {
     this.#sourcedEvents = this.#events.slice();
     this.#destinations = [...this.#eventsModel.getDestinations()];
     this.#offers = [...this.#eventsModel.getOffers()];
-    this.#currentEvents = [...this.#eventsModel.getOffers()];
     this.#sortComponent = new EventsSortView({ onSortTypeChange: this.#handleSortChange });
     this.#renderFilters();
     render(this.#sortComponent, this.#eventsContainer);
@@ -83,8 +82,8 @@ export default class EventsPresenter {
 
     const eventPresenter = new EventPresenter({
       listComponent: this.#listComponent,
-      allDestinations: this.#eventsModel.getAllDestinationsNames(),
       eventsModel: this.#eventsModel,
+      allDestinations: this.#destinations,
       onDataChange: this.#handleEventChange,
       onModeChange: this.#resetEvents
     });

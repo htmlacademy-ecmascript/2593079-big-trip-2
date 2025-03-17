@@ -1,5 +1,7 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { getDatetime, getDiffTime, getOnlyDate, humanizeEventDate, humanizeEventTime, toUppercaseFirstLetter } from '../utils.js';
+import { getDatetime, getDiffTime, getOnlyDate, humanizeEventDate, humanizeEventTime } from '../utils/time.js';
+import { toUppercaseFirstLetter } from '../utils/utils.js';
+
 
 function createOffersEventTemplate(offers) {
 
