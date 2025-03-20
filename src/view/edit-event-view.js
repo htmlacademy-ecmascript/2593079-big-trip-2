@@ -1,12 +1,30 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import { DateTemplates, getTimeFromTemplate } from '../utils/time.js';
 import { getDestinationByName, getOffersByType, toUppercaseFirstLetter, toKebabCase } from '../utils/utils.js';
+import flatpickr from 'flatpickr';
+import 'flatpickr/dist/flatpickr.min.css';
 
 
 const EVENTS_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 const DEFAULT_EVENT = {
   basePrice: 0,
-  type: 'flight'
+  type: 'flight',
+  dateFrom: null,
+  dateTo: null,
+  destination: null,
+  isFavorite: false,
+  offers: [],
+};
+
+
+const datepickerSettings = {
+
+  dateFormat: 'Z',
+  enableTime: true,
+  utc: true,
+  altInput: true,
+  altFormat: 'j/n/y H:i'
+
 };
 
 function createDestinationPicturesTemplate(destination) {
@@ -105,6 +123,7 @@ function createEditEventTemplate({ basePrice, type, dateTo, dateFrom, allDestina
                     <label class="event__label  event__type-output" for="event-destination-1">
                       ${type}
                     </label>
+
                     <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${isNew ? '' : fullDestination.name}" list="destination-list-1">
                     ${createEditEventDestinationsListTemplate(allDestinationsNames)}
                   </div>
@@ -147,6 +166,8 @@ export default class EditEventView extends AbstractStatefulView {
   #allDestinations = null;
   #allOffers = null;
   #sourcedState = null;
+  #datepickerFrom = null;
+  #datepickerTo = null;
 
 
   constructor({ event, fullDestination, allDestinationsNames, onSubmit, onCloseClick, allDestinations, allOffers }) {
@@ -187,6 +208,47 @@ export default class EditEventView extends AbstractStatefulView {
     return newEvent;
   }
 
+  #setDatepickerFrom() {
+    this.#datepickerFrom = flatpickr(this.element.querySelector('#event-start-time-1'), {
+      ...datepickerSettings,
+      defaultDate: this._state.dateFrom,
+      maxDate: this._state.dateTo,
+      onClose: this.#closeDatepickerFromHandler,
+    });
+  }
+
+  #setDatepickerTo() {
+    this.#datepickerTo = flatpickr(this.element.querySelector('#event-end-time-1'), {
+      ...datepickerSettings,
+      defaultDate: this._state.dateTo,
+      minDate: this._state.dateFrom,
+      onClose: this.#closeDatepickerToHandler,
+    });
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this.#datepickerFrom) {
+      this.#datepickerFrom.destroy();
+      this.#datepickerFrom = null;
+    }
+    if (this.#datepickerTo) {
+      this.#datepickerTo.destroy();
+      this.#datepickerTo = null;
+    }
+  }
+
+  #closeDatepickerFromHandler = (_, dateStr) => {
+    this._setState({ dateFrom: dateStr });
+    this.#datepickerTo.set('minDate', this._state.dateFrom);
+  };
+
+  #closeDatepickerToHandler = (_, dateStr) => {
+    this._setState({ dateTo: dateStr });
+    this.#datepickerFrom.set('maxDate', this._state.dateTo);
+  };
+
   reset = () => {
     this.updateElement(this.#sourcedState);
   };
@@ -198,6 +260,8 @@ export default class EditEventView extends AbstractStatefulView {
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
     this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#changeOfferHandler);
     this.element.querySelector('.event__input--price').addEventListener('input', this.#changePriceHandler);
+    this.#setDatepickerFrom();
+    this.#setDatepickerTo();
   }
 
   #changeTypeHandler = (evt) => {
