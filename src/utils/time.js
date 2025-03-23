@@ -19,16 +19,16 @@ const DateTemplates = {
 
 
 const SortFunctions = {
-  SORT_DAY: (events) => events.sort((eventA, eventB) => dayjs(eventA.dateFrom) - dayjs(eventB.dateFrom)),
-  SORT_PRICE: (events) => events.sort((eventA, eventB) => eventB.basePrice - eventA.basePrice),
-  SORT_TIME: (events) => events.sort((eventA, eventB) => dayjs(eventB.dateTo).diff(dayjs(eventB.dateFrom)) - dayjs(eventA.dateTo).diff(dayjs(eventA.dateFrom))),
+  SORT_DAY: (events) => events.slice().sort((eventA, eventB) => dayjs(eventA.dateFrom) - dayjs(eventB.dateFrom)),
+  SORT_PRICE: (events) => events.slice().sort((eventA, eventB) => eventB.basePrice - eventA.basePrice),
+  SORT_TIME: (events) => events.slice().sort((eventA, eventB) => dayjs(eventB.dateTo).diff(dayjs(eventB.dateFrom)) - dayjs(eventA.dateTo).diff(dayjs(eventA.dateFrom))),
 };
 
 const FilterFunctions = {
-  [FilterTypes.EVERYTHING]: (events) => (events),
-  [FilterTypes.PAST]: (events) => events.filter((event) => dayjs().isAfter(dayjs(event.dateTo), 'd')),
-  [FilterTypes.PRESENT]: (events) => events.filter((event) => dayjs().isSameOrAfter(dayjs(event.dateFrom)) && dayjs().isSameOrBefore(event.dateTo), 'd'),
-  [FilterTypes.FUTURE]: (events) => events.filter((event) => dayjs().isBefore(dayjs(event.dateFrom), 'd'))
+  [FilterTypes.EVERYTHING]: (events) => events.slice(),
+  [FilterTypes.PAST]: (events) => events.slice().filter((event) => dayjs().isAfter(dayjs(event.dateTo), 'd')),
+  [FilterTypes.PRESENT]: (events) => events.slice().filter((event) => dayjs().isSameOrAfter(dayjs(event.dateFrom)) && dayjs().isSameOrBefore(event.dateTo), 'd'),
+  [FilterTypes.FUTURE]: (events) => events.slice().filter((event) => dayjs().isBefore(dayjs(event.dateFrom), 'd'))
 };
 
 const getFilters = (events) => ({

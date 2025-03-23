@@ -5,19 +5,19 @@ import EventsSortView from '../view/events-sort-view.js';
 import FiltersView from '../view/filters-view.js';
 import { defaultSort, FilterFunctions, getFilters, SortFunctions } from '../utils/time.js';
 import { sortNameAdapter, updateItem } from '../utils/utils.js';
+import { FilterTypes, SortTypes } from '../consts.js';
 
 
 export default class EventsPresenter {
   #destinations;
-  #events;
-  #offers;
   #eventsContainer;
   #eventsModel;
-  #sourcedEvents;
   #filtersContainer;
   #listComponent;
   #sortComponent = null;
   #eventPresenters = new Map();
+  #currentFilter = FilterTypes.EVERYTHING;
+  #currentSort = SortTypes.SORT_DAY;
 
   constructor({ eventsContainer, eventsModel }) {
     this.#eventsContainer = eventsContainer;
@@ -27,37 +27,41 @@ export default class EventsPresenter {
   }
 
   init() {
-    this.#events = defaultSort([...this.#eventsModel.getEvents()]);
-    this.#sourcedEvents = this.#events.slice();
     this.#destinations = [...this.#eventsModel.getDestinations()];
-    this.#offers = [...this.#eventsModel.getOffers()];
     this.#sortComponent = new EventsSortView({ onSortTypeChange: this.#handleSortChange });
     this.#renderFilters();
     render(this.#sortComponent, this.#eventsContainer);
     render(this.#listComponent, this.#eventsContainer);
+
     this.#renderEvents();
   }
 
+  get events() {
+    return SortFunctions[this.#currentSort](FilterFunctions[this.#currentFilter](this.#eventsModel.events));
+  }
+
   #renderFilters() {
-    const filters = getFilters(this.#events);
+    const filters = getFilters(this.events);
     render(new FiltersView({ filters, onFilterChange: this.#handleFilterChange }), this.#filtersContainer);
   }
 
   #renderEvents() {
-    for (let i = 0; i < this.#events.length; i++) {
-      this.#createEvent(this.#events[i]);
+    const events = this.events;
+    for (let i = 0; i < events.length; i++) {
+      this.#createEvent(events[i]);
     }
   }
 
   #handleFilterChange = (type) => {
+    this.#currentFilter = type.toUpperCase();
     this.#clearEventsList();
-    this.#events = defaultSort(FilterFunctions[type.toUpperCase()](this.#sourcedEvents.slice()));
+    this.#currentSort = SortTypes.SORT_DAY;
     this.#sortComponent.resetSort();
     this.#renderEvents();
   };
 
   #handleSortChange = (sortType) => {
-    this.#events = SortFunctions[sortNameAdapter(sortType)](this.#events);
+    this.#currentSort = sortNameAdapter(sortType);
     this.#clearEventsList();
     this.#renderEvents();
 
@@ -69,7 +73,6 @@ export default class EventsPresenter {
   };
 
   #handleEventChange = (newEventData) => {
-    this.#events = updateItem(this.#events, newEventData);
     this.#eventPresenters.get(newEventData.id).init(newEventData);
   };
 

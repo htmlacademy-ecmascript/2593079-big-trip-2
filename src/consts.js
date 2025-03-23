@@ -6,4 +6,10 @@ const FilterTypes = {
   PAST: 'PAST',
 };
 
-export { MOCK_EVENTS_COUNT, FilterTypes };
+const SortTypes = {
+  SORT_DAY: 'SORT_DAY',
+  SORT_PRICE: 'SORT_PRICE',
+  SORT_TIME: 'SORT_TIME'
+};
+
+export { MOCK_EVENTS_COUNT, FilterTypes, SortTypes };
