@@ -1,13 +1,8 @@
-import { UpdateTypes, UserActions } from '../consts';
+import { Mode, UpdateTypes, UserActions } from '../consts';
 import { remove, render, replace } from '../framework/render';
 import { isDatesEqual } from '../utils/time';
 import EditEventView from '../view/edit-event-view';
 import EventView from '../view/event-view';
-
-const Mode = {
-  DEFAULT: 'DEFAULT',
-  EDITING: 'EDITING'
-};
 
 export default class EventPresenter {
   #event = null;
