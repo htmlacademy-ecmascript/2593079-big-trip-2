@@ -6,6 +6,11 @@ const FilterTypes = {
   PAST: 'PAST',
 };
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING'
+};
+
 const SortTypes = {
   SORT_DAY: 'SORT_DAY',
   SORT_PRICE: 'SORT_PRICE',
@@ -26,5 +31,5 @@ const UpdateTypes = {
 
 export {
   MOCK_EVENTS_COUNT, FilterTypes, SortTypes,
-  UserActions, UpdateTypes
+  UserActions, UpdateTypes, Mode
 };

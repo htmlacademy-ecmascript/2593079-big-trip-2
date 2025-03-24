@@ -6,6 +6,7 @@ import { FilterFunctions, SortFunctions } from '../utils/time.js';
 import { sortNameAdapter } from '../utils/utils.js';
 import { SortTypes, UpdateTypes, UserActions } from '../consts.js';
 import NoEventsView from '../view/no-events-view.js';
+import NewEventBtnView from '../view/new-event-btn-view.js';
 
 
 export default class EventsPresenter {
@@ -17,21 +18,26 @@ export default class EventsPresenter {
   #sortComponent = null;
   #eventPresenters = new Map();
   #currentSort = SortTypes.SORT_DAY;
+  #newEventBtnComponent = null;
+  #newEventBtnContainer = null;
 
-  constructor({ eventsContainer, eventsModel, filterModel }) {
+  constructor({ eventsContainer, eventsModel, filterModel, newEventBtnContainer }) {
     this.#eventsContainer = eventsContainer;
+    this.#newEventBtnContainer = newEventBtnContainer;
     this.#listComponent = new EventsListView();
     this.#eventsModel = eventsModel;
     this.#filterModel = filterModel;
+    this.#destinations = [...this.#eventsModel.getDestinations()];
     this.#eventsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   init() {
-    this.#destinations = [...this.#eventsModel.getDestinations()];
+    this.#newEventBtnComponent = new NewEventBtnView({ onClick: this.#newEventBtnClickHandler });
+    render(this.#newEventBtnComponent, this.#newEventBtnContainer);
+
     this.initSort();
     render(this.#listComponent, this.#eventsContainer);
-
 
     this.#renderEvents();
   }
@@ -44,6 +50,9 @@ export default class EventsPresenter {
     return SortFunctions[this.#currentSort](filteredEvents);
 
   }
+
+  #newEventBtnClickHandler = () => {
+  };
 
   initSort() {
     if (!this.#sortComponent) {

@@ -6,16 +6,6 @@ import 'flatpickr/dist/flatpickr.min.css';
 
 
 const EVENTS_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
-const DEFAULT_EVENT = {
-  basePrice: 0,
-  type: 'flight',
-  dateFrom: null,
-  dateTo: null,
-  destination: null,
-  isFavorite: false,
-  offers: [],
-};
-
 
 const datepickerSettings = {
 
@@ -173,7 +163,7 @@ export default class EditEventView extends AbstractStatefulView {
 
   constructor({ event, fullDestination, allDestinationsNames, onSubmit, onCloseClick, onDeleteClick, allDestinations, allOffers }) {
     super();
-    this.#event = event || DEFAULT_EVENT;
+    this.#event = event;
     this._setState({ ...event, fullDestination, allDestinationsNames });
     this.#sourcedState = { ...event, fullDestination, allDestinationsNames };
     this.#handleSubmit = onSubmit;
@@ -187,7 +177,7 @@ export default class EditEventView extends AbstractStatefulView {
   }
 
   get template() {
-    return createEditEventTemplate({ ...this._state, isNew: this.#event === DEFAULT_EVENT, typedOffers: getOffersByType(this.#allOffers, this._state.type) });
+    return createEditEventTemplate({ ...this._state, typedOffers: getOffersByType(this.#allOffers, this._state.type) });
   }
 
   #submitHandler = (event) => {
@@ -206,6 +196,7 @@ export default class EditEventView extends AbstractStatefulView {
     delete newEvent.allDestinations;
     delete newEvent.typedOffers;
     delete newEvent.fullDestination;
+    delete newEvent.isNew;
 
     return newEvent;
   }
@@ -257,7 +248,7 @@ export default class EditEventView extends AbstractStatefulView {
 
   _restoreHandlers() {
     this.element.querySelector('form.event').addEventListener('submit', this.#submitHandler);
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickCloseHandler);
+    this.element.querySelector('.event__rollup-btn')?.addEventListener('click', this.#clickCloseHandler);
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#clickDeleteHandler);
     this.element.querySelector('.event__type-list').addEventListener('change', this.#changeTypeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
