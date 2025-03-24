@@ -12,4 +12,19 @@ const SortTypes = {
   SORT_TIME: 'SORT_TIME'
 };
 
-export { MOCK_EVENTS_COUNT, FilterTypes, SortTypes };
+const UserActions = {
+  UPDATE_EVENT: 'UPDATE_EVENT',
+  ADD_EVENT: 'ADD_EVENT',
+  DELETE_EVENT: 'DELETE_EVENT'
+};
+
+const UpdateTypes = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR'
+};
+
+export {
+  MOCK_EVENTS_COUNT, FilterTypes, SortTypes,
+  UserActions, UpdateTypes
+};

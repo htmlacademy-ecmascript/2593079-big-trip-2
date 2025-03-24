@@ -163,6 +163,7 @@ export default class EditEventView extends AbstractStatefulView {
   #event = null;
   #handleSubmit = null;
   #handleCloseClick = null;
+  #handleDeleteClick = null;
   #allDestinations = null;
   #allOffers = null;
   #sourcedState = null;
@@ -170,7 +171,7 @@ export default class EditEventView extends AbstractStatefulView {
   #datepickerTo = null;
 
 
-  constructor({ event, fullDestination, allDestinationsNames, onSubmit, onCloseClick, allDestinations, allOffers }) {
+  constructor({ event, fullDestination, allDestinationsNames, onSubmit, onCloseClick, onDeleteClick, allDestinations, allOffers }) {
     super();
     this.#event = event || DEFAULT_EVENT;
     this._setState({ ...event, fullDestination, allDestinationsNames });
@@ -178,6 +179,7 @@ export default class EditEventView extends AbstractStatefulView {
     this.#handleSubmit = onSubmit;
     this.#allOffers = allOffers;
     this.#allDestinations = allDestinations;
+    this.#handleDeleteClick = onDeleteClick;
 
     this.#handleCloseClick = onCloseClick;
     this._restoreHandlers();
@@ -256,6 +258,7 @@ export default class EditEventView extends AbstractStatefulView {
   _restoreHandlers() {
     this.element.querySelector('form.event').addEventListener('submit', this.#submitHandler);
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickCloseHandler);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#clickDeleteHandler);
     this.element.querySelector('.event__type-list').addEventListener('change', this.#changeTypeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
     this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#changeOfferHandler);
@@ -267,6 +270,11 @@ export default class EditEventView extends AbstractStatefulView {
   #changeTypeHandler = (evt) => {
     this.updateElement({ allOffers: getOffersByType(this.#allOffers, evt.target.value), type: evt.target.value, offers: [] });
 
+  };
+
+  #clickDeleteHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleDeleteClick(EditEventView.parseStateToEvent(this._state));
   };
 
   #changeOfferHandler = (evt) => {
