@@ -45,6 +45,7 @@ const humanizeEventTime = (date) => getTimeFromTemplate(DateTemplates.TIME_FORMA
 const getDatetime = (date) => getTimeFromTemplate(DateTemplates.DATETIME_FORMAT, date);
 const getOnlyDate = (date) => getTimeFromTemplate(DateTemplates.ONLY_DATE_FORMAT, date);
 
+const isDatesEqual = (dateA, dateB) => dayjs(dateA).isSame(dateB);
 const getDiffTime = (dateFrom, dateTo) => {
   dateTo = dayjs(dateTo);
 
@@ -57,4 +58,4 @@ function defaultSort(elements) {
   return SortFunctions.SORT_DAY(elements);
 }
 
-export { humanizeEventDate, humanizeEventTime, getDatetime, getOnlyDate, getDiffTime, DateTemplates, SortFunctions, FilterFunctions, getFilters, defaultSort, getTimeFromTemplate };
+export { humanizeEventDate, humanizeEventTime, getDatetime, getOnlyDate, getDiffTime, DateTemplates, SortFunctions, FilterFunctions, getFilters, defaultSort, getTimeFromTemplate, isDatesEqual };

@@ -1,4 +1,6 @@
+import { UpdateTypes, UserActions } from '../consts';
 import { remove, render, replace } from '../framework/render';
+import { isDatesEqual } from '../utils/time';
 import EditEventView from '../view/edit-event-view';
 import EventView from '../view/event-view';
 
@@ -9,7 +11,6 @@ const Mode = {
 
 export default class EventPresenter {
   #event = null;
-  #allDestinations = null;
   #listComponent = null;
   #eventsModel = null;
   #eventComponent = null;
@@ -58,6 +59,7 @@ export default class EventPresenter {
       allOffers,
       allDestinations,
       allDestinationsNames: this.#allDestinationsNames,
+      onDeleteClick: this.#handleDeleteClick,
       onSubmit: this.#onFormSubmit,
       onCloseClick: () => {
         this.#editEventFormComponent.reset();
@@ -85,6 +87,10 @@ export default class EventPresenter {
 
   };
 
+  #handleDeleteClick = (data) => {
+    this.#onDataChange(UserActions.DELETE_EVENT, UpdateTypes.MINOR, data);
+  };
+
   resetView() {
     if (this.#mode === Mode.EDITING) {
       this.#editEventFormComponent.reset();
@@ -110,7 +116,7 @@ export default class EventPresenter {
   }
 
   #handleFavoriteClick = () => {
-    this.#onDataChange({ ...this.#event, isFavorite: !this.#event.isFavorite });
+    this.#onDataChange(UserActions.UPDATE_EVENT, UpdateTypes.MINOR, { ...this.#event, isFavorite: !this.#event.isFavorite });
   };
 
   #onEscKeyDown = (evt) => {
@@ -122,12 +128,14 @@ export default class EventPresenter {
     }
   };
 
-  #onFormSubmit = (event) => {
-    this.#onDataChange(event);
+  #onFormSubmit = (update) => {
+    const isMinorUpdate = (!isDatesEqual(this.#event.dateFrom, update.dateFrom) || !isDatesEqual(this.#event.dateTo, update.dateTo))
+      || this.#event.basePrice !== update.basePrice;
+    this.#onDataChange(UserActions.UPDATE_EVENT, isMinorUpdate ? UpdateTypes.MINOR : UpdateTypes.PATCH, update);
     this.#replaceEditFormToEvent();
     document.removeEventListener('keydown', this.#onEscKeyDown);
   };
 
-  #getDestinationByName = (name) => this.#eventsModel.getDestinationByName(name);
+  // #getDestinationByName = (name) => this.#eventsModel.getDestinationByName(name);
 
 }

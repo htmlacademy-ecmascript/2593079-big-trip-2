@@ -1,9 +1,15 @@
 import EventsModel from './model/events-model.js';
+import FilterModel from './model/filter-model.js';
 import EventsPresenter from './presenter/events-presenter.js';
+import FilterPresenter from './presenter/filter-presenter.js';
 
-const eventsListContainer = document.querySelector('.trip-events');
+const eventsContainer = document.querySelector('.trip-events');
+const filterContainer = document.querySelector('.trip-controls__filters');
 const eventsModel = new EventsModel();
-const eventsPresenter = new EventsPresenter({ eventsContainer: eventsListContainer, eventsModel });
+const filterModel = new FilterModel();
+const eventsPresenter = new EventsPresenter({ eventsContainer, eventsModel, filterModel });
+const filterPresenter = new FilterPresenter({ filterModel, eventsModel, filterContainer });
 
+filterPresenter.init();
 eventsPresenter.init();
 
