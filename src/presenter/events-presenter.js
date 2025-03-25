@@ -22,6 +22,7 @@ export default class EventsPresenter {
   #newEventBtnComponent = null;
   #newEventBtnContainer = null;
   #newEventPresenter = null;
+  #noEventComponent = null;
 
   constructor({ eventsContainer, eventsModel, filterModel, newEventBtnContainer }) {
     this.#eventsContainer = eventsContainer;
@@ -48,7 +49,6 @@ export default class EventsPresenter {
     const filterType = this.#filterModel.filter;
     const events = this.#eventsModel.events;
     const filteredEvents = FilterFunctions[filterType](events);
-
     return SortFunctions[this.#currentSort](filteredEvents);
 
   }
@@ -57,6 +57,7 @@ export default class EventsPresenter {
     this.#newEventBtnComponent.element.disabled = true;
     this.#filterModel.setFilter(UpdateTypes.MAJOR, FilterTypes.EVERYTHING);
     this.#resetEvents();
+    this.#clearNoEvent();
     this.#createNewEvent();
   };
 
@@ -77,6 +78,10 @@ export default class EventsPresenter {
         onDataChange: this.#handleViewAction,
         handleCloseClick: () => {
           this.#newEventBtnComponent.element.disabled = false;
+          if (this.events.length === 0) {
+            this.#clearNoEvent();
+            this.#createNoEvent();
+          }
         }
       });
       this.#newEventPresenter = newEventPresenter;
@@ -84,16 +89,27 @@ export default class EventsPresenter {
     this.#newEventPresenter.init();
   };
 
+  #createNoEvent() {
+    this.#noEventComponent = new NoEventsView(this.#filterModel.filter);
+    render(this.#noEventComponent, this.#eventsContainer);
+  }
+
   #renderEvents() {
     const events = this.events;
-
     if (events.length === 0) {
+      this.#createNoEvent();
       remove(this.#sortComponent);
-      render(new NoEventsView(this.#filterModel.filter), this.#eventsContainer);
     } else {
       for (let i = 0; i < events.length; i++) {
         this.#createEvent(events[i]);
       }
+    }
+  }
+
+  #clearNoEvent() {
+    if (this.#noEventComponent) {
+      remove(this.#noEventComponent);
+      this.#noEventComponent = null;
     }
   }
 
@@ -127,10 +143,12 @@ export default class EventsPresenter {
         break;
       case UpdateTypes.MINOR:
         this.#clearEventsList({});
+        this.#clearNoEvent();
         this.#renderEvents();
         break;
       case UpdateTypes.MAJOR:
         this.#clearEventsList({});
+        this.#clearNoEvent();
         this.#resetSort();
         this.#renderEvents();
         break;
