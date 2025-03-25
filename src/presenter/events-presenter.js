@@ -21,6 +21,7 @@ export default class EventsPresenter {
   #currentSort = SortTypes.SORT_DAY;
   #newEventBtnComponent = null;
   #newEventBtnContainer = null;
+  #newEventPresenter = null;
 
   constructor({ eventsContainer, eventsModel, filterModel, newEventBtnContainer }) {
     this.#eventsContainer = eventsContainer;
@@ -54,6 +55,7 @@ export default class EventsPresenter {
 
   #newEventBtnClickHandler = () => {
     this.#newEventBtnComponent.element.disabled = true;
+    this.#resetEvents();
     this.#createNewEvent();
   };
 
@@ -65,17 +67,20 @@ export default class EventsPresenter {
   }
 
   #createNewEvent = () => {
-    const newEventPresenter = new NewEventPresenter({
-      listComponent: this.#listComponent,
-      eventsModel: this.#eventsModel,
-      allDestinations: this.#destinations,
-      onDataChange: this.#handleViewAction,
-      handleCancelClick: () => {
-        this.#newEventBtnComponent.element.disabled = false;
-      }
-    });
 
-    newEventPresenter.init();
+    if (!this.#newEventPresenter) {
+      const newEventPresenter = new NewEventPresenter({
+        listComponent: this.#listComponent,
+        eventsModel: this.#eventsModel,
+        allDestinations: this.#destinations,
+        onDataChange: this.#handleViewAction,
+        handleCloseClick: () => {
+          this.#newEventBtnComponent.element.disabled = false;
+        }
+      });
+      this.#newEventPresenter = newEventPresenter;
+    }
+    this.#newEventPresenter.init();
   };
 
   #renderEvents() {

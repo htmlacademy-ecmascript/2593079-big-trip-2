@@ -181,9 +181,11 @@ export default class EditEventView extends AbstractStatefulView {
 
   #submitHandler = (event) => {
     event.preventDefault();
+    if (this._state.dateFrom && this._state.dateTo) {
+      this.#event = EditEventView.parseStateToEvent(this._state);
+      this.#handleSubmit(this.#event);
+    }
 
-    this.#event = EditEventView.parseStateToEvent(this._state);
-    this.#handleSubmit(this.#event);
   };
 
   #clickCloseHandler = (event) => {

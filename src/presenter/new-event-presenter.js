@@ -8,31 +8,25 @@ export default class NewEventPresenter {
   // #event = null;
   #listComponent = null;
   #eventsModel = null;
-  #eventComponent = null;
   #editEventFormComponent = null;
   #onDataChange = null;
   #allDestinationsNames = null;
-  #handleCancelClick = null;
+  #handleCloseClick = null;
 
-  constructor({ listComponent, eventsModel, onDataChange, handleCancelClick }) {
+  constructor({ listComponent, eventsModel, onDataChange, handleCloseClick }) {
     this.#listComponent = listComponent;
     this.#eventsModel = eventsModel;
     this.#onDataChange = onDataChange;
-    this.#handleCancelClick = handleCancelClick;
-    // this.#handleModeChange = onModeChange;
+    this.#handleCloseClick = handleCloseClick;
     this.#allDestinationsNames = this.#eventsModel.getAllDestinationsNames();
   }
 
   init() {
     const event = getNewEvent();
-    // const type = event.type;
     const fullDestination = this.#eventsModel.getDestinationById(event.destination);
-    // const fullOffers = this.#eventsModel.getOffersById(event.offers, type);
     const allOffers = this.#eventsModel.getOffers();
     const allDestinations = this.#eventsModel.getDestinations();
-
-    // const prevEventComponent = this.#eventComponent;
-    // const prevEditEventFormComponent = this.#editEventFormComponent;
+    document.addEventListener('keydown', this.#onEscKeyDown);
 
     this.#editEventFormComponent = new EditEventView({
       event,
@@ -53,19 +47,24 @@ export default class NewEventPresenter {
   #onEscKeyDown = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
+      this.destroy();
       document.removeEventListener('keydown', this.#onEscKeyDown);
+      this.#handleCloseClick();
+
     }
   };
 
   #onFormSubmit = (update) => {
-
     this.#onDataChange(UserActions.ADD_EVENT, UpdateTypes.MAJOR, update);
     document.removeEventListener('keydown', this.#onEscKeyDown);
+    this.#handleCloseClick();
+    this.destroy();
   };
 
   #cancelClickHandler = () => {
     this.destroy();
-    this.#handleCancelClick();
+    document.removeEventListener('keydown', this.#onEscKeyDown);
+    this.#handleCloseClick();
   };
 
 
