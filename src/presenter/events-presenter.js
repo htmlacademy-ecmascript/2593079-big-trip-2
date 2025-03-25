@@ -144,7 +144,7 @@ export default class EventsPresenter {
 
   #resetEvents = () => {
     this.#eventPresenters.forEach((presenter) => presenter.resetView());
-
+    this.#newEventPresenter?.destroy();
   };
 
   #clearEventsList({ resetSort = false }) {

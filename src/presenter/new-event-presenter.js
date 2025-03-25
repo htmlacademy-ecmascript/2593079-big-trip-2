@@ -49,7 +49,6 @@ export default class NewEventPresenter {
       evt.preventDefault();
       this.destroy();
       document.removeEventListener('keydown', this.#onEscKeyDown);
-      this.#handleCloseClick();
 
     }
   };
@@ -57,18 +56,17 @@ export default class NewEventPresenter {
   #onFormSubmit = (update) => {
     this.#onDataChange(UserActions.ADD_EVENT, UpdateTypes.MAJOR, update);
     document.removeEventListener('keydown', this.#onEscKeyDown);
-    this.#handleCloseClick();
     this.destroy();
   };
 
   #cancelClickHandler = () => {
     this.destroy();
     document.removeEventListener('keydown', this.#onEscKeyDown);
-    this.#handleCloseClick();
   };
 
 
   destroy() {
+    this.#handleCloseClick();
     remove(this.#editEventFormComponent);
   }
 
