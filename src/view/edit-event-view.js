@@ -129,10 +129,10 @@ function createEditEventTemplate({ basePrice, type, dateTo, dateFrom, allDestina
 
                   <div class="event__field-group  event__field-group--price">
                     <label class="event__label" for="event-price-1">
-                      <span class="visually-hidden">${he.encode(basePrice)}</span>
+                      <span class="visually-hidden">${he.encode(basePrice.toString())}</span>
                       €
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(basePrice)}">
+                    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(basePrice.toString())}">
                   </div>
 
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -297,15 +297,19 @@ export default class EditEventView extends AbstractStatefulView {
   };
 
   #changePriceHandler = (evt) => {
-    const newValue = evt.target.value;
+    let newValue = evt.target.value;
+    const validNumber = /^(0|[1-9]\d*)$/;
 
     if (newValue === '') {
       evt.target.value = '0';
       this._setState({ basePrice: 0 });
       return;
     }
-    const onlyDigits = /^\d+$/;
-    const newPrice = onlyDigits.test(newValue) ? newValue : this.#event.basePrice;
+    if (newValue.length > 1 && newValue.startsWith('0')) {
+      newValue = newValue.replace(/^0+/, '');
+    }
+
+    const newPrice = validNumber.test(newValue) ? newValue : this._state.basePrice;
 
     evt.target.value = newPrice;
 
