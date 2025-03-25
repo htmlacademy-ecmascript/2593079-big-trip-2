@@ -114,16 +114,16 @@ function createEditEventTemplate({ basePrice, type, dateTo, dateFrom, allDestina
                       ${type}
                     </label>
 
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${isNew ? '' : fullDestination.name}" list="destination-list-1">
+                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${!fullDestination?.name ? '' : fullDestination.name}" list="destination-list-1" required>
                     ${createEditEventDestinationsListTemplate(allDestinationsNames)}
                   </div>
 
                   <div class="event__field-group  event__field-group--time">
                     <label class="visually-hidden" for="event-start-time-1">From</label>
-                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getTimeFromTemplate(DateTemplates.DATETIME_INPUT_FORMAT, dateFrom)}">
+                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getTimeFromTemplate(DateTemplates.DATETIME_INPUT_FORMAT, dateFrom)}" required>
                     —
                     <label class="visually-hidden" for="event-end-time-1">To</label>
-                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getTimeFromTemplate(DateTemplates.DATETIME_INPUT_FORMAT, dateTo)}">
+                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getTimeFromTemplate(DateTemplates.DATETIME_INPUT_FORMAT, dateTo)}" required>
                   </div>
 
                   <div class="event__field-group  event__field-group--price">
@@ -136,14 +136,14 @@ function createEditEventTemplate({ basePrice, type, dateTo, dateFrom, allDestina
 
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
                   <button class="event__reset-btn" type="reset">${isNew ? 'Cancel' : 'Delete'}</button>
-                  ${!isNew ? createEditEventRollupBtnTemplate() : ''}
+                  ${!name ? createEditEventRollupBtnTemplate() : ''}
                     <span class="visually-hidden">Open event</span>
                   </button>
                 </header>
                 <section class="event__details">
-                  ${!isNew && typedOffers.length ? createEditEventOffersTemplate({ offers, typedOffers }) : ''}
+                  ${typedOffers.length ? createEditEventOffersTemplate({ offers, typedOffers }) : ''}
 
-                  ${!isNew && fullDestination.description ? createEditEventDestinationTemplate(fullDestination) : ''}
+                  ${fullDestination?.name && fullDestination.description ? createEditEventDestinationTemplate(fullDestination) : ''}
                 </section>
               </form>
             </li>`;
@@ -161,7 +161,7 @@ export default class EditEventView extends AbstractStatefulView {
   #datepickerTo = null;
 
 
-  constructor({ event, fullDestination, allDestinationsNames, onSubmit, onCloseClick, onDeleteClick, allDestinations, allOffers }) {
+  constructor({ event, fullDestination, allDestinationsNames, onSubmit, onCloseClick, onDeleteClick, allDestinations, allOffers, }) {
     super();
     this.#event = event;
     this._setState({ ...event, fullDestination, allDestinationsNames });
@@ -170,7 +170,6 @@ export default class EditEventView extends AbstractStatefulView {
     this.#allOffers = allOffers;
     this.#allDestinations = allDestinations;
     this.#handleDeleteClick = onDeleteClick;
-
     this.#handleCloseClick = onCloseClick;
     this._restoreHandlers();
 
@@ -182,6 +181,7 @@ export default class EditEventView extends AbstractStatefulView {
 
   #submitHandler = (event) => {
     event.preventDefault();
+
     this.#event = EditEventView.parseStateToEvent(this._state);
     this.#handleSubmit(this.#event);
   };
@@ -285,6 +285,7 @@ export default class EditEventView extends AbstractStatefulView {
 
   #changeDestinationHandler = (evt) => {
     const newDestination = getDestinationByName(this.#allDestinations, evt.target.value) ?? this._state.fullDestination;
+
     this.updateElement({ fullDestination: newDestination, destination: newDestination.id });
   };
 

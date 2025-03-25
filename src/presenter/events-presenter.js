@@ -7,6 +7,7 @@ import { sortNameAdapter } from '../utils/utils.js';
 import { SortTypes, UpdateTypes, UserActions } from '../consts.js';
 import NoEventsView from '../view/no-events-view.js';
 import NewEventBtnView from '../view/new-event-btn-view.js';
+import NewEventPresenter from './new-event-presenter.js';
 
 
 export default class EventsPresenter {
@@ -52,6 +53,8 @@ export default class EventsPresenter {
   }
 
   #newEventBtnClickHandler = () => {
+    this.#newEventBtnComponent.element.disabled = true;
+    this.#createNewEvent();
   };
 
   initSort() {
@@ -60,6 +63,20 @@ export default class EventsPresenter {
       render(this.#sortComponent, this.#eventsContainer);
     }
   }
+
+  #createNewEvent = () => {
+    const newEventPresenter = new NewEventPresenter({
+      listComponent: this.#listComponent,
+      eventsModel: this.#eventsModel,
+      allDestinations: this.#destinations,
+      onDataChange: this.#handleViewAction,
+      handleCancelClick: () => {
+        this.#newEventBtnComponent.element.disabled = false;
+      }
+    });
+
+    newEventPresenter.init();
+  };
 
   #renderEvents() {
     const events = this.events;
