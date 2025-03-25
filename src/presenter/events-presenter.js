@@ -4,7 +4,7 @@ import EventPresenter from './event-presenter.js';
 import EventsSortView from '../view/events-sort-view.js';
 import { FilterFunctions, SortFunctions } from '../utils/time.js';
 import { sortNameAdapter } from '../utils/utils.js';
-import { SortTypes, UpdateTypes, UserActions } from '../consts.js';
+import { FilterTypes, SortTypes, UpdateTypes, UserActions } from '../consts.js';
 import NoEventsView from '../view/no-events-view.js';
 import NewEventBtnView from '../view/new-event-btn-view.js';
 import NewEventPresenter from './new-event-presenter.js';
@@ -55,6 +55,7 @@ export default class EventsPresenter {
 
   #newEventBtnClickHandler = () => {
     this.#newEventBtnComponent.element.disabled = true;
+    this.#filterModel.setFilter(UpdateTypes.MAJOR, FilterTypes.EVERYTHING);
     this.#resetEvents();
     this.#createNewEvent();
   };
