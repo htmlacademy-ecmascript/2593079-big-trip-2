@@ -3,6 +3,7 @@ import { DateTemplates, getTimeFromTemplate } from '../utils/time.js';
 import { getDestinationByName, getOffersByType, toUppercaseFirstLetter, toKebabCase } from '../utils/utils.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import he from 'he';
 
 
 const EVENTS_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
@@ -114,9 +115,9 @@ function createEditEventTemplate({ basePrice, type, dateTo, dateFrom, allDestina
                       ${type}
                     </label>
 
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${!fullDestination?.name ? '' : fullDestination.name}" list="destination-list-1" required>
+                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(!fullDestination?.name ? '' : fullDestination.name)} " list="destination - list - 1" required>
                     ${createEditEventDestinationsListTemplate(allDestinationsNames)}
-                  </div>
+                  </div >
 
                   <div class="event__field-group  event__field-group--time">
                     <label class="visually-hidden" for="event-start-time-1">From</label>
@@ -145,8 +146,8 @@ function createEditEventTemplate({ basePrice, type, dateTo, dateFrom, allDestina
 
                   ${fullDestination?.name && fullDestination.description ? createEditEventDestinationTemplate(fullDestination) : ''}
                 </section>
-              </form>
-            </li>`;
+              </form >
+            </li > `;
 }
 
 export default class EditEventView extends AbstractStatefulView {
@@ -287,17 +288,25 @@ export default class EditEventView extends AbstractStatefulView {
 
   #changeDestinationHandler = (evt) => {
     const newDestination = getDestinationByName(this.#allDestinations, evt.target.value) ?? this._state.fullDestination;
+    if (!newDestination) {
+      evt.target.value = '';
+      return;
+    }
 
     this.updateElement({ fullDestination: newDestination, destination: newDestination.id });
   };
 
   #changePriceHandler = (evt) => {
-    const onlyDigits = /^\d+$/;
     const newValue = evt.target.value;
-    const newPrice = onlyDigits.test(newValue) ? newValue : this.#event.basePrice;
+
     if (newValue === '') {
-      newPrice = 0;
+      evt.target.value = '0';
+      this._setState({ basePrice: 0 });
+      return;
     }
+    const onlyDigits = /^\d+$/;
+    const newPrice = onlyDigits.test(newValue) ? newValue : this.#event.basePrice;
+
     evt.target.value = newPrice;
 
     this._setState({ basePrice: newPrice });
