@@ -136,7 +136,7 @@ function createEditEventTemplate({ basePrice, type, dateTo, dateFrom, allDestina
 
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
                   <button class="event__reset-btn" type="reset">${isNew ? 'Cancel' : 'Delete'}</button>
-                  ${!name ? createEditEventRollupBtnTemplate() : ''}
+                  ${!isNew ? createEditEventRollupBtnTemplate() : ''}
                     <span class="visually-hidden">Open event</span>
                   </button>
                 </header>
@@ -292,7 +292,15 @@ export default class EditEventView extends AbstractStatefulView {
   };
 
   #changePriceHandler = (evt) => {
-    this._setState({ basePrice: evt.target.value });
+    const onlyDigits = /^\d+$/;
+    const newValue = evt.target.value;
+    const newPrice = onlyDigits.test(newValue) ? newValue : this.#event.basePrice;
+    if (newValue === '') {
+      newPrice = 0;
+    }
+    evt.target.value = newPrice;
+
+    this._setState({ basePrice: newPrice });
   };
 
 }
