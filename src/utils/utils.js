@@ -27,7 +27,6 @@ const getRandomArrayElements = (elements, count) => {
 const getNewEvent = () => ({
   basePrice: 0,
   id: nanoid(),
-  name: null,
   type: 'flight',
   dateFrom: null,
   dateTo: null,

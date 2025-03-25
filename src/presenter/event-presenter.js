@@ -129,6 +129,8 @@ export default class EventPresenter {
     this.#onDataChange(UserActions.UPDATE_EVENT, isMinorUpdate ? UpdateTypes.MINOR : UpdateTypes.PATCH, update);
     this.#replaceEditFormToEvent();
     document.removeEventListener('keydown', this.#onEscKeyDown);
+
+
   };
 
   // #getDestinationByName = (name) => this.#eventsModel.getDestinationByName(name);

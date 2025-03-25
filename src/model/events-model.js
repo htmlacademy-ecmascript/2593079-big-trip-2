@@ -33,11 +33,14 @@ export default class EventsModel extends Observable {
       ...this.#events
     ];
 
+    console.log(update, this.#events, 'ADDED')
     this._notify(updateType, update);
+
 
   }
 
   deleteEvent(updateType, update) {
+
     const index = this.events.findIndex((event) => event.id === update.id);
 
     if (index === -1) {
