@@ -144,14 +144,12 @@ export default class EventsPresenter {
         this.#eventPresenters.get(data.id).init(data);
         break;
       case UpdateTypes.MINOR:
-        console.log('MINOR')
 
         this.#clearEventsList();
         this.#clearNoEvent();
         this.#renderEvents();
         break;
       case UpdateTypes.MAJOR:
-        console.log('MAJOR')
 
         this.#clearEventsList();
         this.#clearNoEvent();
