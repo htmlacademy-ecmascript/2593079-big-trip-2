@@ -1,4 +1,4 @@
-import { remove, render } from '../framework/render.js';
+import { remove, render, RenderPosition } from '../framework/render.js';
 import EventsListView from '../view/events-list-view.js';
 import EventPresenter from './event-presenter.js';
 import EventsSortView from '../view/events-sort-view.js';
@@ -64,7 +64,7 @@ export default class EventsPresenter {
   initSort() {
     if (!this.#sortComponent) {
       this.#sortComponent = new EventsSortView({ onSortTypeChange: this.#handleSortChange });
-      render(this.#sortComponent, this.#eventsContainer);
+      render(this.#sortComponent, this.#eventsContainer, RenderPosition.AFTERBEGIN);
     }
   }
 
@@ -99,7 +99,9 @@ export default class EventsPresenter {
     if (events.length === 0) {
       this.#createNoEvent();
       remove(this.#sortComponent);
+      this.#sortComponent = null;
     } else {
+      this.initSort();
       for (let i = 0; i < events.length; i++) {
         this.#createEvent(events[i]);
       }
@@ -115,7 +117,7 @@ export default class EventsPresenter {
 
   #handleSortChange = (sortType) => {
     this.#currentSort = sortNameAdapter(sortType);
-    this.#clearEventsList({});
+    this.#clearEventsList();
     this.#renderEvents();
 
   };
@@ -142,13 +144,18 @@ export default class EventsPresenter {
         this.#eventPresenters.get(data.id).init(data);
         break;
       case UpdateTypes.MINOR:
-        this.#clearEventsList({});
+        console.log('MINOR')
+
+        this.#clearEventsList();
         this.#clearNoEvent();
         this.#renderEvents();
         break;
       case UpdateTypes.MAJOR:
-        this.#clearEventsList({});
+        console.log('MAJOR')
+
+        this.#clearEventsList();
         this.#clearNoEvent();
+        this.initSort();
         this.#resetSort();
         this.#renderEvents();
         break;
@@ -157,7 +164,8 @@ export default class EventsPresenter {
   };
 
   #resetSort() {
-    this.#sortComponent.resetSort();
+
+    this.#sortComponent?.resetSort();
     this.#currentSort = SortTypes.SORT_DAY;
   }
 
@@ -166,14 +174,9 @@ export default class EventsPresenter {
     this.#newEventPresenter?.destroy();
   };
 
-  #clearEventsList({ resetSort = false }) {
+  #clearEventsList() {
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPresenters.clear();
-
-    if (resetSort) {
-      this.#currentSort = SortTypes.SORT_DAY;
-      this.#sortComponent.resetSort();
-    }
 
   }
 
