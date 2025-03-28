@@ -3,19 +3,10 @@ import { DateTemplates, getTimeFromTemplate } from '../utils/time.js';
 import { getDestinationByName, getOffersByType, toUppercaseFirstLetter, toKebabCase } from '../utils/utils.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import he from 'he';
 
 
 const EVENTS_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
-const DEFAULT_EVENT = {
-  basePrice: 0,
-  type: 'flight',
-  dateFrom: null,
-  dateTo: null,
-  destination: null,
-  isFavorite: false,
-  offers: [],
-};
-
 
 const datepickerSettings = {
 
@@ -124,24 +115,24 @@ function createEditEventTemplate({ basePrice, type, dateTo, dateFrom, allDestina
                       ${type}
                     </label>
 
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${isNew ? '' : fullDestination.name}" list="destination-list-1">
+                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(!fullDestination?.name ? '' : fullDestination.name)}" list="destination-list-1" required>
                     ${createEditEventDestinationsListTemplate(allDestinationsNames)}
-                  </div>
+                  </div >
 
                   <div class="event__field-group  event__field-group--time">
                     <label class="visually-hidden" for="event-start-time-1">From</label>
-                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getTimeFromTemplate(DateTemplates.DATETIME_INPUT_FORMAT, dateFrom)}">
+                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getTimeFromTemplate(DateTemplates.DATETIME_INPUT_FORMAT, dateFrom)}" >
                     —
                     <label class="visually-hidden" for="event-end-time-1">To</label>
-                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getTimeFromTemplate(DateTemplates.DATETIME_INPUT_FORMAT, dateTo)}">
+                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getTimeFromTemplate(DateTemplates.DATETIME_INPUT_FORMAT, dateTo)}" >
                   </div>
 
                   <div class="event__field-group  event__field-group--price">
                     <label class="event__label" for="event-price-1">
-                      <span class="visually-hidden">${basePrice}</span>
+                      <span class="visually-hidden">${he.encode(basePrice.toString())}</span>
                       €
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}">
+                    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(basePrice.toString())}">
                   </div>
 
                   <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -151,18 +142,19 @@ function createEditEventTemplate({ basePrice, type, dateTo, dateFrom, allDestina
                   </button>
                 </header>
                 <section class="event__details">
-                  ${!isNew && typedOffers.length ? createEditEventOffersTemplate({ offers, typedOffers }) : ''}
+                  ${typedOffers.length ? createEditEventOffersTemplate({ offers, typedOffers }) : ''}
 
-                  ${!isNew && fullDestination.description ? createEditEventDestinationTemplate(fullDestination) : ''}
+                  ${fullDestination?.name && fullDestination.description ? createEditEventDestinationTemplate(fullDestination) : ''}
                 </section>
-              </form>
-            </li>`;
+              </form >
+            </li > `;
 }
 
 export default class EditEventView extends AbstractStatefulView {
   #event = null;
   #handleSubmit = null;
   #handleCloseClick = null;
+  #handleDeleteClick = null;
   #allDestinations = null;
   #allOffers = null;
   #sourcedState = null;
@@ -170,28 +162,31 @@ export default class EditEventView extends AbstractStatefulView {
   #datepickerTo = null;
 
 
-  constructor({ event, fullDestination, allDestinationsNames, onSubmit, onCloseClick, allDestinations, allOffers }) {
+  constructor({ event, fullDestination, allDestinationsNames, onSubmit, onCloseClick, onDeleteClick, allDestinations, allOffers, }) {
     super();
-    this.#event = event || DEFAULT_EVENT;
+    this.#event = event;
     this._setState({ ...event, fullDestination, allDestinationsNames });
     this.#sourcedState = { ...event, fullDestination, allDestinationsNames };
     this.#handleSubmit = onSubmit;
     this.#allOffers = allOffers;
     this.#allDestinations = allDestinations;
-
+    this.#handleDeleteClick = onDeleteClick;
     this.#handleCloseClick = onCloseClick;
     this._restoreHandlers();
 
   }
 
   get template() {
-    return createEditEventTemplate({ ...this._state, isNew: this.#event === DEFAULT_EVENT, typedOffers: getOffersByType(this.#allOffers, this._state.type) });
+    return createEditEventTemplate({ ...this._state, typedOffers: getOffersByType(this.#allOffers, this._state.type) });
   }
 
   #submitHandler = (event) => {
     event.preventDefault();
-    this.#event = EditEventView.parseStateToEvent(this._state);
-    this.#handleSubmit(this.#event);
+    if (this._state.dateFrom && this._state.dateTo) {
+      this.#event = EditEventView.parseStateToEvent(this._state);
+      this.#handleSubmit(this.#event);
+    }
+
   };
 
   #clickCloseHandler = (event) => {
@@ -204,6 +199,7 @@ export default class EditEventView extends AbstractStatefulView {
     delete newEvent.allDestinations;
     delete newEvent.typedOffers;
     delete newEvent.fullDestination;
+    delete newEvent.isNew;
 
     return newEvent;
   }
@@ -255,7 +251,8 @@ export default class EditEventView extends AbstractStatefulView {
 
   _restoreHandlers() {
     this.element.querySelector('form.event').addEventListener('submit', this.#submitHandler);
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#clickCloseHandler);
+    this.element.querySelector('.event__rollup-btn')?.addEventListener('click', this.#clickCloseHandler);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#clickDeleteHandler);
     this.element.querySelector('.event__type-list').addEventListener('change', this.#changeTypeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
     this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#changeOfferHandler);
@@ -267,6 +264,11 @@ export default class EditEventView extends AbstractStatefulView {
   #changeTypeHandler = (evt) => {
     this.updateElement({ allOffers: getOffersByType(this.#allOffers, evt.target.value), type: evt.target.value, offers: [] });
 
+  };
+
+  #clickDeleteHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleDeleteClick(EditEventView.parseStateToEvent(this._state));
   };
 
   #changeOfferHandler = (evt) => {
@@ -286,11 +288,32 @@ export default class EditEventView extends AbstractStatefulView {
 
   #changeDestinationHandler = (evt) => {
     const newDestination = getDestinationByName(this.#allDestinations, evt.target.value) ?? this._state.fullDestination;
+    if (!newDestination) {
+      evt.target.value = '';
+      return;
+    }
+
     this.updateElement({ fullDestination: newDestination, destination: newDestination.id });
   };
 
   #changePriceHandler = (evt) => {
-    this._setState({ basePrice: evt.target.value });
+    let newValue = evt.target.value;
+    const validNumber = /^(0|[1-9]\d*)$/;
+
+    if (newValue === '') {
+      evt.target.value = '0';
+      this._setState({ basePrice: 0 });
+      return;
+    }
+    if (newValue.length > 1 && newValue.startsWith('0')) {
+      newValue = newValue.replace(/^0+/, '');
+    }
+
+    const newPrice = validNumber.test(newValue) ? newValue : this._state.basePrice;
+
+    evt.target.value = newPrice;
+
+    this._setState({ basePrice: newPrice });
   };
 
 }

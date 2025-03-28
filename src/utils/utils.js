@@ -1,3 +1,5 @@
+import { nanoid } from 'nanoid';
+
 const getUniqueIdCounter = (from, to) => {
   const nums = [];
   return function () {
@@ -22,6 +24,18 @@ const getRandomArrayElements = (elements, count) => {
 
 };
 
+const getNewEvent = () => ({
+  basePrice: 0,
+  id: nanoid(),
+  type: 'flight',
+  dateFrom: null,
+  dateTo: null,
+  destination: null,
+  isFavorite: false,
+  offers: [],
+  isNew: true
+});
+
 const toUppercaseFirstLetter = (word) => `${word[0].toUpperCase()}${word.slice(1).toLowerCase()}`;
 const sortNameAdapter = (sortName) => sortName.toUpperCase().replace('-', '_');
 
@@ -32,4 +46,4 @@ const getDestinationByName = (destinations, destName) => destinations.find((dest
 
 const getOffersByType = (offers, type) => offers.find((offer) => offer.type === type).offers;
 
-export { toUppercaseFirstLetter, toKebabCase, sortNameAdapter, updateItem, getRandomArrayElements, getDestinationByName, getOffersByType };
+export { toUppercaseFirstLetter, toKebabCase, sortNameAdapter, updateItem, getRandomArrayElements, getDestinationByName, getOffersByType, getNewEvent };
