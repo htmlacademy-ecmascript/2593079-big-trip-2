@@ -54,7 +54,7 @@ export default class EventsPresenter {
   }
 
   #newEventBtnClickHandler = () => {
-    this.#newEventBtnComponent.element.disabled = true;
+    this.#newEventBtnComponent.disable();
     this.#filterModel.setFilter(UpdateTypes.MAJOR, FilterTypes.EVERYTHING);
     this.#resetEvents();
     this.#clearNoEvent();
@@ -77,7 +77,7 @@ export default class EventsPresenter {
         allDestinations: this.#destinations,
         onDataChange: this.#handleViewAction,
         handleCloseClick: () => {
-          this.#newEventBtnComponent.element.disabled = false;
+          this.#newEventBtnComponent.activate();
           if (this.events.length === 0) {
             this.#clearNoEvent();
             this.#createNoEvent();
