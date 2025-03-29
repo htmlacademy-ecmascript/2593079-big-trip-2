@@ -8,20 +8,22 @@ const Methods = {
 };
 
 const UrlTemplates = {
-  GET: 'points',
-  PUT: 'points/'
+  GET_POINTS: 'points',
+  PUT_POINT: 'points/',
+  GET_DESTINATIONS: 'destinations',
+  GET_OFFERS: 'offers'
 };
 
 export default class EventsApiService extends ApiService {
 
   get events() {
-    return this._load({ url: UrlTemplates.GET }).
+    return this._load({ url: UrlTemplates.GET_POINTS }).
       then(ApiService.parseResponse);
   }
 
   async updateEvent(update) {
     const response = await this._load({
-      url: `${UrlTemplates.PUT}/${update.id}`,
+      url: `${UrlTemplates.PUT_POINT}/${update.id}`,
       method: Methods.PUT,
       body: JSON.stringify(this.#adaptToServer(update)),
       headers: new Headers({ 'Content-Type': 'application/json' })
@@ -30,6 +32,16 @@ export default class EventsApiService extends ApiService {
     const parsedResponse = await ApiService.parseResponse(response);
 
     return parsedResponse;
+  }
+
+  get destinations() {
+    return this._load({ url: UrlTemplates.GET_DESTINATIONS }).
+      then(ApiService.parseResponse);
+  }
+
+  get offers() {
+    return this._load({ url: UrlTemplates.GET_OFFERS }).
+      then(ApiService.parseResponse);
   }
 
   #adaptToServer(event) {

@@ -1,25 +1,42 @@
-import { MOCK_EVENTS_COUNT } from '../consts';
-import { getMockDestinations, getMockOffers, getRandomEvents } from '../Mocks/events-mocks';
 import Observable from '../framework/observable.js';
 
 export default class EventsModel extends Observable {
-  #events = getRandomEvents(MOCK_EVENTS_COUNT);
-  destinations = getMockDestinations();
-  offers = getMockOffers();
+  #events = [];
+  #destinations = [];
+  #offers = [];
   #eventsApiService = null;
 
   constructor({ eventsApiService }) {
     super();
     this.#eventsApiService = eventsApiService;
+  }
 
-    this.#eventsApiService.events.then((events) => {
-      console.log(events.map(this.#adaptToClient))
+  async init() {
+    try {
 
-    })
+      Promise.all([this.#eventsApiService.events, this.#eventsApiService.destinations, this.#eventsApiService.offers]).then(([events, destinations, offers]) => {
+        this.#events = events.map(this.#adaptToClient);
+        this.#destinations = destinations;
+        this.#offers = offers;
+      });
+
+    } catch (err) {
+      this.#events = [];
+      this.#destinations = [];
+      this.#offers = [];
+    }
   }
 
   get events() {
     return this.#events;
+  }
+
+  get destinations() {
+    return this.#destinations;
+  }
+
+  get offers() {
+    return this.#offers;
   }
 
   updateEvent(updateType, update) {
@@ -28,6 +45,7 @@ export default class EventsModel extends Observable {
     if (index === -1) {
       throw new Error('Can\'t update unexisting event');
     }
+
 
     this.#events = [
       ...this.#events.slice(0, index),
@@ -75,14 +93,6 @@ export default class EventsModel extends Observable {
     delete adaptedEvent['is_favorite'];
 
     return adaptedEvent;
-  }
-
-  getDestinations() {
-    return getMockDestinations();
-  }
-
-  getOffers() {
-    return getMockOffers();
   }
 
   getDestinationById(id) {

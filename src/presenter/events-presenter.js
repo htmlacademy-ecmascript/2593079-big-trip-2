@@ -30,7 +30,7 @@ export default class EventsPresenter {
     this.#listComponent = new EventsListView();
     this.#eventsModel = eventsModel;
     this.#filterModel = filterModel;
-    this.#destinations = [...this.#eventsModel.getDestinations()];
+    this.#destinations = [...this.#eventsModel.destinations];
     this.#eventsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
   }

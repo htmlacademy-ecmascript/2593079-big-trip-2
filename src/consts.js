@@ -1,4 +1,3 @@
-const MOCK_EVENTS_COUNT = 4;
 const FilterTypes = {
   EVERYTHING: 'EVERYTHING',
   FUTURE: 'FUTURE',
@@ -30,6 +29,6 @@ const UpdateTypes = {
 };
 
 export {
-  MOCK_EVENTS_COUNT, FilterTypes, SortTypes,
+  FilterTypes, SortTypes,
   UserActions, UpdateTypes, Mode
 };
