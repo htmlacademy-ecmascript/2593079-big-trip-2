@@ -8,6 +8,7 @@ import { FilterTypes, SortTypes, UpdateTypes, UserActions } from '../consts.js';
 import NoEventsView from '../view/no-events-view.js';
 import NewEventBtnView from '../view/new-event-btn-view.js';
 import NewEventPresenter from './new-event-presenter.js';
+import LoadingView from '../view/loading-view.js';
 
 
 export default class EventsPresenter {
@@ -23,6 +24,8 @@ export default class EventsPresenter {
   #newEventBtnContainer = null;
   #newEventPresenter = null;
   #noEventComponent = null;
+  #loadingComponent = null;
+  #isLoading = true;
 
   constructor({ eventsContainer, eventsModel, filterModel, newEventBtnContainer }) {
     this.#eventsContainer = eventsContainer;
@@ -38,10 +41,8 @@ export default class EventsPresenter {
   init() {
     this.#newEventBtnComponent = new NewEventBtnView({ onClick: this.#newEventBtnClickHandler });
     render(this.#newEventBtnComponent, this.#newEventBtnContainer);
-
-
     render(this.#listComponent, this.#eventsContainer);
-
+    this.#renderEvents();
 
   }
 
@@ -96,6 +97,10 @@ export default class EventsPresenter {
 
   #renderEvents() {
     const events = this.events;
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
     if (events.length === 0) {
       this.#createNoEvent();
       remove(this.#sortComponent);
@@ -106,6 +111,16 @@ export default class EventsPresenter {
         this.#createEvent(events[i]);
       }
     }
+  }
+
+  #renderLoading() {
+    this.#loadingComponent = new LoadingView();
+    render(this.#loadingComponent, this.#listComponent.element);
+  }
+
+  #clearLoading() {
+    remove(this.#loadingComponent);
+    this.#loadingComponent = null;
   }
 
   #clearNoEvent() {
@@ -159,8 +174,8 @@ export default class EventsPresenter {
         break;
 
       case UpdateTypes.INIT:
-        this.#clearEventsList();
-        this.#clearNoEvent();
+        this.#clearLoading();
+        this.#isLoading = false;
         this.initSort();
         this.#resetSort();
         this.#renderEvents();
@@ -200,7 +215,5 @@ export default class EventsPresenter {
     eventPresenter.init(event);
 
   }
-
-
 }
 

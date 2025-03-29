@@ -9,7 +9,7 @@ const Methods = {
 
 const UrlTemplates = {
   GET_POINTS: 'points',
-  PUT_POINT: 'points/',
+  PUT_POINT: 'points',
   GET_DESTINATIONS: 'destinations',
   GET_OFFERS: 'offers'
 };
