@@ -6,6 +6,17 @@ export default class EventsModel extends Observable {
   #events = getRandomEvents(MOCK_EVENTS_COUNT);
   destinations = getMockDestinations();
   offers = getMockOffers();
+  #eventsApiService = null;
+
+  constructor({ eventsApiService }) {
+    super();
+    this.#eventsApiService = eventsApiService;
+
+    this.#eventsApiService.events.then((events) => {
+      console.log(events);
+
+    })
+  }
 
   get events() {
     return this.#events;
