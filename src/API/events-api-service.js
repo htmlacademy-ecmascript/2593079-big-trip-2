@@ -15,8 +15,6 @@ const UrlTemplates = {
 export default class EventsApiService extends ApiService {
 
   get events() {
-    console.log(this._endPoint)
-
     return this._load({ url: UrlTemplates.GET }).
       then(ApiService.parseResponse);
   }
@@ -25,12 +23,32 @@ export default class EventsApiService extends ApiService {
     const response = await this._load({
       url: `${UrlTemplates.PUT}/${update.id}`,
       method: Methods.PUT,
-      body: JSON.stringify(update),
+      body: JSON.stringify(this.#adaptToServer(update)),
       headers: new Headers({ 'Content-Type': 'application/json' })
     });
 
     const parsedResponse = await ApiService.parseResponse(response);
 
     return parsedResponse;
+  }
+
+  #adaptToServer(event) {
+    const adaptedEvent = {
+      ...event,
+      'base_price': event.basePrice,
+      'date_from': event.dateFrom,
+      'date_to': event.dateTo,
+      'is_favorite': event.isFavorite
+    };
+
+    delete adaptedEvent.basePrice;
+    delete adaptedEvent.dateFrom;
+    delete adaptedEvent.dateTo;
+    delete adaptedEvent.isFavorite;
+
+    console.log('adapr', event, adaptedEvent)
+
+
+    return adaptedEvent;
   }
 }
