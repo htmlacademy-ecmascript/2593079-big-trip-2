@@ -1,3 +1,4 @@
+import { UpdateTypes } from '../consts.js';
 import Observable from '../framework/observable.js';
 
 export default class EventsModel extends Observable {
@@ -14,11 +15,13 @@ export default class EventsModel extends Observable {
   async init() {
     try {
 
-      Promise.all([this.#eventsApiService.events, this.#eventsApiService.destinations, this.#eventsApiService.offers]).then(([events, destinations, offers]) => {
+      await Promise.all([this.#eventsApiService.events, this.#eventsApiService.destinations, this.#eventsApiService.offers]).then(([events, destinations, offers]) => {
         this.#events = events.map(this.#adaptToClient);
         this.#destinations = destinations;
         this.#offers = offers;
       });
+
+      this._notify(UpdateTypes.INIT);
 
     } catch (err) {
       this.#events = [];

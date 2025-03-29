@@ -15,6 +15,7 @@ const filterModel = new FilterModel();
 const eventsPresenter = new EventsPresenter({ eventsContainer, eventsModel, filterModel, newEventBtnContainer });
 const filterPresenter = new FilterPresenter({ filterModel, eventsModel, filterContainer });
 
+eventsPresenter.init();
 eventsModel.init();
 filterPresenter.init();
 // eventsPresenter.init();

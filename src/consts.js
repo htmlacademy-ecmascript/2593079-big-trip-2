@@ -25,7 +25,8 @@ const UserActions = {
 const UpdateTypes = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
-  MAJOR: 'MAJOR'
+  MAJOR: 'MAJOR',
+  INIT: 'INIT'
 };
 
 export {

@@ -39,10 +39,10 @@ export default class EventsPresenter {
     this.#newEventBtnComponent = new NewEventBtnView({ onClick: this.#newEventBtnClickHandler });
     render(this.#newEventBtnComponent, this.#newEventBtnContainer);
 
-    this.initSort();
+
     render(this.#listComponent, this.#eventsContainer);
 
-    this.#renderEvents();
+
   }
 
   get events() {
@@ -151,6 +151,14 @@ export default class EventsPresenter {
         break;
       case UpdateTypes.MAJOR:
 
+        this.#clearEventsList();
+        this.#clearNoEvent();
+        this.initSort();
+        this.#resetSort();
+        this.#renderEvents();
+        break;
+
+      case UpdateTypes.INIT:
         this.#clearEventsList();
         this.#clearNoEvent();
         this.initSort();

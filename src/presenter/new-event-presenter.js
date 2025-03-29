@@ -24,8 +24,8 @@ export default class NewEventPresenter {
   init() {
     const event = getNewEvent();
     const fullDestination = this.#eventsModel.getDestinationById(event.destination);
-    const allOffers = this.#eventsModel.getOffers();
-    const allDestinations = this.#eventsModel.getDestinations();
+    const allOffers = this.#eventsModel.offers;
+    const allDestinations = this.#eventsModel.destinations;
     document.addEventListener('keydown', this.#onEscKeyDown);
 
     this.#editEventFormComponent = new EditEventView({

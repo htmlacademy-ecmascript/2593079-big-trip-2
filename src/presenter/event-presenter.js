@@ -29,8 +29,8 @@ export default class EventPresenter {
     const type = event.type;
     const fullDestination = this.#eventsModel.getDestinationById(event.destination);
     const fullOffers = this.#eventsModel.getOffersById(event.offers, type);
-    const allOffers = this.#eventsModel.getOffers();
-    const allDestinations = this.#eventsModel.getDestinations();
+    const allOffers = this.#eventsModel.offers;
+    const allDestinations = this.#eventsModel.destinations;
 
     const prevEventComponent = this.#eventComponent;
     const prevEditEventFormComponent = this.#editEventFormComponent;
