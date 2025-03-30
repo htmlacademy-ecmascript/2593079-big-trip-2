@@ -98,6 +98,7 @@ export default class EventsPresenter {
   #renderEvents() {
     const events = this.events;
     if (this.#isLoading) {
+      this.#newEventBtnComponent.disable();
       this.#renderLoading();
       return;
     }
@@ -176,6 +177,7 @@ export default class EventsPresenter {
 
       case UpdateTypes.INIT:
         this.#clearLoading();
+        this.#newEventBtnComponent.activate();
         this.#isLoading = false;
         this.initSort();
         this.#resetSort();

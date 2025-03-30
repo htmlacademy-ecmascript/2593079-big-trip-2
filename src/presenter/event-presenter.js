@@ -83,6 +83,10 @@ export default class EventPresenter {
   };
 
   #handleDeleteClick = (data) => {
+    this.#editEventFormComponent.updateElement({
+      isDisabled: true,
+      isDeleting: true
+    });
     this.#onDataChange(UserActions.DELETE_EVENT, UpdateTypes.MINOR, data);
   };
 
@@ -124,9 +128,14 @@ export default class EventPresenter {
   };
 
   #onFormSubmit = (update) => {
+    this.#editEventFormComponent.updateElement({
+      isDisabled: true,
+      isSaving: true
+    });
     const isMinorUpdate = (!isDatesEqual(this.#event.dateFrom, update.dateFrom) || !isDatesEqual(this.#event.dateTo, update.dateTo))
       || this.#event.basePrice !== update.basePrice;
     this.#onDataChange(UserActions.UPDATE_EVENT, isMinorUpdate ? UpdateTypes.MINOR : UpdateTypes.PATCH, update);
+
     // this.#replaceEditFormToEvent();
     document.removeEventListener('keydown', this.#onEscKeyDown);
   };
