@@ -55,8 +55,8 @@ export default class EventsPresenter {
   }
 
   #newEventBtnClickHandler = () => {
-    this.#newEventBtnComponent.disable();
     this.#filterModel.setFilter(UpdateTypes.MAJOR, FilterTypes.EVERYTHING);
+    this.#disableNewEventBtn();
     this.#resetEvents();
     this.#clearNoEvent();
     this.#createNewEvent();
@@ -69,6 +69,14 @@ export default class EventsPresenter {
     }
   }
 
+  #activateNewEventBtn() {
+    this.#newEventBtnComponent.activate();
+  }
+
+  #disableNewEventBtn() {
+    this.#newEventBtnComponent.disable();
+  }
+
   #createNewEvent = () => {
 
     if (!this.#newEventPresenter) {
@@ -78,7 +86,7 @@ export default class EventsPresenter {
         allDestinations: this.#destinations,
         onDataChange: this.#handleViewAction,
         handleCloseClick: () => {
-          this.#newEventBtnComponent.activate();
+          this.#activateNewEventBtn();
           if (this.events.length === 0) {
             this.#clearNoEvent();
             this.#createNoEvent();
@@ -98,7 +106,7 @@ export default class EventsPresenter {
   #renderEvents() {
     const events = this.events;
     if (this.#isLoading) {
-      this.#newEventBtnComponent.disable();
+      this.#disableNewEventBtn();
       this.#renderLoading();
       return;
     }
@@ -159,12 +167,14 @@ export default class EventsPresenter {
       case UpdateTypes.PATCH:
         this.#eventPresenters.get(data.id).init(data);
         this.#resetEvents();
+        this.#activateNewEventBtn();
         break;
       case UpdateTypes.MINOR:
 
         this.#clearEventsList();
         this.#clearNoEvent();
         this.#renderEvents();
+
         break;
       case UpdateTypes.MAJOR:
 
@@ -173,11 +183,12 @@ export default class EventsPresenter {
         this.initSort();
         this.#resetSort();
         this.#renderEvents();
+
         break;
 
       case UpdateTypes.INIT:
         this.#clearLoading();
-        this.#newEventBtnComponent.activate();
+        this.#activateNewEventBtn();
         this.#isLoading = false;
         this.initSort();
         this.#resetSort();
@@ -185,23 +196,22 @@ export default class EventsPresenter {
         break;
     }
 
+
   };
 
   #resetSort() {
-
     this.#sortComponent?.resetSort();
     this.#currentSort = SortTypes.SORT_DAY;
   }
 
   #resetEvents = () => {
     this.#eventPresenters.forEach((presenter) => presenter.resetView());
-    this.#newEventPresenter?.destroy();
   };
 
   #clearEventsList() {
     this.#eventPresenters.forEach((presenter) => presenter.destroy());
     this.#eventPresenters.clear();
-
+    this.#newEventPresenter?.destroy();
   }
 
   #createEvent(event) {
