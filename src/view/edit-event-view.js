@@ -199,6 +199,7 @@ export default class EditEventView extends AbstractStatefulView {
     delete newEvent.allDestinations;
     delete newEvent.typedOffers;
     delete newEvent.fullDestination;
+    delete newEvent.allDestinationsNames;
     delete newEvent.isNew;
 
     return newEvent;

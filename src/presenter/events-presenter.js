@@ -157,6 +157,7 @@ export default class EventsPresenter {
     switch (updateType) {
       case UpdateTypes.PATCH:
         this.#eventPresenters.get(data.id).init(data);
+        this.#resetEvents();
         break;
       case UpdateTypes.MINOR:
 

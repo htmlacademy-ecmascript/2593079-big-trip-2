@@ -127,7 +127,7 @@ export default class EventPresenter {
     const isMinorUpdate = (!isDatesEqual(this.#event.dateFrom, update.dateFrom) || !isDatesEqual(this.#event.dateTo, update.dateTo))
       || this.#event.basePrice !== update.basePrice;
     this.#onDataChange(UserActions.UPDATE_EVENT, isMinorUpdate ? UpdateTypes.MINOR : UpdateTypes.PATCH, update);
-    this.#replaceEditFormToEvent();
+    // this.#replaceEditFormToEvent();
     document.removeEventListener('keydown', this.#onEscKeyDown);
   };
 
