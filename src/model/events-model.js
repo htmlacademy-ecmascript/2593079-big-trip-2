@@ -20,14 +20,14 @@ export default class EventsModel extends Observable {
         this.#destinations = destinations;
         this.#offers = offers;
       });
-
       this._notify(UpdateTypes.INIT);
-
     } catch (err) {
       this.#events = [];
       this.#destinations = [];
       this.#offers = [];
     }
+
+
   }
 
   get events() {

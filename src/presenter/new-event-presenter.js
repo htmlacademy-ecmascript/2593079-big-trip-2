@@ -52,10 +52,13 @@ export default class NewEventPresenter {
     }
   };
 
+  setSaving() {
+    this.#editEventFormComponent.updateElement({ isDisabled: true, isSaving: true });
+  }
+
   #onFormSubmit = (update) => {
     this.#onDataChange(UserActions.ADD_EVENT, UpdateTypes.MAJOR, update);
     document.removeEventListener('keydown', this.#onEscKeyDown);
-    this.#editEventFormComponent.updateElement({ isDisabled: true, isSaving: true });
   };
 
   #cancelClickHandler = () => {
