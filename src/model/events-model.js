@@ -61,8 +61,8 @@ export default class EventsModel extends Observable {
 
       this._notify(updateType, adaptedEvent);
     } catch (err) {
-      throw new Error(err);
 
+      throw new Error('Can\'t update event');
     }
   }
 

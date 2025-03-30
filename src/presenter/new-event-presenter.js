@@ -56,6 +56,18 @@ export default class NewEventPresenter {
     this.#editEventFormComponent.updateElement({ isDisabled: true, isSaving: true });
   }
 
+  setAborting() {
+    const resetEditingForm = () => {
+      this.#editEventFormComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+
+    this.#editEventFormComponent.shake(resetEditingForm);
+  }
+
   #onFormSubmit = (update) => {
     this.#onDataChange(UserActions.ADD_EVENT, UpdateTypes.MAJOR, update);
     document.removeEventListener('keydown', this.#onEscKeyDown);
