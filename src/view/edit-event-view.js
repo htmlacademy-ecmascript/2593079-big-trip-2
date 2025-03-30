@@ -301,14 +301,20 @@ export default class EditEventView extends AbstractStatefulView {
     let newValue = evt.target.value;
     const validNumber = /^(0|[1-9]\d*)$/;
 
-    if (newValue === '') {
-      evt.target.value = '0';
-      this._setState({ basePrice: 0 });
-      return;
-    }
-    if (newValue.length > 1 && newValue.startsWith('0')) {
+    if (newValue.startsWith('0')) {
       newValue = newValue.replace(/^0+/, '');
     }
+
+    if (newValue === '') {
+      evt.target.value = '1';
+      this._setState({ basePrice: 1 });
+      return;
+    }
+
+    if (newValue > 100000) {
+      newValue = 100000;
+    }
+
 
     const newPrice = validNumber.test(newValue) ? newValue : this._state.basePrice;
 

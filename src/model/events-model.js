@@ -66,22 +66,26 @@ export default class EventsModel extends Observable {
     }
   }
 
-  addEvent(updateType, update) {
+  async addEvent(updateType, update) {
+    const response = await this.#eventsApiService.addEvent(update);
+    const adaptedEvent = this.#adaptToClient(response);
     this.#events = [
-      update,
+      adaptedEvent,
       ...this.#events
     ];
 
     this._notify(updateType, update);
   }
 
-  deleteEvent(updateType, update) {
+  async deleteEvent(updateType, update) {
 
     const index = this.events.findIndex((event) => event.id === update.id);
 
     if (index === -1) {
       throw new Error('Can\'t delete unexisting event');
     }
+
+    await this.#eventsApiService.deleteEvent(update);
 
     this.#events.splice(index, 1);
     this._notify(updateType);

@@ -1,8 +1,5 @@
-import { nanoid } from 'nanoid';
-
 const getNewEvent = () => ({
-  basePrice: 0,
-  id: nanoid(),
+  basePrice: 1,
   type: 'flight',
   dateFrom: null,
   dateTo: null,

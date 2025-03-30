@@ -10,6 +10,8 @@ const Methods = {
 const UrlTemplates = {
   GET_POINTS: 'points',
   PUT_POINT: 'points',
+  POST_POINT: 'points',
+  DELETE_POINT: 'points',
   GET_DESTINATIONS: 'destinations',
   GET_OFFERS: 'offers'
 };
@@ -32,6 +34,27 @@ export default class EventsApiService extends ApiService {
     const parsedResponse = await ApiService.parseResponse(response);
 
     return parsedResponse;
+  }
+
+  async addEvent(update) {
+    const response = await this._load({
+      url: `${UrlTemplates.POST_POINT}`,
+      method: Methods.POST,
+      body: JSON.stringify(this.#adaptToServer(update)),
+      headers: new Headers({ 'Content-Type': 'application/json' })
+    });
+
+    const parsedResponse = await ApiService.parseResponse(response);
+
+    return parsedResponse;
+  }
+
+  async deleteEvent(update) {
+    await this._load({
+      url: `${UrlTemplates.DELETE_POINT}/${update.id}`,
+      method: Methods.DELETE,
+    });
+
   }
 
   get destinations() {
