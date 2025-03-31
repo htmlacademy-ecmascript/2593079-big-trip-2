@@ -4,11 +4,12 @@ import EventPresenter from './event-presenter.js';
 import EventsSortView from '../view/events-sort-view.js';
 import { FilterFunctions, SortFunctions } from '../utils/time.js';
 import { sortNameAdapter } from '../utils/utils.js';
-import { FilterTypes, SortTypes, UpdateTypes, UserActions } from '../consts.js';
+import { FilterTypes, SortTypes, UIBLOCK_LOWER_LIMIT, UIBLOCK_UPPER_LIMIT, UpdateTypes, UserActions } from '../consts.js';
 import NoEventsView from '../view/no-events-view.js';
 import NewEventBtnView from '../view/new-event-btn-view.js';
 import NewEventPresenter from './new-event-presenter.js';
 import LoadingView from '../view/loading-view.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 
 
 export default class EventsPresenter {
@@ -26,6 +27,7 @@ export default class EventsPresenter {
   #noEventComponent = null;
   #loadingComponent = null;
   #isLoading = true;
+  #uiBlocker = null;
 
   constructor({ eventsContainer, eventsModel, filterModel, newEventBtnContainer }) {
     this.#eventsContainer = eventsContainer;
@@ -36,6 +38,7 @@ export default class EventsPresenter {
     this.#destinations = [...this.#eventsModel.destinations];
     this.#eventsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
+    this.#uiBlocker = new UiBlocker({ lowerLimit: UIBLOCK_LOWER_LIMIT, upperLimit: UIBLOCK_UPPER_LIMIT });
   }
 
   init() {
@@ -147,12 +150,15 @@ export default class EventsPresenter {
   };
 
   #handleViewAction = (actionType, updateType, update) => {
+    this.#uiBlocker.block();
 
     switch (actionType) {
       case UserActions.ADD_EVENT:
         this.#newEventPresenter.setSaving();
         this.#eventsModel.addEvent(updateType, update).catch(() => {
           this.#newEventPresenter.setAborting();
+        }).finally(() => {
+          this.#uiBlocker.unblock();
         });
         break;
       case UserActions.DELETE_EVENT:
@@ -160,6 +166,8 @@ export default class EventsPresenter {
 
         this.#eventsModel.deleteEvent(updateType, update).catch(() => {
           this.#eventPresenters.get(update.id).setAborting();
+        }).finally(() => {
+          this.#uiBlocker.unblock();
         });
 
         break;
@@ -169,6 +177,8 @@ export default class EventsPresenter {
         this.#eventsModel.updateEvent(updateType, update).catch(() => {
           this.#eventPresenters.get(update.id).setAborting();
 
+        }).finally(() => {
+          this.#uiBlocker.unblock();
         });
         break;
     }

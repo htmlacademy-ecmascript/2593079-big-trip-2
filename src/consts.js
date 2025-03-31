@@ -29,7 +29,13 @@ const UpdateTypes = {
   INIT: 'INIT'
 };
 
+const UIBLOCK_LOWER_LIMIT = 500;
+const UIBLOCK_UPPER_LIMIT = 4000;
+
 export {
   FilterTypes, SortTypes,
-  UserActions, UpdateTypes, Mode
+  UserActions, UpdateTypes, Mode, UIBLOCK_LOWER_LIMIT,
+  UIBLOCK_UPPER_LIMIT
 };
+
+
