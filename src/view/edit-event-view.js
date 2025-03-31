@@ -1,5 +1,5 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { DateTemplates, getTimeFromTemplate } from '../utils/time.js';
+import { convertToISO, DateTemplates, getTimeFromTemplate } from '../utils/time.js';
 import { getDestinationByName, getOffersByType, toUppercaseFirstLetter, toKebabCase } from '../utils/utils.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -10,11 +10,9 @@ const EVENTS_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-
 
 const datepickerSettings = {
 
-  dateFormat: 'Z',
+  dateFormat: 'j/n/y H:i',
   enableTime: true,
   utc: true,
-  altInput: true,
-  altFormat: 'j/n/y H:i'
 
 };
 
@@ -83,7 +81,7 @@ function createEditEventTypeListTemplate(checkedType) {
 
 function createEditEventRollupBtnTemplate() {
   return `<button class="event__rollup-btn" type="button">
-           <span class="visually-hidden">Open event</span>
+           <span class="visually-hidden">Close event</span>
           </button>`;
 
 }
@@ -135,12 +133,12 @@ function createEditEventTemplate({ basePrice, type, dateTo, dateFrom, allDestina
                     <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(basePrice.toString())}" ${isDisabled ? 'disabled' : ''}>
                   </div>
 
-                  <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving' : 'Save'}</button>
-                  <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${getButtonText(isNew, isDeleting)}</button >
+                  <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
+                  <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${getButtonText(isNew, isDeleting)}</button>
   ${!isNew ? createEditEventRollupBtnTemplate() : ''}
 <span class="visually-hidden">${isNew ? 'Cancel' : 'Delete'} event</span>
                   </button >
-                </header >
+                </header>
   <section class="event__details">
     ${typedOffers.length ? createEditEventOffersTemplate({ offers, typedOffers, isDisabled }) : ''}
 
@@ -155,7 +153,7 @@ function getButtonText(isNew, isDeleting) {
   if (isNew) {
     buttonText = 'Cancel';
   } else if (isDeleting) {
-    buttonText = 'Deleting';
+    buttonText = 'Deleting...';
   } else {
     buttonText = 'Delete';
   }
@@ -260,12 +258,13 @@ export default class EditEventView extends AbstractStatefulView {
   }
 
   #closeDatepickerFromHandler = (_, dateStr) => {
-    this._setState({ dateFrom: dateStr });
+
+    this._setState({ dateFrom: convertToISO(dateStr) });
     this.#datepickerTo.set('minDate', this._state.dateFrom);
   };
 
   #closeDatepickerToHandler = (_, dateStr) => {
-    this._setState({ dateTo: dateStr });
+    this._setState({ dateTo: convertToISO(dateStr) });
     this.#datepickerFrom.set('maxDate', this._state.dateTo);
   };
 
@@ -274,13 +273,19 @@ export default class EditEventView extends AbstractStatefulView {
   };
 
   _restoreHandlers() {
-    this.element.querySelector('form.event').addEventListener('submit', this.#submitHandler);
-    this.element.querySelector('.event__rollup-btn')?.addEventListener('click', this.#clickCloseHandler);
-    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#clickDeleteHandler);
-    this.element.querySelector('.event__type-list').addEventListener('change', this.#changeTypeHandler);
+    if (!this._state.isDisabled) {
+      this.element.querySelector('.event__reset-btn').addEventListener('click', this.#clickDeleteHandler);
+      this.element.querySelector('.event__rollup-btn')?.addEventListener('click', this.#clickCloseHandler);
+      this.element.querySelector('.event__save-btn').addEventListener('click', this.#submitHandler);
+      this.element.querySelector('.event__type-list').addEventListener('change', this.#changeTypeHandler);
+
+    }
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
     this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#changeOfferHandler);
     this.element.querySelector('.event__input--price').addEventListener('input', this.#changePriceHandler);
+    this.element.querySelector('.event__input--price').addEventListener('click', (evt) => {
+      evt.currentTarget.value = '';
+    });
     this.#setDatepickerFrom();
     this.#setDatepickerTo();
   }
@@ -321,29 +326,8 @@ export default class EditEventView extends AbstractStatefulView {
   };
 
   #changePriceHandler = (evt) => {
-    let newValue = evt.target.value;
-    const validNumber = /^(0|[1-9]\d*)$/;
 
-    if (newValue.startsWith('0')) {
-      newValue = newValue.replace(/^0+/, '');
-    }
-
-    if (newValue === '') {
-      evt.target.value = '1';
-      this._setState({ basePrice: 1 });
-      return;
-    }
-
-    if (newValue > 100000) {
-      newValue = 100000;
-    }
-
-
-    const newPrice = validNumber.test(newValue) ? newValue : this._state.basePrice;
-
-    evt.target.value = newPrice;
-
-    this._setState({ basePrice: newPrice });
+    this._setState({ basePrice: evt.target.value });
   };
 
 }

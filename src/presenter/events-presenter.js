@@ -10,6 +10,7 @@ import NewEventBtnView from '../view/new-event-btn-view.js';
 import NewEventPresenter from './new-event-presenter.js';
 import LoadingView from '../view/loading-view.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
+import FailedLoadingView from '../view/failed-loading-view.js';
 
 
 export default class EventsPresenter {
@@ -28,6 +29,7 @@ export default class EventsPresenter {
   #loadingComponent = null;
   #isLoading = true;
   #uiBlocker = null;
+  #failedLoadingComponent = null;
 
   constructor({ eventsContainer, eventsModel, filterModel, newEventBtnContainer }) {
     this.#eventsContainer = eventsContainer;
@@ -130,6 +132,11 @@ export default class EventsPresenter {
     render(this.#loadingComponent, this.#listComponent.element);
   }
 
+  #renderFailedLoading() {
+    this.#failedLoadingComponent = new FailedLoadingView();
+    render(this.#failedLoadingComponent, this.#listComponent.element);
+  }
+
   #clearLoading() {
     remove(this.#loadingComponent);
     this.#loadingComponent = null;
@@ -151,6 +158,7 @@ export default class EventsPresenter {
 
   #handleViewAction = (actionType, updateType, update) => {
     this.#uiBlocker.block();
+    this.#disableNewEventBtn();
 
     switch (actionType) {
       case UserActions.ADD_EVENT:
@@ -159,8 +167,10 @@ export default class EventsPresenter {
           this.#newEventPresenter.setAborting();
         }).finally(() => {
           this.#uiBlocker.unblock();
+          this.#activateNewEventBtn();
         });
         break;
+
       case UserActions.DELETE_EVENT:
         this.#eventPresenters.get(update.id).setDeleting();
 
@@ -169,8 +179,8 @@ export default class EventsPresenter {
         }).finally(() => {
           this.#uiBlocker.unblock();
         });
-
         break;
+
       case UserActions.UPDATE_EVENT:
         this.#eventPresenters.get(update.id).setSaving();
 
@@ -217,8 +227,13 @@ export default class EventsPresenter {
         this.#resetSort();
         this.#renderEvents();
         break;
-    }
 
+      case UpdateTypes.FAILED:
+        this.#clearLoading();
+        this.#isLoading = false;
+        this.#renderFailedLoading();
+        break;
+    }
 
   };
 
@@ -229,6 +244,8 @@ export default class EventsPresenter {
 
   #resetEvents = () => {
     this.#eventPresenters.forEach((presenter) => presenter.resetView());
+    this.#newEventPresenter?.destroy();
+
   };
 
   #clearEventsList() {

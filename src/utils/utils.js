@@ -1,5 +1,5 @@
 const getNewEvent = () => ({
-  basePrice: 1,
+  basePrice: 0,
   type: 'flight',
   dateFrom: null,
   dateTo: null,

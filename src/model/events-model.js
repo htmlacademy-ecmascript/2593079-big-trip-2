@@ -25,6 +25,8 @@ export default class EventsModel extends Observable {
       this.#events = [];
       this.#destinations = [];
       this.#offers = [];
+      this._notify(UpdateTypes.FAILED);
+
     }
 
 
