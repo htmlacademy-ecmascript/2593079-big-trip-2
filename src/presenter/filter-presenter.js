@@ -41,9 +41,9 @@ export default class FilterPresenter {
     const events = this.#eventsModel.events;
     return ({
       [FilterTypes.EVERYTHING]: FilterFunctions[FilterTypes.EVERYTHING](events).length,
-      [FilterTypes.PAST]: FilterFunctions[FilterTypes.PAST](events).length,
+      [FilterTypes.FUTURE]: FilterFunctions[FilterTypes.FUTURE](events).length,
       [FilterTypes.PRESENT]: FilterFunctions[FilterTypes.PRESENT](events).length,
-      [FilterTypes.FUTURE]: FilterFunctions[FilterTypes.FUTURE](events).length
+      [FilterTypes.PAST]: FilterFunctions[FilterTypes.PAST](events).length
     });
   }
 

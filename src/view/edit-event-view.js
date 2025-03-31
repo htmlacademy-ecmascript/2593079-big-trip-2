@@ -1,5 +1,5 @@
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
-import { DateTemplates, getTimeFromTemplate } from '../utils/time.js';
+import { convertToISO, DateTemplates, getTimeFromTemplate } from '../utils/time.js';
 import { getDestinationByName, getOffersByType, toUppercaseFirstLetter, toKebabCase } from '../utils/utils.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -10,11 +10,9 @@ const EVENTS_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-
 
 const datepickerSettings = {
 
-  dateFormat: 'Z',
+  dateFormat: 'j/n/y H:i',
   enableTime: true,
   utc: true,
-  altInput: true,
-  altFormat: 'j/n/y H:i'
 
 };
 
@@ -40,7 +38,7 @@ function createEditEventDestinationTemplate(destination) {
   `;
 }
 
-function createEditEventOffersTemplate({ offers, typedOffers }) {
+function createEditEventOffersTemplate({ offers, typedOffers, isDisabled }) {
   return `
   <section class="event__section  event__section--offers">
     <h3 class="event__section-title  event__section-title--offers">Offers</h3>
@@ -50,7 +48,7 @@ function createEditEventOffersTemplate({ offers, typedOffers }) {
     const isCheckedAttribute = offers.some((activeOffer) => activeOffer === offer.id) ? 'checked' : '';
     return `
       <div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="${offer.id}" type="checkbox" name="event-offer-${toKebabCase(offer.title)}" ${isCheckedAttribute}>
+      <input class="event__offer-checkbox  visually-hidden" id="${offer.id}" type="checkbox" name="event-offer-${toKebabCase(offer.title)}" ${isCheckedAttribute} ${isDisabled ? 'disabled' : ''}>
       <label class="event__offer-label" for="${offer.id}">
         <span class="event__offer-title">${offer.title}</span>
         +€&nbsp;
@@ -83,7 +81,7 @@ function createEditEventTypeListTemplate(checkedType) {
 
 function createEditEventRollupBtnTemplate() {
   return `<button class="event__rollup-btn" type="button">
-           <span class="visually-hidden">Open event</span>
+           <span class="visually-hidden">Close event</span>
           </button>`;
 
 }
@@ -97,7 +95,7 @@ function createEditEventDestinationsListTemplate(allDestinations) {
   </datalist>`;
 }
 
-function createEditEventTemplate({ basePrice, type, dateTo, dateFrom, allDestinationsNames, isNew, offers, fullDestination, typedOffers }) {
+function createEditEventTemplate({ basePrice, type, dateTo, dateFrom, allDestinationsNames, isNew, offers, fullDestination, typedOffers, isDisabled, isSaving, isDeleting }) {
   return `<li class="trip-events__item">
               <form class="event event--edit" action="#" method="post">
                 <header class="event__header">
@@ -106,7 +104,7 @@ function createEditEventTemplate({ basePrice, type, dateTo, dateFrom, allDestina
                       <span class="visually-hidden">Choose event type</span>
                       <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
                     </label>
-                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+                    <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
                     ${createEditEventTypeListTemplate(type)}
                   </div>
 
@@ -115,16 +113,16 @@ function createEditEventTemplate({ basePrice, type, dateTo, dateFrom, allDestina
                       ${type}
                     </label>
 
-                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(!fullDestination?.name ? '' : fullDestination.name)}" list="destination-list-1" required>
+                    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(!fullDestination?.name ? '' : fullDestination.name)}" list="destination-list-1" required ${isDisabled ? 'disabled' : ''}>
                     ${createEditEventDestinationsListTemplate(allDestinationsNames)}
                   </div >
 
                   <div class="event__field-group  event__field-group--time">
                     <label class="visually-hidden" for="event-start-time-1">From</label>
-                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getTimeFromTemplate(DateTemplates.DATETIME_INPUT_FORMAT, dateFrom)}" >
+                    <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${getTimeFromTemplate(DateTemplates.DATETIME_INPUT_FORMAT, dateFrom)}" ${isDisabled ? 'disabled' : ''}>
                     —
                     <label class="visually-hidden" for="event-end-time-1">To</label>
-                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getTimeFromTemplate(DateTemplates.DATETIME_INPUT_FORMAT, dateTo)}" >
+                    <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${getTimeFromTemplate(DateTemplates.DATETIME_INPUT_FORMAT, dateTo)}" ${isDisabled ? 'disabled' : ''}>
                   </div>
 
                   <div class="event__field-group  event__field-group--price">
@@ -132,22 +130,35 @@ function createEditEventTemplate({ basePrice, type, dateTo, dateFrom, allDestina
                       <span class="visually-hidden">${he.encode(basePrice.toString())}</span>
                       €
                     </label>
-                    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(basePrice.toString())}">
+                    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(basePrice.toString())}" ${isDisabled ? 'disabled' : ''}>
                   </div>
 
-                  <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-                  <button class="event__reset-btn" type="reset">${isNew ? 'Cancel' : 'Delete'}</button>
-                  ${!isNew ? createEditEventRollupBtnTemplate() : ''}
-                    <span class="visually-hidden">Open event</span>
-                  </button>
+                  <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
+                  <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${getButtonText(isNew, isDeleting)}</button>
+  ${!isNew ? createEditEventRollupBtnTemplate() : ''}
+<span class="visually-hidden">${isNew ? 'Cancel' : 'Delete'} event</span>
+                  </button >
                 </header>
-                <section class="event__details">
-                  ${typedOffers.length ? createEditEventOffersTemplate({ offers, typedOffers }) : ''}
+  <section class="event__details">
+    ${typedOffers.length ? createEditEventOffersTemplate({ offers, typedOffers, isDisabled }) : ''}
 
-                  ${fullDestination?.name && fullDestination.description ? createEditEventDestinationTemplate(fullDestination) : ''}
-                </section>
+    ${fullDestination?.name && fullDestination.description ? createEditEventDestinationTemplate(fullDestination) : ''}
+  </section>
               </form >
             </li > `;
+}
+
+function getButtonText(isNew, isDeleting) {
+  let buttonText = '';
+  if (isNew) {
+    buttonText = 'Cancel';
+  } else if (isDeleting) {
+    buttonText = 'Deleting...';
+  } else {
+    buttonText = 'Delete';
+  }
+
+  return buttonText;
 }
 
 export default class EditEventView extends AbstractStatefulView {
@@ -165,7 +176,14 @@ export default class EditEventView extends AbstractStatefulView {
   constructor({ event, fullDestination, allDestinationsNames, onSubmit, onCloseClick, onDeleteClick, allDestinations, allOffers, }) {
     super();
     this.#event = event;
-    this._setState({ ...event, fullDestination, allDestinationsNames });
+    this._setState({
+      ...event,
+      fullDestination,
+      allDestinationsNames,
+      isDisabled: false,
+      isSaving: false,
+      isDeleting: false
+    });
     this.#sourcedState = { ...event, fullDestination, allDestinationsNames };
     this.#handleSubmit = onSubmit;
     this.#allOffers = allOffers;
@@ -182,7 +200,7 @@ export default class EditEventView extends AbstractStatefulView {
 
   #submitHandler = (event) => {
     event.preventDefault();
-    if (this._state.dateFrom && this._state.dateTo) {
+    if (this._state.dateFrom && this._state.dateTo && this._state.dateFrom !== this._state.dateTo) {
       this.#event = EditEventView.parseStateToEvent(this._state);
       this.#handleSubmit(this.#event);
     }
@@ -199,7 +217,11 @@ export default class EditEventView extends AbstractStatefulView {
     delete newEvent.allDestinations;
     delete newEvent.typedOffers;
     delete newEvent.fullDestination;
+    delete newEvent.allDestinationsNames;
     delete newEvent.isNew;
+    delete newEvent.isDisabled;
+    delete newEvent.isSaving;
+    delete newEvent.isDeleting;
 
     return newEvent;
   }
@@ -236,12 +258,13 @@ export default class EditEventView extends AbstractStatefulView {
   }
 
   #closeDatepickerFromHandler = (_, dateStr) => {
-    this._setState({ dateFrom: dateStr });
+
+    this._setState({ dateFrom: convertToISO(dateStr) });
     this.#datepickerTo.set('minDate', this._state.dateFrom);
   };
 
   #closeDatepickerToHandler = (_, dateStr) => {
-    this._setState({ dateTo: dateStr });
+    this._setState({ dateTo: convertToISO(dateStr) });
     this.#datepickerFrom.set('maxDate', this._state.dateTo);
   };
 
@@ -250,13 +273,19 @@ export default class EditEventView extends AbstractStatefulView {
   };
 
   _restoreHandlers() {
-    this.element.querySelector('form.event').addEventListener('submit', this.#submitHandler);
-    this.element.querySelector('.event__rollup-btn')?.addEventListener('click', this.#clickCloseHandler);
-    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#clickDeleteHandler);
-    this.element.querySelector('.event__type-list').addEventListener('change', this.#changeTypeHandler);
+    if (!this._state.isDisabled) {
+      this.element.querySelector('.event__reset-btn').addEventListener('click', this.#clickDeleteHandler);
+      this.element.querySelector('.event__rollup-btn')?.addEventListener('click', this.#clickCloseHandler);
+      this.element.querySelector('.event__save-btn').addEventListener('click', this.#submitHandler);
+      this.element.querySelector('.event__type-list').addEventListener('change', this.#changeTypeHandler);
+
+    }
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
     this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#changeOfferHandler);
     this.element.querySelector('.event__input--price').addEventListener('input', this.#changePriceHandler);
+    this.element.querySelector('.event__input--price').addEventListener('click', (evt) => {
+      evt.currentTarget.value = '';
+    });
     this.#setDatepickerFrom();
     this.#setDatepickerTo();
   }
@@ -297,23 +326,8 @@ export default class EditEventView extends AbstractStatefulView {
   };
 
   #changePriceHandler = (evt) => {
-    let newValue = evt.target.value;
-    const validNumber = /^(0|[1-9]\d*)$/;
 
-    if (newValue === '') {
-      evt.target.value = '0';
-      this._setState({ basePrice: 0 });
-      return;
-    }
-    if (newValue.length > 1 && newValue.startsWith('0')) {
-      newValue = newValue.replace(/^0+/, '');
-    }
-
-    const newPrice = validNumber.test(newValue) ? newValue : this._state.basePrice;
-
-    evt.target.value = newPrice;
-
-    this._setState({ basePrice: newPrice });
+    this._setState({ basePrice: evt.target.value });
   };
 
 }

@@ -1,4 +1,3 @@
-const MOCK_EVENTS_COUNT = 4;
 const FilterTypes = {
   EVERYTHING: 'EVERYTHING',
   FUTURE: 'FUTURE',
@@ -26,10 +25,17 @@ const UserActions = {
 const UpdateTypes = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
-  MAJOR: 'MAJOR'
+  MAJOR: 'MAJOR',
+  INIT: 'INIT'
 };
 
+const UIBLOCK_LOWER_LIMIT = 350;
+const UIBLOCK_UPPER_LIMIT = 1000;
+
 export {
-  MOCK_EVENTS_COUNT, FilterTypes, SortTypes,
-  UserActions, UpdateTypes, Mode
+  FilterTypes, SortTypes,
+  UserActions, UpdateTypes, Mode, UIBLOCK_LOWER_LIMIT,
+  UIBLOCK_UPPER_LIMIT
 };
+
+

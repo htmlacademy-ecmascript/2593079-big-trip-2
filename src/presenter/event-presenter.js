@@ -29,8 +29,8 @@ export default class EventPresenter {
     const type = event.type;
     const fullDestination = this.#eventsModel.getDestinationById(event.destination);
     const fullOffers = this.#eventsModel.getOffersById(event.offers, type);
-    const allOffers = this.#eventsModel.getOffers();
-    const allDestinations = this.#eventsModel.getDestinations();
+    const allOffers = this.#eventsModel.offers;
+    const allDestinations = this.#eventsModel.destinations;
 
     const prevEventComponent = this.#eventComponent;
     const prevEditEventFormComponent = this.#editEventFormComponent;
@@ -114,6 +114,35 @@ export default class EventPresenter {
     this.#onDataChange(UserActions.UPDATE_EVENT, UpdateTypes.MINOR, { ...this.#event, isFavorite: !this.#event.isFavorite });
   };
 
+  setSaving() {
+    if (this.#mode === Mode.EDITING) {
+      this.#editEventFormComponent.updateElement({ isDisabled: true, isSaving: true });
+    }
+  }
+
+  setDeleting() {
+    if (this.#mode === Mode.EDITING) {
+      this.#editEventFormComponent.updateElement({ isDisabled: true, isDeleting: true });
+    }
+  }
+
+  setAborting() {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#eventComponent.shake();
+      return;
+    }
+
+    const resetEditingForm = () => {
+      this.#editEventFormComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+
+    this.#editEventFormComponent.shake(resetEditingForm);
+  }
+
   #onEscKeyDown = (evt) => {
     if (evt.key === 'Escape') {
       evt.preventDefault();
@@ -127,7 +156,8 @@ export default class EventPresenter {
     const isMinorUpdate = (!isDatesEqual(this.#event.dateFrom, update.dateFrom) || !isDatesEqual(this.#event.dateTo, update.dateTo))
       || this.#event.basePrice !== update.basePrice;
     this.#onDataChange(UserActions.UPDATE_EVENT, isMinorUpdate ? UpdateTypes.MINOR : UpdateTypes.PATCH, update);
-    this.#replaceEditFormToEvent();
+
+    // this.#replaceEditFormToEvent();
     document.removeEventListener('keydown', this.#onEscKeyDown);
   };
 

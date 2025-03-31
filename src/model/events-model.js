@@ -1,42 +1,91 @@
-import { MOCK_EVENTS_COUNT } from '../consts';
-import { getMockDestinations, getMockOffers, getRandomEvents } from '../Mocks/events-mocks';
+import { UpdateTypes } from '../consts.js';
 import Observable from '../framework/observable.js';
 
 export default class EventsModel extends Observable {
-  #events = getRandomEvents(MOCK_EVENTS_COUNT);
-  destinations = getMockDestinations();
-  offers = getMockOffers();
+  #events = [];
+  #destinations = [];
+  #offers = [];
+  #eventsApiService = null;
+
+  constructor({ eventsApiService }) {
+    super();
+    this.#eventsApiService = eventsApiService;
+  }
+
+  async init() {
+    try {
+
+      await Promise.all([this.#eventsApiService.events, this.#eventsApiService.destinations, this.#eventsApiService.offers]).then(([events, destinations, offers]) => {
+        this.#events = events.map(this.#adaptToClient);
+        this.#destinations = destinations;
+        this.#offers = offers;
+      });
+      this._notify(UpdateTypes.INIT);
+    } catch (err) {
+      this.#events = [];
+      this.#destinations = [];
+      this.#offers = [];
+      this._notify(UpdateTypes.FAILED);
+
+    }
+
+
+  }
 
   get events() {
     return this.#events;
   }
 
-  updateEvent(updateType, update) {
+  get destinations() {
+    return this.#destinations;
+  }
+
+  get offers() {
+    return this.#offers;
+  }
+
+  async updateEvent(updateType, update) {
     const index = this.events.findIndex((event) => event.id === update.id);
 
     if (index === -1) {
       throw new Error('Can\'t update unexisting event');
     }
 
-    this.#events = [
-      ...this.#events.slice(0, index),
-      update,
-      ...this.#events.slice(index + 1)
-    ];
+    try {
+      const response = await this.#eventsApiService.updateEvent(update);
+      const adaptedEvent = this.#adaptToClient(response);
 
-    this._notify(updateType, update);
+      this.#events = [
+        ...this.#events.slice(0, index),
+        adaptedEvent,
+        ...this.#events.slice(index + 1)
+      ];
+
+      this._notify(updateType, adaptedEvent);
+    } catch (err) {
+
+      throw new Error('Can\'t update event');
+    }
   }
 
-  addEvent(updateType, update) {
-    this.#events = [
-      update,
-      ...this.#events
-    ];
+  async addEvent(updateType, update) {
 
-    this._notify(updateType, update);
+    try {
+      const response = await this.#eventsApiService.addEvent(update);
+      const adaptedEvent = this.#adaptToClient(response);
+      this.#events = [
+        adaptedEvent,
+        ...this.#events
+      ];
+
+      this._notify(updateType, update);
+    } catch {
+      throw new Error('Can\'t update event');
+    }
+
   }
 
-  deleteEvent(updateType, update) {
+  async deleteEvent(updateType, update) {
 
     const index = this.events.findIndex((event) => event.id === update.id);
 
@@ -44,17 +93,32 @@ export default class EventsModel extends Observable {
       throw new Error('Can\'t delete unexisting event');
     }
 
-    this.#events.splice(index, 1);
-    this._notify(updateType);
+    try {
+      await this.#eventsApiService.deleteEvent(update);
+
+      this.#events.splice(index, 1);
+      this._notify(updateType);
+    } catch {
+      throw new Error('Can\'t delete event');
+    }
 
   }
 
-  getDestinations() {
-    return getMockDestinations();
-  }
+  #adaptToClient(event) {
+    const adaptedEvent = {
+      ...event,
+      basePrice: event['base_price'],
+      isFavorite: event['is_favorite'],
+      dateFrom: event['date_from'],
+      dateTo: event['date_to'],
+    };
 
-  getOffers() {
-    return getMockOffers();
+    delete adaptedEvent['base_price'];
+    delete adaptedEvent['date_from'];
+    delete adaptedEvent['date_to'];
+    delete adaptedEvent['is_favorite'];
+
+    return adaptedEvent;
   }
 
   getDestinationById(id) {

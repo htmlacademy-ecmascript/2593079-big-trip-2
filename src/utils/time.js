@@ -1,13 +1,14 @@
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import duration from 'dayjs/plugin/duration';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import { FilterTypes } from '../consts';
 
-
 dayjs.extend(duration);
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
+dayjs.extend(utc);
 
 const DateTemplates = {
   DATE_FORMAT: 'MMM D',
@@ -44,13 +45,16 @@ const humanizeEventDate = (date) => getTimeFromTemplate(DateTemplates.DATE_FORMA
 const humanizeEventTime = (date) => getTimeFromTemplate(DateTemplates.TIME_FORMAT, date);
 const getDatetime = (date) => getTimeFromTemplate(DateTemplates.DATETIME_FORMAT, date);
 const getOnlyDate = (date) => getTimeFromTemplate(DateTemplates.ONLY_DATE_FORMAT, date);
+const addLeadingZero = (number) => number < 10 ? `0${number}` : `${number}`;
 
 const isDatesEqual = (dateA, dateB) => dayjs(dateA).isSame(dateB);
 const getDiffTime = (dateFrom, dateTo) => {
-  dateTo = dayjs(dateTo);
 
+  dateTo = dayjs(dateTo);
   const diffDuration = dayjs.duration(dateTo.diff(dateFrom));
-  const template = `${diffDuration.days() ? 'DD[D] ' : ''}${diffDuration.hours() ? 'HH[H]' : ''} mm[M]`;
+  const days = dateTo.diff(dateFrom, 'days');
+
+  const template = `${days >= 1 ? `${addLeadingZero(days)}[D] ` : ''}${diffDuration.hours() || days >= 1 ? 'HH[H]' : ''} mm[M]`;
   return diffDuration.format(template);
 };
 
@@ -58,4 +62,18 @@ function defaultSort(elements) {
   return SortFunctions.SORT_DAY(elements);
 }
 
-export { humanizeEventDate, humanizeEventTime, getDatetime, getOnlyDate, getDiffTime, DateTemplates, SortFunctions, FilterFunctions, getFilters, defaultSort, getTimeFromTemplate, isDatesEqual };
+function convertToISO(dateTimeString) {
+
+  const [datePart, timePart] = dateTimeString.split(' ');
+
+  const [day, month, year] = datePart.split('/').map(Number);
+
+  const [hours, minutes] = timePart.split(':').map(Number);
+
+  const fullYear = year < 100 ? 2000 + year : year;
+  const date = new Date(fullYear, month - 1, day, hours, minutes);
+
+  return date.toISOString();
+}
+
+export { humanizeEventDate, humanizeEventTime, getDatetime, getOnlyDate, getDiffTime, DateTemplates, SortFunctions, FilterFunctions, getFilters, defaultSort, getTimeFromTemplate, isDatesEqual, convertToISO };
