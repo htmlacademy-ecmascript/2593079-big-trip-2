@@ -80,32 +80,9 @@ export default class EventsInfoPresenter {
         return `${uniqueDestinations[0]} — ${uniqueDestinations[1]} — ${uniqueDestinations[2]}`;
       default:
         return `${uniqueDestinations[0]} — ... — ${uniqueDestinations[uniqueDestinations.length - 1]}`;
-        if (!uniqueDestinations.length) {
-          return '';
-        }
-
-        switch (uniqueDestinations.length) {
-          case 1:
-            return uniqueDestinations[0];
-          case 2:
-            return `${uniqueDestinations[0]} — ${uniqueDestinations[1]}`;
-          case 3:
-            return `${uniqueDestinations[0]} — ${uniqueDestinations[1]} — ${uniqueDestinations[2]}`;
-          default:
-            return `${uniqueDestinations[0]} — ... — ${uniqueDestinations[uniqueDestinations.length - 1]}`;
-        }
-    }
-    switch (uniqueDestinations.length) {
-      case 1:
-        return uniqueDestinations[0];
-      case 2:
-        return `${uniqueDestinations[0]} — ${uniqueDestinations[1]}`;
-      case 3:
-        return `${uniqueDestinations[0]} — ${uniqueDestinations[1]} — ${uniqueDestinations[2]}`;
-      default:
-        return `${uniqueDestinations[0]} — ... — ${uniqueDestinations[uniqueDestinations.length - 1]}`;
 
     }
+
   }
 
   #getDatesInfo(events) {
@@ -128,5 +105,5 @@ export default class EventsInfoPresenter {
 
 
 }
-}
+
 
