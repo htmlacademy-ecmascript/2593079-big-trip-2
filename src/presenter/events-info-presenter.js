@@ -55,24 +55,31 @@ export default class EventsInfoPresenter {
 
   #getDestinationsInfo(events) {
 
-    const mappedEvents = events.reduce((names, event, index) => {
-      const destinationName = this.#eventsModel.getDestinationById(event.destination).name;
-      if (names.length === 0) {
-        names.push(destinationName);
-      } else if (!(names[index - 1] === destinationName)) {
+    if (!events || events.length === 0) {
+      return '';
+    }
+
+    const uniqueDestinations = events.reduce((names, event) => {
+      const destinationName = this.#eventsModel.getDestinationById(event.destination)?.name;
+      if (destinationName && !names.includes(destinationName)) {
         names.push(destinationName);
       }
       return names;
     }, []);
 
-    if (mappedEvents.length > 3) {
-      return `${mappedEvents[0]} — ... — ${mappedEvents[mappedEvents.length - 1]}`;
-    } else if (mappedEvents.length === 3) {
-      return `${mappedEvents[0]} — ${mappedEvents[1]} — ${mappedEvents[2]}`;
-    } else if (mappedEvents.length === 2) {
-      return `${mappedEvents[0]} — ${mappedEvents[1]}`;
-    } else {
-      return `${mappedEvents[0]}`;
+    if (!uniqueDestinations.length) {
+      return '';
+    }
+
+    switch (uniqueDestinations.length) {
+      case 1:
+        return uniqueDestinations[0];
+      case 2:
+        return `${uniqueDestinations[0]} — ${uniqueDestinations[1]}`;
+      case 3:
+        return `${uniqueDestinations[0]} — ${uniqueDestinations[1]} — ${uniqueDestinations[2]}`;
+      default:
+        return `${uniqueDestinations[0]} — ... — ${uniqueDestinations[uniqueDestinations.length - 1]}`;
     }
   }
 
