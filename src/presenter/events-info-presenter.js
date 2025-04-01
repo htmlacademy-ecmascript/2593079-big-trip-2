@@ -80,26 +80,39 @@ export default class EventsInfoPresenter {
         return `${uniqueDestinations[0]} — ${uniqueDestinations[1]} — ${uniqueDestinations[2]}`;
       default:
         return `${uniqueDestinations[0]} — ... — ${uniqueDestinations[uniqueDestinations.length - 1]}`;
+        if (!uniqueDestinations.length) {
+          return '';
+        }
+
+        switch (uniqueDestinations.length) {
+          case 1:
+            return uniqueDestinations[0];
+          case 2:
+            return `${uniqueDestinations[0]} — ${uniqueDestinations[1]}`;
+          case 3:
+            return `${uniqueDestinations[0]} — ${uniqueDestinations[1]} — ${uniqueDestinations[2]}`;
+          default:
+            return `${uniqueDestinations[0]} — ... — ${uniqueDestinations[uniqueDestinations.length - 1]}`;
+        }
     }
+
+    #getDatesInfo(events) {
+      const dateFrom = dayjs(events[0].dateFrom);
+      const dateTo = dayjs(events[events.length - 1].dateTo);
+      return `${dateFrom.date()} ${dateFrom.format('MMM')} — ${dateTo.date()} ${dateTo.format('MMM')}`;
+    }
+
+    #getPriceInfo(events) {
+      const finallOffersSumm = events.reduce((offersSumm, event) => {
+        const fullOffers = this.#eventsModel.getOffersById(event.offers, event.type);
+        return offersSumm + getOffersSumm(fullOffers);
+
+      }, 0);
+
+      const finalEventsPrice = events.reduce((basePriceSumm, event) => basePriceSumm + event.basePrice, 0);
+      return finallOffersSumm + finalEventsPrice;
+
+    }
+
+
   }
-
-  #getDatesInfo(events) {
-    const dateFrom = dayjs(events[0].dateFrom);
-    const dateTo = dayjs(events[events.length - 1].dateTo);
-    return `${dateFrom.date()} ${dateFrom.format('MMM')} — ${dateTo.date()} ${dateTo.format('MMM')}`;
-  }
-
-  #getPriceInfo(events) {
-    const finallOffersSumm = events.reduce((offersSumm, event) => {
-      const fullOffers = this.#eventsModel.getOffersById(event.offers, event.type);
-      return offersSumm + getOffersSumm(fullOffers);
-
-    }, 0);
-
-    const finalEventsPrice = events.reduce((basePriceSumm, event) => basePriceSumm + event.basePrice, 0);
-    return finallOffersSumm + finalEventsPrice;
-
-  }
-
-
-}
