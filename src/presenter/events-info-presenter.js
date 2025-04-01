@@ -80,6 +80,7 @@ export default class EventsInfoPresenter {
         return `${uniqueDestinations[0]} — ${uniqueDestinations[1]} — ${uniqueDestinations[2]}`;
       default:
         return `${uniqueDestinations[0]} — ... — ${uniqueDestinations[uniqueDestinations.length - 1]}`;
+
     }
   }
 
@@ -101,5 +102,5 @@ export default class EventsInfoPresenter {
 
   }
 
-
 }
+
