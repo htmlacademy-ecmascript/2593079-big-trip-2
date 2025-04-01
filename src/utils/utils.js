@@ -19,4 +19,10 @@ const getDestinationByName = (destinations, destName) => destinations.find((dest
 
 const getOffersByType = (offers, type) => offers.find((offer) => offer.type === type).offers;
 
-export { toUppercaseFirstLetter, toKebabCase, sortNameAdapter, updateItem, getDestinationByName, getOffersByType, getNewEvent };
+const getOffersSumm = (fullOffers) => {
+  const offersPriceSumm = fullOffers.reduce((offersSumm, offer) => offersSumm + offer.price
+    , 0);
+  return offersPriceSumm;
+};
+
+export { toUppercaseFirstLetter, toKebabCase, sortNameAdapter, updateItem, getDestinationByName, getOffersByType, getNewEvent, getOffersSumm };
