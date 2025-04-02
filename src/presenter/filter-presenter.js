@@ -25,8 +25,6 @@ export default class FilterPresenter {
 
   init() {
     const filters = this.filters;
-    console.log(filters, 'filters')
-
     const prevFilterComponent = this.#filterComponent;
     this.#filterComponent = new FiltersView({ filters, onFilterChange: this.#handleFilterChange, currentFilter: this.currentFilter });
 

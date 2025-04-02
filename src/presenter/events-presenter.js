@@ -158,9 +158,13 @@ export default class EventsPresenter {
 
   };
 
+  #desactivateNewEventBtn() {
+    this.#newEventBtnComponent.desactivate();
+  }
+
   #handleViewAction = (actionType, updateType, update) => {
     this.#uiBlocker.block();
-    this.#disableNewEventBtn();
+    this.#desactivateNewEventBtn();
 
     switch (actionType) {
       case UserActions.ADD_EVENT:

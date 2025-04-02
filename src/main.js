@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import EventsApiService from './API/events-api-service.js';
 import EventsModel from './model/events-model.js';
 import FilterModel from './model/filter-model.js';
