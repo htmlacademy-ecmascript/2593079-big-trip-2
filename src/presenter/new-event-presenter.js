@@ -66,6 +66,8 @@ export default class NewEventPresenter {
     };
 
     this.#editEventFormComponent.shake(resetEditingForm);
+    document.addEventListener('keydown', this.#onEscKeyDown);
+
   }
 
   #onFormSubmit = (update) => {

@@ -25,15 +25,17 @@ export default class EventsPresenter {
   #newEventBtnComponent = null;
   #newEventBtnContainer = null;
   #newEventPresenter = null;
+  #eventsInfoPresenter = null;
   #noEventComponent = null;
   #loadingComponent = null;
   #isLoading = true;
   #uiBlocker = null;
   #failedLoadingComponent = null;
 
-  constructor({ eventsContainer, eventsModel, filterModel, newEventBtnContainer }) {
+  constructor({ eventsContainer, eventsModel, filterModel, newEventBtnContainer, eventsInfoPresenter }) {
     this.#eventsContainer = eventsContainer;
     this.#newEventBtnContainer = newEventBtnContainer;
+    this.#eventsInfoPresenter = eventsInfoPresenter;
     this.#listComponent = new EventsListView();
     this.#eventsModel = eventsModel;
     this.#filterModel = filterModel;
@@ -156,9 +158,13 @@ export default class EventsPresenter {
 
   };
 
+  #desactivateNewEventBtn() {
+    this.#newEventBtnComponent.desactivate();
+  }
+
   #handleViewAction = (actionType, updateType, update) => {
     this.#uiBlocker.block();
-    this.#disableNewEventBtn();
+    this.#desactivateNewEventBtn();
 
     switch (actionType) {
       case UserActions.ADD_EVENT:
@@ -178,6 +184,8 @@ export default class EventsPresenter {
           this.#eventPresenters.get(update.id).setAborting();
         }).finally(() => {
           this.#uiBlocker.unblock();
+          this.#activateNewEventBtn();
+
         });
         break;
 
@@ -189,6 +197,8 @@ export default class EventsPresenter {
 
         }).finally(() => {
           this.#uiBlocker.unblock();
+          this.#activateNewEventBtn();
+
         });
         break;
     }
@@ -202,13 +212,14 @@ export default class EventsPresenter {
         this.#resetEvents();
         this.#activateNewEventBtn();
         break;
+
       case UpdateTypes.MINOR:
 
         this.#clearEventsList();
         this.#clearNoEvent();
         this.#renderEvents();
-
         break;
+
       case UpdateTypes.MAJOR:
 
         this.#clearEventsList();
@@ -216,10 +227,10 @@ export default class EventsPresenter {
         this.initSort();
         this.#resetSort();
         this.#renderEvents();
-
         break;
 
       case UpdateTypes.INIT:
+
         this.#clearLoading();
         this.#activateNewEventBtn();
         this.#isLoading = false;
@@ -234,6 +245,8 @@ export default class EventsPresenter {
         this.#renderFailedLoading();
         break;
     }
+    this.#eventsInfoPresenter.init(this.#eventsModel.events);
+
 
   };
 
