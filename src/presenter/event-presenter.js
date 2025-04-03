@@ -159,10 +159,8 @@ export default class EventPresenter {
       || this.#event.basePrice !== update.basePrice;
     this.#onDataChange(UserActions.UPDATE_EVENT, isMinorUpdate ? UpdateTypes.MINOR : UpdateTypes.PATCH, update);
 
-    // this.#replaceEditFormToEvent();
     document.removeEventListener('keydown', this.#onEscKeyDown);
   };
 
-  // #getDestinationByName = (name) => this.#eventsModel.getDestinationByName(name);
 
 }

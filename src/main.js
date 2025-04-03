@@ -21,5 +21,4 @@ const filterPresenter = new FilterPresenter({ filterModel, eventsModel, filterCo
 eventsPresenter.init();
 eventsModel.init();
 filterPresenter.init();
-// eventsPresenter.init();
 
