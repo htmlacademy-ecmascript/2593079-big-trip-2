@@ -141,6 +141,8 @@ export default class EventPresenter {
     };
 
     this.#editEventFormComponent.shake(resetEditingForm);
+    document.addEventListener('keydown', this.#onEscKeyDown);
+
   }
 
   #onEscKeyDown = (evt) => {

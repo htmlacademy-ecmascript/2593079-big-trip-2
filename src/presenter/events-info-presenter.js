@@ -59,9 +59,11 @@ export default class EventsInfoPresenter {
       return '';
     }
 
-    const uniqueDestinations = events.reduce((names, event) => {
-      const destinationName = this.#eventsModel.getDestinationById(event.destination)?.name;
-      if (destinationName && !names.includes(destinationName)) {
+    const uniqueDestinations = events.reduce((names, event, index) => {
+      const destinationName = this.#eventsModel.getDestinationById(event.destination).name;
+      if (names.length === 0) {
+        names.push(destinationName);
+      } else if (!(names[index - 1] === destinationName)) {
         names.push(destinationName);
       }
       return names;
