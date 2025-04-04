@@ -13,7 +13,6 @@ const toUppercaseFirstLetter = (word) => `${word[0].toUpperCase()}${word.slice(1
 const sortNameAdapter = (sortName) => sortName.toUpperCase().replace('-', '_');
 
 const toKebabCase = (word) => word.toLowerCase().split(' ').join('-');
-const updateItem = (items, newItem) => items.map((currentItem) => currentItem.id === newItem.id ? newItem : currentItem);
 
 const getDestinationByName = (destinations, destName) => destinations.find((dest) => dest.name === destName);
 
@@ -25,4 +24,4 @@ const getOffersSumm = (fullOffers) => {
   return offersPriceSumm;
 };
 
-export { toUppercaseFirstLetter, toKebabCase, sortNameAdapter, updateItem, getDestinationByName, getOffersByType, getNewEvent, getOffersSumm };
+export { toUppercaseFirstLetter, toKebabCase, sortNameAdapter, getDestinationByName, getOffersByType, getNewEvent, getOffersSumm };

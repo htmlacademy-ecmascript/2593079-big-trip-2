@@ -19,6 +19,16 @@ export default class FilterPresenter {
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
+  get filters() {
+    const events = this.#eventsModel.events;
+    return ({
+      [FilterTypes.EVERYTHING]: FilterFunctions[FilterTypes.EVERYTHING](events).length,
+      [FilterTypes.FUTURE]: FilterFunctions[FilterTypes.FUTURE](events).length,
+      [FilterTypes.PRESENT]: FilterFunctions[FilterTypes.PRESENT](events).length,
+      [FilterTypes.PAST]: FilterFunctions[FilterTypes.PAST](events).length
+    });
+  }
+
   get currentFilter() {
     return this.#filterModel.filter;
   }
@@ -35,16 +45,6 @@ export default class FilterPresenter {
 
     replace(this.#filterComponent, prevFilterComponent);
     remove(prevFilterComponent);
-  }
-
-  get filters() {
-    const events = this.#eventsModel.events;
-    return ({
-      [FilterTypes.EVERYTHING]: FilterFunctions[FilterTypes.EVERYTHING](events).length,
-      [FilterTypes.FUTURE]: FilterFunctions[FilterTypes.FUTURE](events).length,
-      [FilterTypes.PRESENT]: FilterFunctions[FilterTypes.PRESENT](events).length,
-      [FilterTypes.PAST]: FilterFunctions[FilterTypes.PAST](events).length
-    });
   }
 
   #handleFilterChange = (type) => {

@@ -45,14 +45,6 @@ export default class EventsPresenter {
     this.#uiBlocker = new UiBlocker({ lowerLimit: UIBLOCK_LOWER_LIMIT, upperLimit: UIBLOCK_UPPER_LIMIT });
   }
 
-  init() {
-    this.#newEventBtnComponent = new NewEventBtnView({ onClick: this.#newEventBtnClickHandler });
-    render(this.#newEventBtnComponent, this.#newEventBtnContainer);
-    render(this.#listComponent, this.#eventsContainer);
-    this.#renderEvents();
-
-  }
-
   get events() {
     const filterType = this.#filterModel.filter;
     const events = this.#eventsModel.events;
@@ -61,13 +53,13 @@ export default class EventsPresenter {
 
   }
 
-  #newEventBtnClickHandler = () => {
-    this.#filterModel.setFilter(UpdateTypes.MAJOR, FilterTypes.EVERYTHING);
-    this.#disableNewEventBtn();
-    this.#resetEvents();
-    this.#clearNoEvent();
-    this.#createNewEvent();
-  };
+  init() {
+    this.#newEventBtnComponent = new NewEventBtnView({ onClick: this.#newEventBtnClickHandler });
+    render(this.#newEventBtnComponent, this.#newEventBtnContainer);
+    render(this.#listComponent, this.#eventsContainer);
+    this.#renderEvents();
+
+  }
 
   initSort() {
     if (!this.#sortComponent) {
@@ -75,6 +67,7 @@ export default class EventsPresenter {
       render(this.#sortComponent, this.#eventsContainer, RenderPosition.AFTERBEGIN);
     }
   }
+
 
   #activateNewEventBtn() {
     this.#newEventBtnComponent.activate();
@@ -104,6 +97,38 @@ export default class EventsPresenter {
     }
     this.#newEventPresenter.init();
   };
+
+  #resetSort() {
+    this.#sortComponent?.resetSort();
+    this.#currentSort = SortTypes.SORT_DAY;
+  }
+
+  #resetEvents = () => {
+    this.#eventPresenters.forEach((presenter) => presenter.resetView());
+    this.#newEventPresenter?.destroy();
+
+  };
+
+  #clearEventsList() {
+    this.#eventPresenters.forEach((presenter) => presenter.destroy());
+    this.#eventPresenters.clear();
+    this.#newEventPresenter?.destroy();
+  }
+
+  #createEvent(event) {
+
+    const eventPresenter = new EventPresenter({
+      listComponent: this.#listComponent,
+      eventsModel: this.#eventsModel,
+      allDestinations: this.#destinations,
+      onDataChange: this.#handleViewAction,
+      onModeChange: this.#resetEvents
+    });
+
+    this.#eventPresenters.set(event.id, eventPresenter);
+    eventPresenter.init(event);
+
+  }
 
   #createNoEvent() {
     this.#noEventComponent = new NoEventsView(this.#filterModel.filter);
@@ -150,13 +175,6 @@ export default class EventsPresenter {
       this.#noEventComponent = null;
     }
   }
-
-  #handleSortChange = (sortType) => {
-    this.#currentSort = sortNameAdapter(sortType);
-    this.#clearEventsList();
-    this.#renderEvents();
-
-  };
 
   #desactivateNewEventBtn() {
     this.#newEventBtnComponent.desactivate();
@@ -250,36 +268,21 @@ export default class EventsPresenter {
 
   };
 
-  #resetSort() {
-    this.#sortComponent?.resetSort();
-    this.#currentSort = SortTypes.SORT_DAY;
-  }
-
-  #resetEvents = () => {
-    this.#eventPresenters.forEach((presenter) => presenter.resetView());
-    this.#newEventPresenter?.destroy();
+  #handleSortChange = (sortType) => {
+    this.#currentSort = sortNameAdapter(sortType);
+    this.#clearEventsList();
+    this.#renderEvents();
 
   };
 
-  #clearEventsList() {
-    this.#eventPresenters.forEach((presenter) => presenter.destroy());
-    this.#eventPresenters.clear();
-    this.#newEventPresenter?.destroy();
-  }
+  #newEventBtnClickHandler = () => {
+    this.#disableNewEventBtn();
+    this.#resetEvents();
+    this.#filterModel.setFilter(UpdateTypes.MAJOR, FilterTypes.EVERYTHING);
+    this.#clearNoEvent();
+    this.#createNewEvent();
+  };
 
-  #createEvent(event) {
 
-    const eventPresenter = new EventPresenter({
-      listComponent: this.#listComponent,
-      eventsModel: this.#eventsModel,
-      allDestinations: this.#destinations,
-      onDataChange: this.#handleViewAction,
-      onModeChange: this.#resetEvents
-    });
-
-    this.#eventPresenters.set(event.id, eventPresenter);
-    eventPresenter.init(event);
-
-  }
 }
 

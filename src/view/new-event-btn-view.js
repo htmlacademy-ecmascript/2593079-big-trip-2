@@ -10,6 +10,10 @@ export default class NewEventBtnView extends AbstractView {
     this.element.addEventListener('click', onClick);
   }
 
+  get template() {
+    return getNewEventBtnTemplate();
+  }
+
   disable() {
     this.element.disabled = true;
   }
@@ -28,7 +32,5 @@ export default class NewEventBtnView extends AbstractView {
     evt.preventDefault();
   }
 
-  get template() {
-    return getNewEventBtnTemplate();
-  }
+
 }

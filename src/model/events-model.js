@@ -12,26 +12,6 @@ export default class EventsModel extends Observable {
     this.#eventsApiService = eventsApiService;
   }
 
-  async init() {
-    try {
-
-      await Promise.all([this.#eventsApiService.events, this.#eventsApiService.destinations, this.#eventsApiService.offers]).then(([events, destinations, offers]) => {
-        this.#events = events.map(this.#adaptToClient);
-        this.#destinations = destinations;
-        this.#offers = offers;
-      });
-      this._notify(UpdateTypes.INIT);
-    } catch (err) {
-      this.#events = [];
-      this.#destinations = [];
-      this.#offers = [];
-      this._notify(UpdateTypes.FAILED);
-
-    }
-
-
-  }
-
   get events() {
     return this.#events;
   }
@@ -85,6 +65,41 @@ export default class EventsModel extends Observable {
 
   }
 
+  async init() {
+    try {
+
+      await Promise.all([this.#eventsApiService.events, this.#eventsApiService.destinations, this.#eventsApiService.offers]).then(([events, destinations, offers]) => {
+        this.#events = events.map(this.#adaptToClient);
+        this.#destinations = destinations;
+        this.#offers = offers;
+      });
+      this._notify(UpdateTypes.INIT);
+    } catch (err) {
+      this.#events = [];
+      this.#destinations = [];
+      this.#offers = [];
+      this._notify(UpdateTypes.FAILED);
+
+    }
+  }
+
+  getDestinationById(id) {
+    return this.destinations.find((dest) => dest.id === id);
+  }
+
+  getOffersById(idArray, type) {
+    const typedOffers = this.offers.find((offer) => offer.type === type).offers;
+    return typedOffers.filter((offer) => idArray.some((id) => offer.id === id));
+  }
+
+  getAllDestinationsNames() {
+
+    return this.destinations.reduce((destinations, destElement) => {
+      destinations.push(destElement.name);
+      return destinations;
+    }, []);
+  }
+
   async deleteEvent(updateType, update) {
 
     const index = this.events.findIndex((event) => event.id === update.id);
@@ -121,22 +136,6 @@ export default class EventsModel extends Observable {
     return adaptedEvent;
   }
 
-  getDestinationById(id) {
-    return this.destinations.find((dest) => dest.id === id);
-  }
-
-  getOffersById(idArray, type) {
-    const typedOffers = this.offers.find((offer) => offer.type === type).offers;
-    return typedOffers.filter((offer) => idArray.some((id) => offer.id === id));
-  }
-
-  getAllDestinationsNames() {
-
-    return this.destinations.reduce((destinations, destElement) => {
-      destinations.push(destElement.name);
-      return destinations;
-    }, []);
-  }
 
 }
 

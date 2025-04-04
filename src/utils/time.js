@@ -32,13 +32,6 @@ const FilterFunctions = {
   [FilterTypes.FUTURE]: (events) => events.slice().filter((event) => dayjs().isBefore(dayjs(event.dateFrom), 'd'))
 };
 
-const getFilters = (events) => ({
-  [FilterTypes.EVERYTHING]: FilterFunctions[FilterTypes.EVERYTHING](events).length,
-  [FilterTypes.PAST]: FilterFunctions[FilterTypes.PAST](events).length,
-  [FilterTypes.PRESENT]: FilterFunctions[FilterTypes.PRESENT](events).length,
-  [FilterTypes.FUTURE]: FilterFunctions[FilterTypes.FUTURE](events).length
-});
-
 const getTimeFromTemplate = (template, date) => date ? dayjs(date).format(template) : '';
 
 const humanizeEventDate = (date) => getTimeFromTemplate(DateTemplates.DATE_FORMAT, date);
@@ -58,9 +51,6 @@ const getDiffTime = (dateFrom, dateTo) => {
   return diffDuration.format(template);
 };
 
-function defaultSort(elements) {
-  return SortFunctions.SORT_DAY(elements);
-}
 
 function convertToISO(dateTimeString) {
 
@@ -76,4 +66,4 @@ function convertToISO(dateTimeString) {
   return date.toISOString();
 }
 
-export { humanizeEventDate, humanizeEventTime, getDatetime, getOnlyDate, getDiffTime, DateTemplates, SortFunctions, FilterFunctions, getFilters, defaultSort, getTimeFromTemplate, isDatesEqual, convertToISO };
+export { humanizeEventDate, humanizeEventTime, getDatetime, getOnlyDate, getDiffTime, DateTemplates, SortFunctions, FilterFunctions, getTimeFromTemplate, isDatesEqual, convertToISO };
