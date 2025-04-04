@@ -277,9 +277,9 @@ export default class EventsPresenter {
 
   #newEventBtnClickHandler = () => {
     this.#disableNewEventBtn();
-    this.#clearNoEvent();
     this.#resetEvents();
     this.#filterModel.setFilter(UpdateTypes.MAJOR, FilterTypes.EVERYTHING);
+    this.#clearNoEvent();
     this.#createNewEvent();
   };
 
