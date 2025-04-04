@@ -23,6 +23,16 @@ export default class EventsApiService extends ApiService {
       then(ApiService.parseResponse);
   }
 
+  get destinations() {
+    return this._load({ url: UrlTemplates.GET_DESTINATIONS }).
+      then(ApiService.parseResponse);
+  }
+
+  get offers() {
+    return this._load({ url: UrlTemplates.GET_OFFERS }).
+      then(ApiService.parseResponse);
+  }
+
   async updateEvent(update) {
     const response = await this._load({
       url: `${UrlTemplates.PUT_POINT}/${update.id}`,
@@ -55,16 +65,6 @@ export default class EventsApiService extends ApiService {
       method: Methods.DELETE,
     });
 
-  }
-
-  get destinations() {
-    return this._load({ url: UrlTemplates.GET_DESTINATIONS }).
-      then(ApiService.parseResponse);
-  }
-
-  get offers() {
-    return this._load({ url: UrlTemplates.GET_OFFERS }).
-      then(ApiService.parseResponse);
   }
 
   #adaptToServer(event) {

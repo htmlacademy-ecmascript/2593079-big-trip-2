@@ -82,15 +82,14 @@ export default class EventPresenter {
 
   };
 
-  #handleDeleteClick = (data) => {
-    this.#onDataChange(UserActions.DELETE_EVENT, UpdateTypes.MINOR, data);
-  };
-
   resetView() {
     if (this.#mode === Mode.EDITING) {
       this.#editEventFormComponent.reset();
       this.#replaceEditFormToEvent();
+
+      document.removeEventListener('keydown', this.#onEscKeyDown);
     }
+
   }
 
   destroy() {
@@ -98,32 +97,20 @@ export default class EventPresenter {
     remove(this.#editEventFormComponent);
   }
 
-  #replaceEventToEditForm = () => {
-    replace(this.#editEventFormComponent, this.#eventComponent);
-    this.#handleModeChange();
-    this.#mode = Mode.EDITING;
-  };
-
-  #replaceEditFormToEvent() {
-
-    replace(this.#eventComponent, this.#editEventFormComponent);
-    this.#mode = Mode.DEFAULT;
-  }
-
-  #handleFavoriteClick = () => {
-    this.#onDataChange(UserActions.UPDATE_EVENT, UpdateTypes.MINOR, { ...this.#event, isFavorite: !this.#event.isFavorite });
-  };
-
   setSaving() {
     if (this.#mode === Mode.EDITING) {
       this.#editEventFormComponent.updateElement({ isDisabled: true, isSaving: true });
     }
+    document.removeEventListener('keydown', this.#onEscKeyDown);
+
   }
 
   setDeleting() {
     if (this.#mode === Mode.EDITING) {
       this.#editEventFormComponent.updateElement({ isDisabled: true, isDeleting: true });
     }
+    document.removeEventListener('keydown', this.#onEscKeyDown);
+
   }
 
   setAborting() {
@@ -144,6 +131,27 @@ export default class EventPresenter {
     document.addEventListener('keydown', this.#onEscKeyDown);
 
   }
+
+  #replaceEventToEditForm = () => {
+    replace(this.#editEventFormComponent, this.#eventComponent);
+    this.#handleModeChange();
+    this.#mode = Mode.EDITING;
+  };
+
+  #replaceEditFormToEvent() {
+    replace(this.#eventComponent, this.#editEventFormComponent);
+    this.#mode = Mode.DEFAULT;
+  }
+
+  #handleFavoriteClick = () => {
+    this.#onDataChange(UserActions.UPDATE_EVENT, UpdateTypes.MINOR, { ...this.#event, isFavorite: !this.#event.isFavorite });
+  };
+
+  #handleDeleteClick = (data) => {
+    this.#onDataChange(UserActions.DELETE_EVENT, UpdateTypes.MINOR, data);
+    document.removeEventListener('keydown', this.#onEscKeyDown);
+
+  };
 
   #onEscKeyDown = (evt) => {
     if (evt.key === 'Escape') {

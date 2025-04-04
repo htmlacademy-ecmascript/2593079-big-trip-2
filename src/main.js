@@ -5,7 +5,7 @@ import EventsPresenter from './presenter/events-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import EventsInfoPresenter from './presenter/events-info-presenter.js';
 
-const AUTHORIZATION_TOKEN = 'Basic e4ih32wfi823hsf';
+const AUTHORIZATION_TOKEN = 'Basic e4ih32wfi823hs';
 const SERVER_URL = 'https://23.objects.htmlacademy.pro/big-trip/';
 
 const eventsContainer = document.querySelector('.trip-events');

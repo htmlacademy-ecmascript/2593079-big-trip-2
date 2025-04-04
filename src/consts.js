@@ -1,3 +1,7 @@
+const UIBLOCK_LOWER_LIMIT = 350;
+const UIBLOCK_UPPER_LIMIT = 1000;
+
+
 const FilterTypes = {
   EVERYTHING: 'EVERYTHING',
   FUTURE: 'FUTURE',
@@ -29,8 +33,6 @@ const UpdateTypes = {
   INIT: 'INIT'
 };
 
-const UIBLOCK_LOWER_LIMIT = 350;
-const UIBLOCK_UPPER_LIMIT = 1000;
 
 export {
   FilterTypes, SortTypes,

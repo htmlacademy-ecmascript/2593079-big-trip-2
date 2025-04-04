@@ -133,7 +133,7 @@ function createEditEventTemplate({ basePrice, type, dateTo, dateFrom, allDestina
                     <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${he.encode(basePrice.toString())}" ${isDisabled ? 'disabled' : ''}>
                   </div>
 
-                  <button class="event__save-btn  btn  btn--blue" type="submit" >${isSaving ? 'Saving...' : 'Save'}</button>
+                  <button class="event__save-btn btn btn--blue" type="submit" >${isSaving ? 'Saving...' : 'Save'}</button>
                   <button class="event__reset-btn" type="reset" >${getButtonText(isNew, isDeleting)}</button>
   ${!isNew ? createEditEventRollupBtnTemplate() : ''}
 <span class="visually-hidden">${isNew ? 'Cancel' : 'Delete'} event</span>
@@ -204,22 +204,19 @@ export default class EditEventView extends AbstractStatefulView {
 
   _restoreHandlers() {
 
-    if (!this._state.isDisabled) {
-      this.element.querySelector('.event__save-btn').addEventListener('click', this.#submitHandler);
-      this.element.querySelector('.event__rollup-btn')?.addEventListener('click', this.#clickCloseHandler);
-      this.element.querySelector('.event__type-list').addEventListener('change', this.#changeTypeHandler);
-      this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
-      this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#changeOfferHandler);
-      this.element.querySelector('.event__input--price').addEventListener('input', this.#changePriceHandler);
-      this.element.querySelector('.event__input--price').addEventListener('click', (evt) => {
-        evt.currentTarget.value = '';
-      });
+    this.element.querySelector('.event__save-btn').addEventListener('click', this.#submitHandler);
+    this.element.querySelector('.event__rollup-btn')?.addEventListener('click', this.#clickCloseHandler);
+    this.element.querySelector('.event__type-list').addEventListener('change', this.#changeTypeHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeDestinationHandler);
+    this.element.querySelector('.event__available-offers')?.addEventListener('change', this.#changeOfferHandler);
+    this.element.querySelector('.event__input--price').addEventListener('input', this.#changePriceHandler);
+    this.element.querySelector('.event__input--price').addEventListener('click', (evt) => {
+      evt.currentTarget.value = '';
+    });
 
-      this.#setDatepickerFrom();
-      this.#setDatepickerTo();
-      this.element.querySelector('.event__reset-btn').addEventListener('click', this.#clickDeleteHandler);
-
-    }
+    this.#setDatepickerFrom();
+    this.#setDatepickerTo();
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#clickDeleteHandler);
 
   }
 
