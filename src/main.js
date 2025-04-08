@@ -17,7 +17,6 @@ const eventsInfoPresenter = new EventsInfoPresenter({ eventsModel, eventsInfoCon
 const eventsPresenter = new EventsPresenter({ eventsContainer, eventsModel, filterModel, newEventBtnContainer, eventsInfoPresenter });
 const filterPresenter = new FilterPresenter({ filterModel, eventsModel, filterContainer });
 
-
 eventsPresenter.init();
 eventsModel.init();
 filterPresenter.init();
